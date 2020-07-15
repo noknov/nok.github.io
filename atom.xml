@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-07-15T09:18:51.735Z</updated>
+  <updated>2020-07-15T14:18:27.144Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hexo+Nginx搭建搭建静态页面博客</title>
+    <title>Hexo+Nginx搭建搭建静态页面博客(待更新)</title>
     <link href="http://yoursite.com/2020/07/15/ECS-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2020/07/15/ECS-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</id>
     <published>2020-07-15T07:54:00.000Z</published>
-    <updated>2020-07-15T09:18:51.735Z</updated>
+    <updated>2020-07-15T14:18:27.144Z</updated>
     
     <content type="html"><![CDATA[<p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 支持 Markdown 语法解析文章。</p><p>• 本地环境配置：Node.js+Git+Hexo <br><br>• 安全组配置：阿里云ECS <br><br>• 域名解析：腾讯云 <br><br>• ECS环境配置：(CentOs 8) Node.js+Git+Pm2+Nginx <br><br>• Github：Webhook</p><h3 id="一、本地环境配置"><a href="#一、本地环境配置" class="headerlink" title="一、本地环境配置 "></a>一、本地环境配置 <br></h3><h4 id="emsp-1-Node-js"><a href="#emsp-1-Node-js" class="headerlink" title="&emsp;1.Node.js "></a>&emsp;1.Node.js <br></h4><p>&emsp;Node.js官网<a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js</a>，安装目录尽量不要包括空格，命令行下<code>node -v</code>验证是否安装成功。<br><br>&emsp;或通过<a href="https://npm.taobao.org/mirrors/node" target="_blank" rel="noopener">淘宝npm镜像</a>安装。</p><h4 id="emsp-2-Git"><a href="#emsp-2-Git" class="headerlink" title="&emsp;2.Git"></a>&emsp;2.Git<br></h4><h5 id="emsp-emsp-1-安装"><a href="#emsp-emsp-1-安装" class="headerlink" title="&emsp;&emsp;1.安装"></a>&emsp;&emsp;1.安装</h5><p>&emsp;Git官网 <a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a>，命令行<code>git --version</code>验证。</p><h5 id="emsp-emsp-2-SSH配置"><a href="#emsp-emsp-2-SSH配置" class="headerlink" title="&emsp;&emsp;2.SSH配置"></a>&emsp;&emsp;2.SSH配置</h5><p>&emsp;&emsp;配置Github用户名 <br></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;example&quot;</span><br><span class="line">git config --global user.email &quot;example@email.com&quot;</span><br></pre></td></tr></table></figure><p>&emsp;&emsp;生成秘钥</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;example@email.com&quot;</span><br></pre></td></tr></table></figure><p>&emsp;&emsp;~/.ssh文件夹下生成id_rsa.pub公有密钥，依次进入Github——Settings——SSH and GPG keys，添加SSH key，将d_rsa.pub中的内容放入Key中。具体可以参考<a href="https://blog.csdn.net/playboyanta123/article/details/49611873?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase" target="_blank" rel="noopener">这篇文章</a>，Linux系统可以参考<a href="https://blog.csdn.net/qq_36663951/article/details/78749217?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1" target="_blank" rel="noopener">这篇文章</a>。</p><h4 id="emsp-3-Hexo"><a href="#emsp-3-Hexo" class="headerlink" title="&emsp;3.Hexo"></a>&emsp;3.Hexo<br></h4>]]></content>
     
