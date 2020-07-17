@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-07-16T15:53:25.201Z</updated>
+  <updated>2020-07-17T11:17:41.438Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -17,9 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>归一化与标准化</title>
+    <link href="http://meurice.xyz/2020/ckcq4ph110001kwlx41ll8w2o/"/>
+    <id>http://meurice.xyz/2020/ckcq4ph110001kwlx41ll8w2o/</id>
+    <published>2020-07-17T09:33:10.000Z</published>
+    <updated>2020-07-17T11:17:41.438Z</updated>
+    
+    <content type="html"><![CDATA[<p>　　归一化和标准化都属于四种Feature scaling（特征缩放）方法：<br>　　1.Rescaling<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8jCa.png" alt="Rescaling"><br>　　2.Mean normalization<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8h9n.png" alt="Mean normalization"><br>　　3.Standardization(Z-score normalization)<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8swh.png" alt="Standardization"><br>　　4.Scaling to unit length<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8JrM.png" alt="Scaling to unit length"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;　　归一化和标准化都属于四种Feature scaling（特征缩放）方法：&lt;br&gt;　　1.Rescaling&lt;br&gt;  &lt;img src= &quot;/img/loading.gif&quot; data-src=&quot;https://wx1.sbimg.cn/2020/07/17/C8jCa
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>ECS定时执行pull命令</title>
-    <link href="http://meurice.xyz/2020/ckcoz8cvv0001b4lx5gsvdudm/"/>
-    <id>http://meurice.xyz/2020/ckcoz8cvv0001b4lx5gsvdudm/</id>
+    <link href="http://meurice.xyz/2020/ckcq4ph140004kwlxat4nee4t/"/>
+    <id>http://meurice.xyz/2020/ckcq4ph140004kwlxat4nee4t/</id>
     <published>2020-07-16T11:40:44.000Z</published>
     <updated>2020-07-16T15:53:25.201Z</updated>
     
@@ -41,8 +63,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckcoz8d640002b4lx7r7s49o8/"/>
-    <id>http://meurice.xyz/2020/ckcoz8d640002b4lx7r7s49o8/</id>
+    <link href="http://meurice.xyz/2020/ckcq4ph140003kwlxga068cld/"/>
+    <id>http://meurice.xyz/2020/ckcq4ph140003kwlxga068cld/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-07-16T10:10:15.326Z</updated>
     
@@ -63,8 +85,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckcoz8dho0003b4lx0yl803ab/"/>
-    <id>http://meurice.xyz/2020/ckcoz8dho0003b4lx0yl803ab/</id>
+    <link href="http://meurice.xyz/2020/ckcq4pgzq0000kwlx2yqo7gev/"/>
+    <id>http://meurice.xyz/2020/ckcq4pgzq0000kwlx2yqo7gev/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -86,8 +108,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckcoz8cvq0000b4lxbsny5ycm/"/>
-    <id>http://meurice.xyz/2020/ckcoz8cvq0000b4lxbsny5ycm/</id>
+    <link href="http://meurice.xyz/2020/ckcq4ph130002kwlx72o51tw2/"/>
+    <id>http://meurice.xyz/2020/ckcq4ph130002kwlx72o51tw2/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
