@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-07-17T11:17:41.438Z</updated>
+  <updated>2020-07-17T14:11:55.257Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -17,19 +17,19 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>归一化与标准化</title>
-    <link href="http://meurice.xyz/2020/ckcq4ph110001kwlx41ll8w2o/"/>
-    <id>http://meurice.xyz/2020/ckcq4ph110001kwlx41ll8w2o/</id>
+    <title>数据预处理——标准化与归一化</title>
+    <link href="http://meurice.xyz/2020/ckcqax1gv0003x4lx4wjz166v/"/>
+    <id>http://meurice.xyz/2020/ckcqax1gv0003x4lx4wjz166v/</id>
     <published>2020-07-17T09:33:10.000Z</published>
-    <updated>2020-07-17T11:17:41.438Z</updated>
+    <updated>2020-07-17T14:11:55.257Z</updated>
     
-    <content type="html"><![CDATA[<p>　　归一化和标准化都属于四种Feature scaling（特征缩放）方法：<br>　　1.Rescaling<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8jCa.png" alt="Rescaling"><br>　　2.Mean normalization<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8h9n.png" alt="Mean normalization"><br>　　3.Standardization(Z-score normalization)<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8swh.png" alt="Standardization"><br>　　4.Scaling to unit length<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8JrM.png" alt="Scaling to unit length"></p>]]></content>
+    <content type="html"><![CDATA[<p>归一化和标准化都属于四种Feature scaling（特征缩放）方法：<br>　　1.Rescaling<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8jCa.png" alt="Rescaling"><br>　　2.Mean normalization<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8h9n.png" alt="Mean normalization"><br>　　3.Standardization(Z-score normalization)<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8swh.png" alt="Standardization"><br>　　4.Scaling to unit length<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8JrM.png" alt="Scaling to unit length"></p><h2 id="归一化-Normalization"><a href="#归一化-Normalization" class="headerlink" title="归一化(Normalization)"></a>归一化(Normalization)</h2><h3 id="归一化目标"><a href="#归一化目标" class="headerlink" title="归一化目标"></a>归一化目标</h3><p>　　归一化将数据的特征缩放到[0,1]或[-1,1]之间，使得各个特征维度对目标函数的影响权重是一致的，将有量纲的表达式，经过变换，化为无量纲的表达式，成为纯量，同时使得扁平分布的数据伸缩变换成类圆形。<br>　　概率模型不需要归一化，因为它们不关心变量的值，而是关心变量的分布和变量之间的条件概率，如决策树、rf。而像Adaboost、、xgboost、SVM、LR、KNN、KMeans之类的最优化问题就需要归一化。</p><h3 id="归一化带来的好处"><a href="#归一化带来的好处" class="headerlink" title="归一化带来的好处"></a>归一化带来的好处</h3><p>　　Feature Sacling(Normalization)对基于Gradient descent算法友好，可能可以让算法最终收敛并且提高训练速度和精度。<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8wYT.jpg" alt="scaling"></p><p>　　对于使用梯度下降算法来更新权重的训练过程，每一次更新的delta，除了与学习率有关，还与样本值本身也有关系。<br>  <img src= "/img/loading.gif" data-src="https://wx2.sbimg.cn/2020/07/17/C8vxJ.png" alt="gd"><br>　　Xj(i)就是当前更新批次对应的样本值，因此值越大的样本单次更新权重更快，这就有可能带来收敛速度不一样甚至不收敛等问题。</p><h3 id="归一化算法："><a href="#归一化算法：" class="headerlink" title="归一化算法："></a>归一化算法：</h3><p>　　1.线性转换：x’ = (x - min(x)) / (max(x) - min(x))<br>　　2.对数函数转换：x’ = lg(x) / lg(max)，其中max表示样本数据的最大值，所有样本数据均要大于等于1。<br>　　3.arctan反正切函数转换：x’ = arctan(x) * (2 / pi)，应注意的是，若希望映射的区间为[0,1]，则数据都应该大于等于0，小于0的数据将被映射到[-1,0]区间上。<br>　　4.L2范数归一化：对向量X的每个维度数据x1, x2, …, xn都除以||x||2得到一个新向量，即<br>  <img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/17/C8imm.png" alt="l2"><br>　　经过L2范数归一化后，一组向量的欧式距离和它们的余弦相似度可以等价，严格数学证明可以参考<a href="https://www.cnblogs.com/Kalafinaian/p/11180519.html" target="_blank" rel="noopener">这篇文章</a>。</p><h2 id="标准化-Standardization"><a href="#标准化-Standardization" class="headerlink" title="标准化(Standardization)"></a>标准化(Standardization)</h2>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;　　归一化和标准化都属于四种Feature scaling（特征缩放）方法：&lt;br&gt;　　1.Rescaling&lt;br&gt;  &lt;img src= &quot;/img/loading.gif&quot; data-src=&quot;https://wx1.sbimg.cn/2020/07/17/C8jCa
+        &lt;p&gt;归一化和标准化都属于四种Feature scaling（特征缩放）方法：&lt;br&gt;　　1.Rescaling&lt;br&gt;  &lt;img src= &quot;/img/loading.gif&quot; data-src=&quot;https://wx1.sbimg.cn/2020/07/17/C8jCa.p
       
     
     </summary>
@@ -40,8 +40,8 @@
   
   <entry>
     <title>ECS定时执行pull命令</title>
-    <link href="http://meurice.xyz/2020/ckcq4ph140004kwlxat4nee4t/"/>
-    <id>http://meurice.xyz/2020/ckcq4ph140004kwlxat4nee4t/</id>
+    <link href="http://meurice.xyz/2020/ckcqax1gt0001x4lx58ruatn3/"/>
+    <id>http://meurice.xyz/2020/ckcqax1gt0001x4lx58ruatn3/</id>
     <published>2020-07-16T11:40:44.000Z</published>
     <updated>2020-07-16T15:53:25.201Z</updated>
     
@@ -63,8 +63,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckcq4ph140003kwlxga068cld/"/>
-    <id>http://meurice.xyz/2020/ckcq4ph140003kwlxga068cld/</id>
+    <link href="http://meurice.xyz/2020/ckcqax1gw0004x4lx98m1djgp/"/>
+    <id>http://meurice.xyz/2020/ckcqax1gw0004x4lx98m1djgp/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-07-16T10:10:15.326Z</updated>
     
@@ -85,8 +85,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckcq4pgzq0000kwlx2yqo7gev/"/>
-    <id>http://meurice.xyz/2020/ckcq4pgzq0000kwlx2yqo7gev/</id>
+    <link href="http://meurice.xyz/2020/ckcqax1gp0000x4lx6hxy5ulc/"/>
+    <id>http://meurice.xyz/2020/ckcqax1gp0000x4lx6hxy5ulc/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -108,8 +108,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckcq4ph130002kwlx72o51tw2/"/>
-    <id>http://meurice.xyz/2020/ckcq4ph130002kwlx72o51tw2/</id>
+    <link href="http://meurice.xyz/2020/ckcqax1gu0002x4lxcv2j6joa/"/>
+    <id>http://meurice.xyz/2020/ckcqax1gu0002x4lxcv2j6joa/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
