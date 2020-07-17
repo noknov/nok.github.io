@@ -18,8 +18,8 @@
   
   <entry>
     <title>数据预处理——标准化与归一化</title>
-    <link href="http://meurice.xyz/2020/ckcqax1gv0003x4lx4wjz166v/"/>
-    <id>http://meurice.xyz/2020/ckcqax1gv0003x4lx4wjz166v/</id>
+    <link href="http://meurice.xyz/2020/ckcqb15et0004xklx2ozwbixz/"/>
+    <id>http://meurice.xyz/2020/ckcqb15et0004xklx2ozwbixz/</id>
     <published>2020-07-17T09:33:10.000Z</published>
     <updated>2020-07-17T14:11:55.257Z</updated>
     
@@ -39,11 +39,11 @@
   </entry>
   
   <entry>
-    <title>ECS定时执行pull命令</title>
-    <link href="http://meurice.xyz/2020/ckcqax1gt0001x4lx58ruatn3/"/>
-    <id>http://meurice.xyz/2020/ckcqax1gt0001x4lx58ruatn3/</id>
+    <title>Linux定时任务</title>
+    <link href="http://meurice.xyz/2020/ckcqb15eq0001xklx8zko6r4i/"/>
+    <id>http://meurice.xyz/2020/ckcqb15eq0001xklx8zko6r4i/</id>
     <published>2020-07-16T11:40:44.000Z</published>
-    <updated>2020-07-16T15:53:25.201Z</updated>
+    <updated>2020-07-17T14:14:59.773Z</updated>
     
     <content type="html"><![CDATA[<p>环境：CentOS 8</p><h3 id="执行内容"><a href="#执行内容" class="headerlink" title="执行内容"></a>执行内容</h3><p>　　新建文件_crond.sh，作为定时执行的内容。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">cd &#x2F;www&#x2F;blog&#x2F;hexo</span><br><span class="line">git pull git@github.com:egname&#x2F;egrepo.git</span><br><span class="line"></span><br><span class="line">#echo pull successfully &gt; &#x2F;home&#x2F;gitpull.log</span><br></pre></td></tr></table></figure></p><h3 id="crontab服务"><a href="#crontab服务" class="headerlink" title="crontab服务"></a>crontab服务</h3><p>　　启动crontab服务，CentOS版本不同，具体命令可能有所差异。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start crond</span><br></pre></td></tr></table></figure><br>　　启动服务</p>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop crond            # 关闭服务</span><br><span class="line">systemctl restart crond         # 重启服务     </span><br><span class="line">systemctl reload crond          # 重新载入配置</span><br><span class="line">systemctl status crond          # 状态</span><br></pre></td></tr></table></figure><h3 id="设置计时器"><a href="#设置计时器" class="headerlink" title="设置计时器"></a>设置计时器</h3><p>　　crontab 选项 参数<br>　　选项:<br>　　　　-e：编辑该用户的计时器设置；<br>　　　　-l：列出该用户的计时器设置；<br>　　　　-r：删除该用户的计时器设置；<br>　　　　-u：指定要设定计时器的用户名称。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure></p><p> 　　进入insert插入模式，以每五分钟执行一次为例。ESC后输入wq保存并退出。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*&#x2F;5 * * * * &#x2F;root&#x2F;_crond.sh</span><br></pre></td></tr></table></figure><br>  <br></p><p>  关于Crontab更多具体用法，您可以参考<a href="https://www.cnblogs.com/muscles/p/9532451.html" target="_blank" rel="noopener">这篇文章</a>。</p>]]></content>
     
@@ -63,8 +63,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckcqax1gw0004x4lx98m1djgp/"/>
-    <id>http://meurice.xyz/2020/ckcqax1gw0004x4lx98m1djgp/</id>
+    <link href="http://meurice.xyz/2020/ckcqb15er0002xklx20hdg6e6/"/>
+    <id>http://meurice.xyz/2020/ckcqb15er0002xklx20hdg6e6/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-07-16T10:10:15.326Z</updated>
     
@@ -85,8 +85,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckcqax1gp0000x4lx6hxy5ulc/"/>
-    <id>http://meurice.xyz/2020/ckcqax1gp0000x4lx6hxy5ulc/</id>
+    <link href="http://meurice.xyz/2020/ckcqb15el0000xklx38c2bwrs/"/>
+    <id>http://meurice.xyz/2020/ckcqb15el0000xklx38c2bwrs/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -108,8 +108,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckcqax1gu0002x4lxcv2j6joa/"/>
-    <id>http://meurice.xyz/2020/ckcqax1gu0002x4lxcv2j6joa/</id>
+    <link href="http://meurice.xyz/2020/ckcqb15et0003xklx1v2n8kut/"/>
+    <id>http://meurice.xyz/2020/ckcqb15et0003xklx1v2n8kut/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
