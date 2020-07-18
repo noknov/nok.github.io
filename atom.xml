@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-07-18T13:42:47.932Z</updated>
+  <updated>2020-07-18T14:12:24.789Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -18,12 +18,12 @@
   
   <entry>
     <title>特征工程（待更新）</title>
-    <link href="http://meurice.xyz/2020/ckcrpbno70002v8lxeyht3z2h/"/>
-    <id>http://meurice.xyz/2020/ckcrpbno70002v8lxeyht3z2h/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho9c0005w0lxhj723zps/"/>
+    <id>http://meurice.xyz/2020/ckcrqho9c0005w0lxhj723zps/</id>
     <published>2020-07-18T03:42:42.000Z</published>
-    <updated>2020-07-18T13:42:47.932Z</updated>
+    <updated>2020-07-18T14:12:24.789Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言　　"></a>前言　　</h2><p>　　数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已。</p><h2 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h2><p>　　特征工程是对原始数据进行一系列工程处理，将其提炼为特征，作为输入供算法和模型使用，简单来说，就是通过X，创造新的X’，目的是去除原始数据中的杂质和冗余，设计更高效的特征以刻画求解的问题与预测模型之间的关系，其本质是一个表示和展现数据的过程。基本的操作包括，衍生（升维），筛选（降维）等。<br>　　例如某分类器接收身高、体重两个参数来判断这个人是否肥胖，仅通过体重无法判断某个人的胖瘦，对于该例，一个非常经典的特征工程是，BMI指数，BMI=体重/(身高^2)，通过BMI指数，可以清晰地对一个人的胖瘦进行刻画。<br>本文参考<a href="https://www.cnblogs.com/jasonfreak/p/5448385.html" target="_blank" rel="noopener">使用sklearn做单机特征工程</a>。</p><h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>　　常见的数据可分为结构化数据（例如关系型数据库的表）和非结构化数据（文本、图像、音频、视频等）。</p><h3 id="单特征"><a href="#单特征" class="headerlink" title="单特征"></a>单特征</h3><h4 id="标准化与归一化"><a href="#标准化与归一化" class="headerlink" title="标准化与归一化"></a>标准化与归一化</h4><p>　　该部分可以参考<a href="http://meurice.xyz/2020/ckcqevh3t0004xclxakyx24ma/">数据预处理——归一化与标准化</a>。</p><h4 id="缺失值"><a href="#缺失值" class="headerlink" title="缺失值"></a>缺失值</h4><h5 id="均值-中位数-众数-固定值填充"><a href="#均值-中位数-众数-固定值填充" class="headerlink" title="均值/中位数/众数/固定值填充"></a>均值/中位数/众数/固定值填充</h5><p>　　如果样本属性的距离是可度量的，则使用该属性有效值的平均值来补全；如果样本属性的距离不可度量，则可以采用众数或者中位数来补全。<br>　　或可根据某一特征对样本进行分类/聚合后（例如船运GPS数据，根据运单号进行聚合后，对样本数据缺失值进行填充），根据同类其他样本该属性的均值补全缺失值，同上述方法类似。<br>　　对于缺失值也可以采用固定的数值来进行填充。</p><h5 id="建模预测"><a href="#建模预测" class="headerlink" title="建模预测"></a>建模预测</h5><p>　　将缺失值字段作为预测对象，建立模型对其进行预测，根据该模型补全原训练集的缺失值。这个方法根本的缺陷是如果其他属性和缺失属性无关，则预测的结果毫无意义；但若模型对预测字段拟合效果相当好，则说明这个缺失属性没必要纳入数据集；一般的情况是介于两者之间。</p><h5 id="高维映射"><a href="#高维映射" class="headerlink" title="高维映射"></a>高维映射</h5><p>　　将属性映射到高维空间，采用独热码编码（one-hot）技术。将包含 K 个离散取值范围的属性值扩展为 K+1 个属性值，若该属性值缺失，则扩展后的第 K+1 个属性值置为 1。<br>　　这种做法既保留了所有的信息，也未添加任何额外信息，但会增加数据的维度，增大了计算量，一般在样本量非常大时效果才比较好。</p><h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>　　如多重插补、压缩感知和矩阵补全等，此处不具体展开，可以参考[这篇文章]<br>  (<a href="https://mp.weixin.qq.com/s/BnTXjzHSb5-4s0O0WuZYlg)。" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/BnTXjzHSb5-4s0O0WuZYlg)。</a></p><h4 id="特征二值化"><a href="#特征二值化" class="headerlink" title="特征二值化"></a>特征二值化</h4><p>　　 设立阈值，将特征二值化。<br>　　<img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/18/ClGSk.png" alt="erzhihua"><br>　　可以类比将模拟信号转换成数字信号过程中的量化。<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = preprocessing.Binarizer(threshold=<span class="number">0</span>).transform(X)</span><br></pre></td></tr></table></figure></p><h4 id="哑编码-独热编码"><a href="#哑编码-独热编码" class="headerlink" title="哑编码/独热编码"></a>哑编码/独热编码</h4><p>　　哑编码/独热编码针对定性的特征进行处理。</p><h5 id="哑编码-dummy-encoding"><a href="#哑编码-dummy-encoding" class="headerlink" title="哑编码(dummy encoding"></a>哑编码(dummy encoding</h5><p>　　假设有N种定性值，则将这一个特征扩展为N种特征，当原始特征值为第i种定性值时，第i个扩展特征赋值为1，其他扩展特征赋值为0。哑编码的方式相比直接指定的方式，不用增加调参的工作，对于线性模型来说，使用哑编码后的特征可达到非线性的效果。<br>　　例如描述一个人的身材，我们可以用偏瘦、正常、偏胖，这些描述词经过哑编码就会得到：<br>　　　　偏廋 —&gt; [1, 0, 0]<br>　　　　正常 —&gt; [0, 1, 0]<br>　　　　偏胖 —&gt; [0, 0, 1]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = pd.Categorical(df[<span class="string">'c'</span>]).codes</span><br></pre></td></tr></table></figure></p><h5 id="独热编码-one-hot-encoding"><a href="#独热编码-one-hot-encoding" class="headerlink" title="独热编码(one-hot encoding)"></a>独热编码(one-hot encoding)</h5><p>　　同上例，实际用2个状态位就足够反应上述3个类别的信息：<br>　　　　偏廋 —&gt; [1, 0]<br>　　　　正常 —&gt; [0, 1]<br>　　　　偏胖 —&gt; [0, 0]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">encoder=OneHotEncoder(sparse=<span class="literal">False</span>) </span><br><span class="line"><span class="comment"># sparse是一个布尔值，指定结果是否稀疏。</span></span><br><span class="line"><span class="comment"># 若sparse=True，则每个样本的独热码为一个稀疏矩阵。</span></span><br></pre></td></tr></table></figure><br>  <br><br>　　关于哑编码/独热编码的区别和联系以及连续值的离散化提升模型的非线性能力的原因，可以参考<a href="https://www.cnblogs.com/lianyingteng/p/7792693.html" target="_blank" rel="noopener">这篇文章</a>。</p><h3 id="多特征"><a href="#多特征" class="headerlink" title="多特征"></a>多特征</h3><h4 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h4><p>　　数据预处理完成后，需要选择有意义的特征输入机器学习的算法和模型进行训练，一般从以下两个方面考虑：<br>　　· 特征是否发散（某特征不发散，说明对于区分样本作用并不大）<br>　　· 特征与目标的相关性  </p><p>　　特征选择主要包括：<br>　　· Filter Method （过滤法）<br>　　· Wrapper Method （包装法）<br>　　· Embedded Method （嵌入法）</p><h5 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h5><h5 id="Wrapper"><a href="#Wrapper" class="headerlink" title="Wrapper"></a>Wrapper</h5><h5 id="Embedded"><a href="#Embedded" class="headerlink" title="Embedded"></a>Embedded</h5>]]></content>
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言　　"></a>前言　　</h2><p>　　数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已。</p><h2 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h2><p>　　特征工程是对原始数据进行一系列工程处理，将其提炼为特征，作为输入供算法和模型使用，简单来说，就是通过X，创造新的X’，目的是去除原始数据中的杂质和冗余，设计更高效的特征以刻画求解的问题与预测模型之间的关系，其本质是一个表示和展现数据的过程。基本的操作包括，衍生（升维），筛选（降维）等。<br>　　例如某分类器接收身高、体重两个参数来判断这个人是否肥胖，仅通过体重无法判断某个人的胖瘦，对于该例，一个非常经典的特征工程是，BMI指数，BMI=体重/(身高^2)，通过BMI指数，可以清晰地对一个人的胖瘦进行刻画。<br>本文参考<a href="https://www.cnblogs.com/jasonfreak/p/5448385.html" target="_blank" rel="noopener">使用sklearn做单机特征工程</a>。</p><h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>　　常见的数据可分为结构化数据（例如关系型数据库的表）和非结构化数据（文本、图像、音频、视频等）。</p><h3 id="单特征"><a href="#单特征" class="headerlink" title="单特征"></a>单特征</h3><h4 id="标准化与归一化"><a href="#标准化与归一化" class="headerlink" title="标准化与归一化"></a>标准化与归一化</h4><p>　　该部分可以参考<a href="http://meurice.xyz/2020/ckcqevh3t0004xclxakyx24ma/">数据预处理——归一化与标准化</a>。</p><h4 id="缺失值"><a href="#缺失值" class="headerlink" title="缺失值"></a>缺失值</h4><h5 id="均值-中位数-众数-固定值填充"><a href="#均值-中位数-众数-固定值填充" class="headerlink" title="均值/中位数/众数/固定值填充"></a>均值/中位数/众数/固定值填充</h5><p>　　如果样本属性的距离是可度量的，则使用该属性有效值的平均值来补全；如果样本属性的距离不可度量，则可以采用众数或者中位数来补全。<br>　　或可根据某一特征对样本进行分类/聚合后（例如船运GPS数据，根据运单号进行聚合后，对样本数据缺失值进行填充），根据同类其他样本该属性的均值补全缺失值，同上述方法类似。<br>　　对于缺失值也可以采用固定的数值来进行填充。</p><h5 id="建模预测"><a href="#建模预测" class="headerlink" title="建模预测"></a>建模预测</h5><p>　　将缺失值字段作为预测对象，建立模型对其进行预测，根据该模型补全原训练集的缺失值。这个方法根本的缺陷是如果其他属性和缺失属性无关，则预测的结果毫无意义；但若模型对预测字段拟合效果相当好，则说明这个缺失属性没必要纳入数据集；一般的情况是介于两者之间。</p><h5 id="高维映射"><a href="#高维映射" class="headerlink" title="高维映射"></a>高维映射</h5><p>　　将属性映射到高维空间，采用独热码编码（one-hot）技术。将包含 K 个离散取值范围的属性值扩展为 K+1 个属性值，若该属性值缺失，则扩展后的第 K+1 个属性值置为 1。<br>　　这种做法既保留了所有的信息，也未添加任何额外信息，但会增加数据的维度，增大了计算量，一般在样本量非常大时效果才比较好。</p><h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>　　如多重插补、压缩感知和矩阵补全等，此处不具体展开，可以参考<a href="https://mp.weixin.qq.com/s/BnTXjzHSb5-4s0O0WuZYlg" target="_blank" rel="noopener">这篇文章</a>。</p><h4 id="特征二值化"><a href="#特征二值化" class="headerlink" title="特征二值化"></a>特征二值化</h4><p>　　 设立阈值，将特征二值化。<br>　　<img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/18/ClGSk.png" alt="erzhihua"><br>　　可以类比将模拟信号转换成数字信号过程中的量化。<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = preprocessing.Binarizer(threshold=<span class="number">0</span>).transform(X)</span><br></pre></td></tr></table></figure></p><h4 id="哑编码-独热编码"><a href="#哑编码-独热编码" class="headerlink" title="哑编码/独热编码"></a>哑编码/独热编码</h4><p>　　哑编码/独热编码针对定性的特征进行处理。</p><h5 id="哑编码-dummy-encoding"><a href="#哑编码-dummy-encoding" class="headerlink" title="哑编码(dummy encoding)"></a>哑编码(dummy encoding)</h5><p>　　假设有N种定性值，则将这一个特征扩展为N种特征，当原始特征值为第i种定性值时，第i个扩展特征赋值为1，其他扩展特征赋值为0。哑编码的方式相比直接指定的方式，不用增加调参的工作，对于线性模型来说，使用哑编码后的特征可达到非线性的效果。<br>　　例如描述一个人的身材，我们可以用偏瘦、正常、偏胖，这些描述词经过哑编码就会得到：<br>　　　　偏廋 —&gt; [1, 0, 0]<br>　　　　正常 —&gt; [0, 1, 0]<br>　　　　偏胖 —&gt; [0, 0, 1]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = pd.Categorical(df[<span class="string">'c'</span>]).codes</span><br></pre></td></tr></table></figure></p><h5 id="独热编码-one-hot-encoding"><a href="#独热编码-one-hot-encoding" class="headerlink" title="独热编码(one-hot encoding)"></a>独热编码(one-hot encoding)</h5><p>　　同上例，实际用2个状态位就足够反应上述3个类别的信息：<br>　　　　偏廋 —&gt; [1, 0]<br>　　　　正常 —&gt; [0, 1]<br>　　　　偏胖 —&gt; [0, 0]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">encoder=OneHotEncoder(sparse=<span class="literal">False</span>) </span><br><span class="line"><span class="comment"># sparse是一个布尔值，指定结果是否稀疏。</span></span><br><span class="line"><span class="comment"># 若sparse=True，则每个样本的独热码为一个稀疏矩阵。</span></span><br></pre></td></tr></table></figure><br>  <br><br>　　关于哑编码/独热编码的区别和联系以及连续值的离散化提升模型的非线性能力的原因，可以参考<a href="https://www.cnblogs.com/lianyingteng/p/7792693.html" target="_blank" rel="noopener">这篇文章</a>。</p><h3 id="多特征"><a href="#多特征" class="headerlink" title="多特征"></a>多特征</h3><h4 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h4><p>　　数据预处理完成后，需要选择有意义的特征输入机器学习的算法和模型进行训练，一般从以下两个方面考虑：<br>　　· 特征是否发散（某特征不发散，说明对于区分样本作用并不大）<br>　　· 特征与目标的相关性  </p><p>　　特征选择主要包括：<br>　　· Filter Method （过滤法）<br>　　· Wrapper Method （包装法）<br>　　· Embedded Method （嵌入法）</p><h5 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h5><h5 id="Wrapper"><a href="#Wrapper" class="headerlink" title="Wrapper"></a>Wrapper</h5><h5 id="Embedded"><a href="#Embedded" class="headerlink" title="Embedded"></a>Embedded</h5>]]></content>
     
     <summary type="html">
     
@@ -41,8 +41,8 @@
   
   <entry>
     <title>数据预处理——归一化与标准化</title>
-    <link href="http://meurice.xyz/2020/ckcrpbno80003v8lxbkvfefh9/"/>
-    <id>http://meurice.xyz/2020/ckcrpbno80003v8lxbkvfefh9/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho9a0003w0lx4gv7heei/"/>
+    <id>http://meurice.xyz/2020/ckcrqho9a0003w0lx4gv7heei/</id>
     <published>2020-07-17T09:33:10.000Z</published>
     <updated>2020-07-18T03:28:29.237Z</updated>
     
@@ -63,8 +63,8 @@
   
   <entry>
     <title>Linux设置定时任务</title>
-    <link href="http://meurice.xyz/2020/ckcrpbno10000v8lx3iwq8yqv/"/>
-    <id>http://meurice.xyz/2020/ckcrpbno10000v8lx3iwq8yqv/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho970001w0lxao0f9fge/"/>
+    <id>http://meurice.xyz/2020/ckcrqho970001w0lxao0f9fge/</id>
     <published>2020-07-16T11:40:44.000Z</published>
     <updated>2020-07-17T14:22:00.702Z</updated>
     
@@ -86,8 +86,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckcrpbno50001v8lxg76n2h5a/"/>
-    <id>http://meurice.xyz/2020/ckcrpbno50001v8lxg76n2h5a/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho9b0004w0lx8qgl6czh/"/>
+    <id>http://meurice.xyz/2020/ckcrqho9b0004w0lx8qgl6czh/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-07-16T10:10:15.326Z</updated>
     
@@ -108,8 +108,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckcrpbnu90005v8lx1zfu8631/"/>
-    <id>http://meurice.xyz/2020/ckcrpbnu90005v8lx1zfu8631/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho940000w0lx443k8qur/"/>
+    <id>http://meurice.xyz/2020/ckcrqho940000w0lx443k8qur/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -131,8 +131,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckcrpbno90004v8lx94vj0al5/"/>
-    <id>http://meurice.xyz/2020/ckcrpbno90004v8lx94vj0al5/</id>
+    <link href="http://meurice.xyz/2020/ckcrqho990002w0lx37xocv7d/"/>
+    <id>http://meurice.xyz/2020/ckcrqho990002w0lx37xocv7d/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
