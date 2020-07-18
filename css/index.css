@@ -2600,6 +2600,9 @@ _:future,
   #page-header.post-bg > #post-info > #post-meta .meta-thirdline .post-meta-pv-cv .post-meta__separator:first-child {
     display: none;
   }
+  #page-header.post-bg > #post-info > #post-meta .meta-thirdline .post-meta-commentcount .post-meta__separator {
+    display: none;
+  }
 }
 #mobile-sidebar #menu_mask {
   position: fixed;
