@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>特征工程（待更新） | blog of meurice</title><meta name="description" content="前言　　　　数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已。 特征工程　　特征工程是对原始数据进行一系列工程处理，将其提炼为特征，作为输入供算法和模型使用，简单来说，就是通过X，创造新的X’，目的是去除原始数据中的杂质和冗余，设计更高效的特征以刻画求解的问题与预测模型之间的关系，其本质是一个表示和展现数据的过程。基本的操作包括，衍生（升维），筛选（降维）等。　　例如某分类器接收身"><meta name="author" content="meurice"><meta name="copyright" content="meurice"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://meurice.xyz/2020/ckcrqxj510005p8lxgl1fd8rh/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="特征工程（待更新）"><meta property="og:url" content="http://meurice.xyz/2020/ckcrqxj510005p8lxgl1fd8rh/"><meta property="og:site_name" content="blog of meurice"><meta property="og:description" content="前言　　　　数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已。 特征工程　　特征工程是对原始数据进行一系列工程处理，将其提炼为特征，作为输入供算法和模型使用，简单来说，就是通过X，创造新的X’，目的是去除原始数据中的杂质和冗余，设计更高效的特征以刻画求解的问题与预测模型之间的关系，其本质是一个表示和展现数据的过程。基本的操作包括，衍生（升维），筛选（降维）等。　　例如某分类器接收身"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2020-07-18T03:42:42.000Z"><meta property="article:modified_time" content="2020-07-18T14:27:51.669Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="数据预处理——归一化与标准化" href="http://meurice.xyz/2020/ckcrqxj500004p8lx8adm9sfx/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="blog of meurice" type="application/atom+xml">
+</head><body><canvas class="fireworks"></canvas><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言　　</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特征工程"><span class="toc-number">2.</span> <span class="toc-text">特征工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number">3.</span> <span class="toc-text">数据预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单特征"><span class="toc-number">3.1.</span> <span class="toc-text">单特征</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#标准化与归一化"><span class="toc-number">3.1.1.</span> <span class="toc-text">标准化与归一化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#缺失值"><span class="toc-number">3.1.2.</span> <span class="toc-text">缺失值</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#均值-中位数-众数-固定值填充"><span class="toc-number">3.1.2.1.</span> <span class="toc-text">均值&#x2F;中位数&#x2F;众数&#x2F;固定值填充</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#建模预测"><span class="toc-number">3.1.2.2.</span> <span class="toc-text">建模预测</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#高维映射"><span class="toc-number">3.1.2.3.</span> <span class="toc-text">高维映射</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#其他"><span class="toc-number">3.1.2.4.</span> <span class="toc-text">其他</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#特征二值化"><span class="toc-number">3.1.3.</span> <span class="toc-text">特征二值化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#哑编码-独热编码"><span class="toc-number">3.1.4.</span> <span class="toc-text">哑编码&#x2F;独热编码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#哑编码-dummy-encoding"><span class="toc-number">3.1.4.1.</span> <span class="toc-text">哑编码(dummy encoding)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#独热编码-one-hot-encoding"><span class="toc-number">3.1.4.2.</span> <span class="toc-text">独热编码(one-hot encoding)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多特征"><span class="toc-number">3.2.</span> <span class="toc-text">多特征</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#特征选择"><span class="toc-number">3.2.1.</span> <span class="toc-text">特征选择</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Filter"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">Filter</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#方差选择法"><span class="toc-number">3.2.1.1.1.</span> <span class="toc-text">方差选择法</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#相关系数法"><span class="toc-number">3.2.1.1.2.</span> <span class="toc-text">相关系数法</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#卡方检验"><span class="toc-number">3.2.1.1.3.</span> <span class="toc-text">卡方检验</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#互信息法"><span class="toc-number">3.2.1.1.4.</span> <span class="toc-text">互信息法</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Wrapper"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">Wrapper</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#递归特征消除法"><span class="toc-number">3.2.1.2.1.</span> <span class="toc-text">递归特征消除法</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Embedded"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">Embedded</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#基于惩罚项的特征选择法"><span class="toc-number">3.2.1.3.1.</span> <span class="toc-text">基于惩罚项的特征选择法</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#基于树模型的特征选择法"><span class="toc-number">3.2.1.3.2.</span> <span class="toc-text">基于树模型的特征选择法</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">blog of meurice</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">特征工程（待更新）</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="Created 2020-07-18 11:42:42"><i class="far fa-calendar-alt fa-fw"></i> Created 2020-07-18</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="Updated 2020-07-18 22:27:51"><i class="fas fa-history fa-fw"></i> Updated 2020-07-18</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>Post View:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言　　"></a>前言　　</h2><p>　　数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已。</p>
+<h2 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h2><p>　　特征工程是对原始数据进行一系列工程处理，将其提炼为特征，作为输入供算法和模型使用，简单来说，就是通过X，创造新的X’，目的是去除原始数据中的杂质和冗余，设计更高效的特征以刻画求解的问题与预测模型之间的关系，其本质是一个表示和展现数据的过程。基本的操作包括，衍生（升维），筛选（降维）等。<br>　　例如某分类器接收身高、体重两个参数来判断这个人是否肥胖，仅通过体重无法判断某个人的胖瘦，对于该例，一个非常经典的特征工程是，BMI指数，BMI=体重/(身高^2)，通过BMI指数，可以清晰地对一个人的胖瘦进行刻画。<br>本文参考<a href="https://www.cnblogs.com/jasonfreak/p/5448385.html" target="_blank" rel="noopener">使用sklearn做单机特征工程</a>。</p>
+<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>　　常见的数据可分为结构化数据（例如关系型数据库的表）和非结构化数据（文本、图像、音频、视频等）。</p>
+<h3 id="单特征"><a href="#单特征" class="headerlink" title="单特征"></a>单特征</h3><h4 id="标准化与归一化"><a href="#标准化与归一化" class="headerlink" title="标准化与归一化"></a>标准化与归一化</h4><p>　　该部分可以参考<a href="http://meurice.xyz/2020/ckcqevh3t0004xclxakyx24ma/">数据预处理——归一化与标准化</a>。</p>
+<h4 id="缺失值"><a href="#缺失值" class="headerlink" title="缺失值"></a>缺失值</h4><h5 id="均值-中位数-众数-固定值填充"><a href="#均值-中位数-众数-固定值填充" class="headerlink" title="均值/中位数/众数/固定值填充"></a>均值/中位数/众数/固定值填充</h5><p>　　如果样本属性的距离是可度量的，则使用该属性有效值的平均值来补全；如果样本属性的距离不可度量，则可以采用众数或者中位数来补全。<br>　　或可根据某一特征对样本进行分类/聚合后（例如船运GPS数据，根据运单号进行聚合后，对样本数据缺失值进行填充），根据同类其他样本该属性的均值补全缺失值，同上述方法类似。<br>　　对于缺失值也可以采用固定的数值来进行填充。</p>
+<h5 id="建模预测"><a href="#建模预测" class="headerlink" title="建模预测"></a>建模预测</h5><p>　　将缺失值字段作为预测对象，建立模型对其进行预测，根据该模型补全原训练集的缺失值。这个方法根本的缺陷是如果其他属性和缺失属性无关，则预测的结果毫无意义；但若模型对预测字段拟合效果相当好，则说明这个缺失属性没必要纳入数据集；一般的情况是介于两者之间。</p>
+<h5 id="高维映射"><a href="#高维映射" class="headerlink" title="高维映射"></a>高维映射</h5><p>　　将属性映射到高维空间，采用独热码编码（one-hot）技术。将包含 K 个离散取值范围的属性值扩展为 K+1 个属性值，若该属性值缺失，则扩展后的第 K+1 个属性值置为 1。<br>　　这种做法既保留了所有的信息，也未添加任何额外信息，但会增加数据的维度，增大了计算量，一般在样本量非常大时效果才比较好。</p>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>　　如多重插补、压缩感知和矩阵补全等，此处不具体展开，可以参考<a href="https://mp.weixin.qq.com/s/BnTXjzHSb5-4s0O0WuZYlg" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h4 id="特征二值化"><a href="#特征二值化" class="headerlink" title="特征二值化"></a>特征二值化</h4><p>　　 设立阈值，将特征二值化。<br>　　<img src= "/img/loading.gif" data-src="https://wx1.sbimg.cn/2020/07/18/ClGSk.png" alt="erzhihua"><br>　　可以类比将模拟信号转换成数字信号过程中的量化。<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = preprocessing.Binarizer(threshold=<span class="number">0</span>).transform(X)</span><br></pre></td></tr></table></figure></p>
+<h4 id="哑编码-独热编码"><a href="#哑编码-独热编码" class="headerlink" title="哑编码/独热编码"></a>哑编码/独热编码</h4><p>　　哑编码/独热编码针对定性的特征进行处理。</p>
+<h5 id="哑编码-dummy-encoding"><a href="#哑编码-dummy-encoding" class="headerlink" title="哑编码(dummy encoding)"></a>哑编码(dummy encoding)</h5><p>　　假设有N种定性值，则将这一个特征扩展为N种特征，当原始特征值为第i种定性值时，第i个扩展特征赋值为1，其他扩展特征赋值为0。哑编码的方式相比直接指定的方式，不用增加调参的工作，对于线性模型来说，使用哑编码后的特征可达到非线性的效果。<br>　　例如描述一个人的身材，我们可以用偏瘦、正常、偏胖，这些描述词经过哑编码就会得到：<br>　　　　偏廋 —&gt; [1, 0, 0]<br>　　　　正常 —&gt; [0, 1, 0]<br>　　　　偏胖 —&gt; [0, 0, 1]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_ = pd.Categorical(df[<span class="string">'c'</span>]).codes</span><br></pre></td></tr></table></figure></p>
+<h5 id="独热编码-one-hot-encoding"><a href="#独热编码-one-hot-encoding" class="headerlink" title="独热编码(one-hot encoding)"></a>独热编码(one-hot encoding)</h5><p>　　同上例，实际用2个状态位就足够反应上述3个类别的信息：<br>　　　　偏廋 —&gt; [1, 0]<br>　　　　正常 —&gt; [0, 1]<br>　　　　偏胖 —&gt; [0, 0]<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">encoder=OneHotEncoder(sparse=<span class="literal">False</span>) </span><br><span class="line"><span class="comment"># sparse是一个布尔值，指定结果是否稀疏。</span></span><br><span class="line"><span class="comment"># 若sparse=True，则每个样本的独热码为一个稀疏矩阵。</span></span><br></pre></td></tr></table></figure><br>  <br><br>　　关于哑编码/独热编码的区别和联系以及连续值的离散化提升模型的非线性能力的原因，可以参考<a href="https://www.cnblogs.com/lianyingteng/p/7792693.html" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h3 id="多特征"><a href="#多特征" class="headerlink" title="多特征"></a>多特征</h3><h4 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h4><p>　　数据预处理完成后，需要选择有意义的特征输入机器学习的算法和模型进行训练，一般从以下两个方面考虑：<br>　　· 特征是否发散（某特征不发散，说明对于区分样本作用并不大）<br>　　· 特征与目标的相关性  </p>
+<p>　　特征选择主要包括：<br>　　· Filter Method （过滤法）<br>　　· Wrapper Method （包装法）<br>　　· Embedded Method （嵌入法）</p>
+<h5 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h5><h6 id="方差选择法"><a href="#方差选择法" class="headerlink" title="方差选择法"></a>方差选择法</h6><h6 id="相关系数法"><a href="#相关系数法" class="headerlink" title="相关系数法"></a>相关系数法</h6><h6 id="卡方检验"><a href="#卡方检验" class="headerlink" title="卡方检验"></a>卡方检验</h6><h6 id="互信息法"><a href="#互信息法" class="headerlink" title="互信息法"></a>互信息法</h6><h5 id="Wrapper"><a href="#Wrapper" class="headerlink" title="Wrapper"></a>Wrapper</h5><h6 id="递归特征消除法"><a href="#递归特征消除法" class="headerlink" title="递归特征消除法"></a>递归特征消除法</h6><h5 id="Embedded"><a href="#Embedded" class="headerlink" title="Embedded"></a>Embedded</h5><h6 id="基于惩罚项的特征选择法"><a href="#基于惩罚项的特征选择法" class="headerlink" title="基于惩罚项的特征选择法"></a>基于惩罚项的特征选择法</h6><h6 id="基于树模型的特征选择法"><a href="#基于树模型的特征选择法" class="headerlink" title="基于树模型的特征选择法"></a>基于树模型的特征选择法</h6></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">meurice</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://meurice.xyz/2020/ckcrqxj510005p8lxgl1fd8rh/">http://meurice.xyz/2020/ckcrqxj510005p8lxgl1fd8rh/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/ckcrqxj500004p8lx8adm9sfx/"><img class="next-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">数据预处理——归一化与标准化</div></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'EawxWxtF1k6iR51UXCBfIpIU-gzGzoHsz',
+  appKey: 'udFapepQYq8g8eV6dEF6lmbe',
+  placeholder: 'Please leave your footprints (๓˙ϖ˙๓)',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'en',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: false,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By meurice</div><div class="framework-info"><span>Driven </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="font_plus" title="Increase Font Size"><i class="fas fa-plus"></i></button><button id="font_minus" title="Decrease Font Size"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="Setting"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="/js/third-party/fireworks.js"></script><script id="ribbon_piao" mobile="true" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body></html>
