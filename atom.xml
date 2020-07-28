@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-07-28T10:14:15.788Z</updated>
+  <updated>2020-07-28T10:32:11.429Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -18,12 +18,12 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道B</title>
-    <link href="http://meurice.xyz/2020/ckd5sa61c000240lx7eltg37s/"/>
-    <id>http://meurice.xyz/2020/ckd5sa61c000240lx7eltg37s/</id>
+    <link href="http://meurice.xyz/2020/ckd5swytr0005fglx52idfboj/"/>
+    <id>http://meurice.xyz/2020/ckd5swytr0005fglx52idfboj/</id>
     <published>2020-07-28T10:06:11.000Z</published>
-    <updated>2020-07-28T10:14:15.788Z</updated>
+    <updated>2020-07-28T10:32:11.429Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="2020-7-28"><a href="#2020-7-28" class="headerlink" title="2020.7.28"></a>2020.7.28</h2><h3 id="Resnet50预训练权重文件"><a href="#Resnet50预训练权重文件" class="headerlink" title="Resnet50预训练权重文件"></a>Resnet50预训练权重文件</h3><p>　　.h5文件已上传至百度网盘，链接放在此处。<br><br>   　　[resnet50_weights_tf_dim_ordering_tf_kernels.h5](链接: <a href="https://pan.baidu.com/s/1jTn1lI101BZfOoFys9tlOA)，提取码" target="_blank" rel="noopener">https://pan.baidu.com/s/1jTn1lI101BZfOoFys9tlOA)，提取码</a>: pdcg<br>      　　放在C:\users(yourusername).keras\models文件下</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="2020-7-28"><a href="#2020-7-28" class="headerlink" title="2020.7.28"></a>2020.7.28</h2><h3 id="Resnet50预训练权重文件"><a href="#Resnet50预训练权重文件" class="headerlink" title="Resnet50预训练权重文件"></a>Resnet50预训练权重文件</h3><p>　　.h5文件已上传至百度网盘，链接放在此处。<br><br>   　　<a href="https://pan.baidu.com/s/1jTn1lI101BZfOoFys9tlOA" target="_blank" rel="noopener">resnet50_weights_tf_dim_ordering_tf_kernels.h5</a>，提取码: pdcg<br>      　　放在C:\users(yourusername).keras\models文件下</p>]]></content>
     
     <summary type="html">
     
@@ -40,8 +40,8 @@
   
   <entry>
     <title>特征工程（待更新）</title>
-    <link href="http://meurice.xyz/2020/ckd5sa61x000640lxcgt200mz/"/>
-    <id>http://meurice.xyz/2020/ckd5sa61x000640lxcgt200mz/</id>
+    <link href="http://meurice.xyz/2020/ckd5swytu0008fglxg1emcej1/"/>
+    <id>http://meurice.xyz/2020/ckd5swytu0008fglxg1emcej1/</id>
     <published>2020-07-18T03:42:42.000Z</published>
     <updated>2020-07-21T02:08:24.860Z</updated>
     
@@ -63,8 +63,8 @@
   
   <entry>
     <title>数据预处理——归一化与标准化</title>
-    <link href="http://meurice.xyz/2020/ckd5sa68j000740lx6y7kepi6/"/>
-    <id>http://meurice.xyz/2020/ckd5sa68j000740lx6y7kepi6/</id>
+    <link href="http://meurice.xyz/2020/ckd5swyts0006fglxb6sd770i/"/>
+    <id>http://meurice.xyz/2020/ckd5swyts0006fglxb6sd770i/</id>
     <published>2020-07-17T09:33:10.000Z</published>
     <updated>2020-07-18T03:28:29.237Z</updated>
     
@@ -85,8 +85,8 @@
   
   <entry>
     <title>Linux设置定时任务</title>
-    <link href="http://meurice.xyz/2020/ckd5sa61e000540lx1lw1amyt/"/>
-    <id>http://meurice.xyz/2020/ckd5sa61e000540lx1lw1amyt/</id>
+    <link href="http://meurice.xyz/2020/ckd5swyto0003fglxhfzq4u5r/"/>
+    <id>http://meurice.xyz/2020/ckd5swyto0003fglxhfzq4u5r/</id>
     <published>2020-07-16T11:40:44.000Z</published>
     <updated>2020-07-17T14:22:00.702Z</updated>
     
@@ -108,8 +108,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckd5sa61d000340lx842g6p2b/"/>
-    <id>http://meurice.xyz/2020/ckd5sa61d000340lx842g6p2b/</id>
+    <link href="http://meurice.xyz/2020/ckd5swytt0007fglxbd2ogort/"/>
+    <id>http://meurice.xyz/2020/ckd5swytt0007fglxbd2ogort/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-07-27T15:00:41.105Z</updated>
     
@@ -130,8 +130,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckd5sa61d000440lxbar7dnr9/"/>
-    <id>http://meurice.xyz/2020/ckd5sa61d000440lxbar7dnr9/</id>
+    <link href="http://meurice.xyz/2020/ckd5swytn0002fglx4p8b4uer/"/>
+    <id>http://meurice.xyz/2020/ckd5swytn0002fglx4p8b4uer/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -153,8 +153,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckd5sa68r000840lxenle4p8u/"/>
-    <id>http://meurice.xyz/2020/ckd5sa68r000840lxenle4p8u/</id>
+    <link href="http://meurice.xyz/2020/ckd5swytq0004fglx2s8jfb0z/"/>
+    <id>http://meurice.xyz/2020/ckd5swytq0004fglx2s8jfb0z/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
