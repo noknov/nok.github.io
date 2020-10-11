@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-09-24T05:43:54.194Z</updated>
+  <updated>2020-10-11T16:56:01.905Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -17,9 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>[学习日志]智算之道——人工智能应用挑战赛</title>
+    <link href="http://meurice.xyz/2020/ckg5cnsiq0004jklx8jiwcppw/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsiq0004jklx8jiwcppw/</id>
+    <published>2020-10-10T02:01:16.000Z</published>
+    <updated>2020-10-11T16:56:01.905Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="2020-10-10"><a href="#2020-10-10" class="headerlink" title="2020.10.10"></a>2020.10.10</h2><h3 id="空值填充"><a href="#空值填充" class="headerlink" title="空值填充"></a>空值填充</h3><p>　　以众数填充为例。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> column <span class="keyword">in</span> list(all_data.columns[all_data.isnull().sum() &gt; <span class="number">0</span>]):</span><br><span class="line">  mode_val = all_data[column].mode()[<span class="number">0</span>]</span><br><span class="line">  all_data[column].fillna(mode_val, inplace=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure><p>　　注意可能有多个众数，一般取第一个（mode()[0]），否则填充后的DataFrame仍存在空值。</p><h2 id="2020-10-11"><a href="#2020-10-11" class="headerlink" title="2020.10.11"></a>2020.10.11</h2><h3 id="focal-loss-——tensorflow实现"><a href="#focal-loss-——tensorflow实现" class="headerlink" title="focal loss ——tensorflow实现"></a>focal loss ——tensorflow实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">focal_loss</span><span class="params">(logits, labels, gamma=<span class="number">2</span>)</span>:</span></span><br><span class="line">    softmax = tf.reshape(tf.nn.softmax(logits), [<span class="number">-1</span>])</span><br><span class="line">    labels = tf.range(<span class="number">0</span>, tf.shape(logits)[<span class="number">0</span>]) * tf.shape(logits)[<span class="number">1</span>] + labels</span><br><span class="line">    prob = tf.gather(softmax, labels)</span><br><span class="line">    weight = tf.pow(tf.subtract(<span class="number">1.</span>, prob), gamma)</span><br><span class="line">    loss = -tf.reduce_mean(tf.multiply(weight, tf.log(prob)))</span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;2020-10-10&quot;&gt;&lt;a href=&quot;#2020-10-10&quot; class=&quot;headerlink&quot; title=&quot;2020.10.10&quot;&gt;&lt;/a&gt;2020.10.10&lt;/h2&gt;&lt;h3 id=&quot;空值填充&quot;&gt;&lt;a href=&quot;#空值填充&quot; class=&quot;head
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>2020 计蒜之道 预赛 第一场</title>
-    <link href="http://meurice.xyz/2020/ckfge61nf0003a8lxfny3esko/"/>
-    <id>http://meurice.xyz/2020/ckfge61nf0003a8lxfny3esko/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsim0001jklx1a9c6wdg/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsim0001jklx1a9c6wdg/</id>
     <published>2020-09-20T12:11:32.000Z</published>
     <updated>2020-09-24T05:43:54.194Z</updated>
     
@@ -40,8 +62,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道B</title>
-    <link href="http://meurice.xyz/2020/ckfge61ng0005a8lx2xms11mt/"/>
-    <id>http://meurice.xyz/2020/ckfge61ng0005a8lx2xms11mt/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnu3a000ajklx7wih8vpi/"/>
+    <id>http://meurice.xyz/2020/ckg5cnu3a000ajklx7wih8vpi/</id>
     <published>2020-07-28T10:06:11.000Z</published>
     <updated>2020-08-11T15:52:20.529Z</updated>
     
@@ -62,8 +84,8 @@
   
   <entry>
     <title>特征工程</title>
-    <link href="http://meurice.xyz/2020/ckfge61vi000aa8lxgjob2oha/"/>
-    <id>http://meurice.xyz/2020/ckfge61vi000aa8lxgjob2oha/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnu3c000bjklxaclk5yp7/"/>
+    <id>http://meurice.xyz/2020/ckg5cnu3c000bjklxaclk5yp7/</id>
     <published>2020-07-18T03:42:42.000Z</published>
     <updated>2020-09-06T12:23:12.169Z</updated>
     
@@ -85,8 +107,8 @@
   
   <entry>
     <title>数据预处理——归一化与标准化</title>
-    <link href="http://meurice.xyz/2020/ckfge61vh0009a8lx1ozbejei/"/>
-    <id>http://meurice.xyz/2020/ckfge61vh0009a8lx1ozbejei/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsit0006jklxfxkd5ken/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsit0006jklxfxkd5ken/</id>
     <published>2020-07-17T09:33:10.000Z</published>
     <updated>2020-07-18T03:28:29.237Z</updated>
     
@@ -107,8 +129,8 @@
   
   <entry>
     <title>Linux设置定时任务</title>
-    <link href="http://meurice.xyz/2020/ckfge61nf0004a8lxb1dcc20m/"/>
-    <id>http://meurice.xyz/2020/ckfge61nf0004a8lxb1dcc20m/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsig0000jklx6btx3bis/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsig0000jklx6btx3bis/</id>
     <published>2020-07-16T11:40:44.000Z</published>
     <updated>2020-07-17T14:22:00.702Z</updated>
     
@@ -130,8 +152,8 @@
   
   <entry>
     <title>[学习日志]2020 DIGIX全球校园AI算法精英大赛——赛道A</title>
-    <link href="http://meurice.xyz/2020/ckfge61nl0007a8lx8spp7sqp/"/>
-    <id>http://meurice.xyz/2020/ckfge61nl0007a8lx8spp7sqp/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsip0003jklx4zl14fur/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsip0003jklx4zl14fur/</id>
     <published>2020-07-16T04:23:28.000Z</published>
     <updated>2020-08-15T04:26:18.076Z</updated>
     
@@ -152,8 +174,8 @@
   
   <entry>
     <title>Hexo+Nginx搭建静态页面博客</title>
-    <link href="http://meurice.xyz/2020/ckfge61nj0006a8lx51gvaeg0/"/>
-    <id>http://meurice.xyz/2020/ckfge61nj0006a8lx51gvaeg0/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsio0002jklx37qy3ycs/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsio0002jklx37qy3ycs/</id>
     <published>2020-07-15T07:54:00.000Z</published>
     <updated>2020-07-16T10:32:32.590Z</updated>
     
@@ -175,8 +197,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://meurice.xyz/2020/ckfge61nm0008a8lx14d8f5pd/"/>
-    <id>http://meurice.xyz/2020/ckfge61nm0008a8lx14d8f5pd/</id>
+    <link href="http://meurice.xyz/2020/ckg5cnsis0005jklx0e7gevj7/"/>
+    <id>http://meurice.xyz/2020/ckg5cnsis0005jklx0e7gevj7/</id>
     <published>2020-07-15T04:29:57.340Z</published>
     <updated>2020-07-15T04:29:57.340Z</updated>
     
