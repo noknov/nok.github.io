@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-10-17T17:29:25.056Z</updated>
+  <updated>2020-10-24T09:11:01.791Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第三届全国高校绿色计算大赛半决赛第二阶段</title>
+    <link href="http://meurice.xyz/2020/ckgnffb760000t0lx0csre2zg/"/>
+    <id>http://meurice.xyz/2020/ckgnffb760000t0lx0csre2zg/</id>
+    <published>2020-10-24T08:33:55.000Z</published>
+    <updated>2020-10-24T09:11:01.791Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="OpenEuler-、-Shell-编程"><a href="#OpenEuler-、-Shell-编程" class="headerlink" title="OpenEuler 、 Shell 编程"></a>OpenEuler 、 Shell 编程</h2><h3 id="1-正则替换"><a href="#1-正则替换" class="headerlink" title="1.正则替换"></a>1.正则替换</h3><p>系统提供了一个待处理的test.txt文件，其内容为：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ZhangSan25man</span><br><span class="line">LiSi7man</span><br><span class="line">WangWu16woman</span><br><span class="line">Alex77man</span><br></pre></td></tr></table></figure><p>请在右侧的编码区域，通过shell脚本将文件内容中的三列用 ,(英文逗号) 分割开来。其中，第一列为人名，由字母组成；第二列为年龄，由数字组成；第三列为性别，只会是 man 或者 woman。  </p><p>处理完成后预期结果如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">ZhangSan,25,man</span><br><span class="line">LiSi,7,man</span><br><span class="line">WangWu,16,woman</span><br><span class="line">Alex,77,man</span><br></pre></td></tr></table></figure><p>Solve：<br>正则表达式匹配字母+任意位数字+字母，分别以\1，\2，\3引用匹配到的内容，添加逗号即可。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat test.txt | sed "s/\([a-z]\)\([0-9]*[0-9]\)\([a-z]\)/\1,\2,\3/g"</span><br></pre></td></tr></table></figure><h3 id="2-求集合差集"><a href="#2-求集合差集" class="headerlink" title="2.求集合差集"></a>2.求集合差集</h3><p>系统提供了两个待处理文件a.txt和b.txt，其中文件 a.txt 中的部分内容如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Hello</span><br><span class="line">My Name is Alice</span><br><span class="line">What is your name</span><br><span class="line">I am Bob</span><br><span class="line">I came from China</span><br><span class="line">Where are you from</span><br><span class="line">Oh my God</span><br></pre></td></tr></table></figure><p>文件 b.txt 中的部分内容如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Alice is a good boy</span><br><span class="line">Bob is a nice man and he is one of my best friend</span><br><span class="line">God bless you</span><br></pre></td></tr></table></figure><p>将文件 a.txt 中每一行的最后一个单词作为集合 1 ；将文件 b.txt 中每一行的第一个单词作为集合 2 ；请使用 shell 语言编写程序，输出包含在集合 1 但不包含在集合 2 的所有元素。<br>Solve：通过正则将a.txt中最后一个空格前的全部字符替换为空，b.txt中第一个空格后的全部字符替换为空，sort后通过uniq命令解决。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">sed -i &#39;s&#x2F;.* &#x2F;&#x2F;g&#39; a.txt</span><br><span class="line">sed -i &#39;s&#x2F; .*&#x2F;&#x2F;g&#39; b.txt</span><br><span class="line">grep -F -v -f b.txt a.txt | sort | uniq</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;OpenEuler-、-Shell-编程&quot;&gt;&lt;a href=&quot;#OpenEuler-、-Shell-编程&quot; class=&quot;headerlink&quot; title=&quot;OpenEuler 、 Shell 编程&quot;&gt;&lt;/a&gt;OpenEuler 、 Shell 编程&lt;/h2&gt;&lt;
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>[学习日志]智算之道——人工智能应用挑战赛</title>
