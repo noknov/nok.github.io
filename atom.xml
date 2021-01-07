@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://meurice.xyz/"/>
-  <updated>2020-12-30T11:04:50.549Z</updated>
+  <updated>2021-01-07T14:11:42.775Z</updated>
   <id>http://meurice.xyz/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>[学习笔记]Meta Learning(元学习)</title>
+    <link href="http://meurice.xyz/2021/ckjmunc2x00007glxchngch50/"/>
+    <id>http://meurice.xyz/2021/ckjmunc2x00007glxchngch50/</id>
+    <published>2021-01-07T12:51:38.000Z</published>
+    <updated>2021-01-07T14:11:42.775Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>　　Meta Learning = Learn to learn<br>　　Meta Learning即“学会学习”，学习了一些task后，机器学会如何去学习新的task。<br>　　Meta：How to learn a new model</p><h4 id="Omniglot——Few-shot-Classification"><a href="#Omniglot——Few-shot-Classification" class="headerlink" title="Omniglot——Few-shot Classification"></a>Omniglot——Few-shot Classification</h4><p>　　Omniglot 数据集总共包含 5050 个字母。我们通常将这些分成一组包含 3030 个字母的背景（background）集和一组包含 2020 个字母的评估（evaluation）集。  </p><h5 id="N-ways-K-shot"><a href="#N-ways-K-shot" class="headerlink" title="N-ways K-shot"></a>N-ways K-shot</h5><p>　　N-ways K-shot： In each training and test tasks, there are N classes, each has K examples.<br>  <img src= "/img/loading.gif" data-src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/N-ways%20K-shot.png" alt="example"></p><h2 id="MAML"><a href="#MAML" class="headerlink" title="MAML"></a>MAML</h2><h2 id="Gradient-Descent-as-LSTM"><a href="#Gradient-Descent-as-LSTM" class="headerlink" title="Gradient Descent as LSTM"></a>Gradient Descent as LSTM</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot; title=&quot;Introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h2&gt;&lt;p&gt;　　Meta Learning = Learn to lea
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>中移集成（雄安产业研究院）首届OneCity编程大赛</title>
