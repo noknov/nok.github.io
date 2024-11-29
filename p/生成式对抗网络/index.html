@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——生成式对抗网络\n">
+<title>生成式对抗网络</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E7%94%9F%E6%88%90%E5%BC%8F%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="生成式对抗网络">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——生成式对抗网络\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E7%94%9F%E6%88%90%E5%BC%8F%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-05-13T17:45:00&#43;00:00'/><meta property='article:modified_time' content='2022-05-13T17:45:00&#43;00:00'/>
+<meta name="twitter:title" content="生成式对抗网络">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——生成式对抗网络\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#generator">Generator</a>
+      <ol>
+        <li><a href="#network-as-generator">Network as Generator</a></li>
+        <li><a href="#why-distribution">Why distribution？</a></li>
+      </ol>
+    </li>
+    <li><a href="#generative-adversarial-networkgan">Generative Adversarial Network（GAN）</a>
+      <ol>
+        <li><a href="#anime-face-generation">Anime Face Generation</a></li>
+        <li><a href="#discriminator">Discriminator</a></li>
+        <li><a href="#basic-idea-of-gan">Basic Idea of GAN</a></li>
+        <li><a href="#algorithm">Algorithm</a></li>
+      </ol>
+    </li>
+    <li><a href="#theory-behind-gan">Theory behind GAN</a>
+      <ol>
+        <li><a href="#objective">Objective</a></li>
+        <li><a href="#sampling">Sampling</a></li>
+        <li><a href="#discriminator-1">Discriminator</a></li>
+        <li><a href="#why-js-divergence">Why JS Divergence？</a></li>
+      </ol>
+    </li>
+    <li><a href="#tips-for-gan">Tips for GAN</a>
+      <ol>
+        <li><a href="#js散度的问题">JS散度的问题</a></li>
+        <li><a href="#wasserstein-distance">Wasserstein distance</a></li>
+        <li><a href="#wgan">WGAN</a></li>
+        <li><a href="#din-1-lipschitz">$D\in 1-Lipschitz$</a></li>
+        <li><a href="#more-tips">More Tips</a></li>
+      </ol>
+    </li>
+    <li><a href="#gan-for-sequence-generation">GAN for Sequence Generation</a></li>
+    <li><a href="#more-generative-models">More Generative Models</a></li>
+    <li><a href="#evaluation-of-generation">Evaluation of Generation</a>
+      <ol>
+        <li><a href="#quality-of-image">Quality of Image</a></li>
+        <li><a href="#diversity---mode-collapse">Diversity - Mode Collapse</a></li>
+        <li><a href="#diversity---mode-dropping">Diversity - Mode Dropping</a></li>
+        <li><a href="#diversity">Diversity</a></li>
+        <li><a href="#fréchet-inception-distancefid">Fréchet Inception Distance（FID）</a></li>
+        <li><a href="#we-dont-want-memory-gan">We don&rsquo;t want memory GAN</a></li>
+        <li><a href="#more-about-evaluation">More about evaluation</a></li>
+      </ol>
+    </li>
+    <li><a href="#conditional-generation">Conditional Generation</a>
+      <ol>
+        <li><a href="#conditional-gan">Conditional GAN</a></li>
+        <li><a href="#其他应用">其他应用</a></li>
+      </ol>
+    </li>
+    <li><a href="#learning-from-unpaired-data">Learning from Unpaired Data</a>
+      <ol>
+        <li><a href="#cycle-gan">Cycle GAN</a></li>
+        <li><a href="#selfie2anime">SELFIE2ANIME</a></li>
+        <li><a href="#text-style-transfer">Text Style Transfer</a></li>
+        <li><a href="#more">More</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E7%94%9F%E6%88%90%E5%BC%8F%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C/">生成式对抗网络</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 13, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=58"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——生成式对抗网络</a></p>
+<h1 id="generative-adversarial-networks">Generative Adversarial Networks
+</h1><h2 id="generator">Generator
+</h2><h3 id="network-as-generator">Network as Generator
+</h3><p>输入$x$和一个简单的分布$z$（不固定，从一个分布中采样得到，每次使用网络时都会随机生成。），经过网络输出一个复杂的分布$y$。这样的网络称为<strong>Generator</strong>。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/generator.png" style="zoom:50%;" />
+<h3 id="why-distribution">Why distribution？
+</h3><p>当任务需要一些“创造力”时（同样的输入有多种可能的输出），需要预测分布。</p>
+<ul>
+<li>
+<p>eg1. <em>Video Prediction</em></p>
+<p>输入：吃豆人游戏的历史帧序列</p>
+<p>输出：吃豆人游戏新一帧的内容（吃豆人可能向不同的方向移动）</p>
+</li>
+<li>
+<p>eg2. <em>Drawing</em></p>
+<p>输入：“Character with red eyes”</p>
+<p>输出1：酷拉皮卡</p>
+<p>输出2：辉夜</p>
+</li>
+<li>
+<p>eg3. <em>Chatbot</em></p>
+<p>输入：“你知道辉夜是谁吗？”</p>
+<p>输出1：“她是秀知院学生会&hellip;”</p>
+<p>输出2：“她开创了忍者时代&hellip;”</p>
+</li>
+</ul>
+<h2 id="generative-adversarial-networkgan">Generative Adversarial Network（GAN）
+</h2><ul>
+<li><a class="link" href="https://github.com/hindupuravinash/the-gan-zoo"  target="_blank" rel="noopener"
+    >hindupuravinash/the-gan-zoo: A list of all named GANs! (github.com)</a></li>
+</ul>
+<h3 id="anime-face-generation">Anime Face Generation
+</h3><p><strong>Unconditional generation</strong></p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/unconditional.png" style="zoom:50%;" />
+<ul>
+<li><a class="link" href="https://zhuanlan.zhihu.com/p/24767059"  target="_blank" rel="noopener"
+    >GAN学习指南：从原理入门到制作生成Demo - 知乎 (zhihu.com)</a></li>
+</ul>
+<h3 id="discriminator">Discriminator
+</h3><p>Discriminator本身也是一个网络，Discriminator拿一张图片作为输入，输出一个数值。数字越大，表示图片越接近真实的图片。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/discriminator.png" style="zoom:50%;" />
+<h3 id="basic-idea-of-gan">Basic Idea of GAN
+</h3><blockquote>
+<p>写作敌人，念做朋友。</p>
+</blockquote>
+<p>二者关系好比Generator造假钞，Discriminator是抓造假钞的警察，Generator越来越像，Discriminator的辨别能力越来越强。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/basic%20idea.png" style="zoom:50%;" />
+<h3 id="algorithm">Algorithm
+</h3><p>首先初始化generator $G$和discriminator $D$，在每一次训练中：</p>
+<ul>
+<li>
+<p>Step 1：定住$G$，更新$D$</p>
+<p>$D$学习去给真实二次元人物赋予更高的分数，而为生成的二次元人物赋予更低的分数。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/step1.png" style="zoom:50%;" />
+<p>$D$分辨真正的二次元人物和生成的二次元人物之间的差异，可以当作一个分类或回归任务处理。</p>
+</li>
+<li>
+<p>Step 2：定住$D$，更新$G$</p>
+<p>$G$学习去“骗过”$D$，经过调整后，使得生成的图片能在$D$中产生更高的分数。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-1/step2.png" style="zoom:50%;" />
+</li>
+</ul>
+<h2 id="theory-behind-gan">Theory behind GAN
+</h2><h3 id="objective">Objective
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/objective.png" style="zoom:50%;" />
+$$
+G^\ast=\arg\min_G Div(P_G,P_{data})
+$$<p>其中$Div(P_G,P_{data})$是$P_G$与$P_{data}$之间的散度（Divergence），可以看作是两个分布之间某种距离，散度越大，代表两个分布越不像，散度越小，代表两个分布越相近。c.f. $w^\ast,b^\ast=\arg\min_{w,b}L$</p>
+<h3 id="sampling">Sampling
+</h3><p>虽然不清楚$P_G$和$P_{data}$的分布，但是可以从其中采样来计算散度。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/sampling.png" style="zoom:50%;" />
+<h3 id="discriminator-1">Discriminator
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1406.2661"  target="_blank" rel="noopener"
+    >1406.2661] Generative Adversarial Networks (arxiv.org)</a></li>
+</ul>
+<p>Discriminator的训练目标是看到真实数据就给出一个高的分数，看到生成数据就给出一个低的分数。</p>
+<ul>
+<li>
+<p><strong>Training</strong>：$D^\ast=\arg\max_DV(D,G)$</p>
+</li>
+<li>
+<p><strong>Objective Function</strong> for $D$：$V(G,D)=E_{y\sim P_{data}}[\log D(y)]+E_{y\sim P_G}[\log(1-D(y))]$</p>
+</li>
+</ul>
+<p>$V(D,G)$是交叉熵的相反数，Discriminator可以等同于一个分类器，最小化交叉熵。而正好$\max_DV(D,G)$就和<strong>JS散度</strong>有关。</p>
+<p>最开始，$P_G$和$P_{data}$混在一起，散度很小，Discriminator难以分辨哪些数据是生成数据而哪些数据是真实数据，即Discriminator难以区分小的$max_D{V(D,G)}$。</p>
+<p>若$P_G$和$P_{data}$散度很大，$max_DV(D,G)$比较大，DIscriminator则很容易区分生成数据和真实数据。</p>
+$$
+G^\ast=\arg\min_G\max_DV(G,D)
+$$<h3 id="why-js-divergence">Why JS Divergence？
+</h3><p>除了JS散度，也可以使用例如KL散度等其他散度。如何设计目标函数，得到不同的散度，在f-GAN论文中有详细的证明。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1606.00709"  target="_blank" rel="noopener"
+    >1606.00709] f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization (arxiv.org)</a></li>
+</ul>
+<h2 id="tips-for-gan">Tips for GAN
+</h2><h3 id="js散度的问题">JS散度的问题
+</h3><p>在大多数情况下，$P_G$和$P_{data}$重复的部分非常少。</p>
+<ul>
+<li>
+<p>数据本身的特性：数据是高维空间中的低维流形，重叠的部分可以忽略。</p>
+<blockquote>
+<p>流形学习的观点认为，我们所能观察到的数据实际上是由一个低维流形映射到高维空间上的。由于数据内部特征的限制，一些高维中的数据会产生维度上的冗余，实际上只需要比较低的维度就能唯一地表示。例如单位圆上有无穷多个点，无法用二唯坐标系上的点来表示圆上所有的点，而若使用极坐标，圆心在原点的圆只需一个参数——半径，就可以确定。</p>
+</blockquote>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/manifold.png" style="zoom:50%;" />
+</li>
+<li>
+<p>采样：即使$P_G$和$P_{data}$有重叠，若采样的点不够多，对Discriminator来说也是没有重叠的。</p>
+</li>
+</ul>
+<p>而以上的问题会导致JS散度出现问题。</p>
+<p>在两个分布完全不重叠时，无论两个分布的中心距离有多近，其JS散度都是一个常数$\log2$，无法判断哪个case更好，从而无法更新参数。</p>
+<p>参考证明：<a class="link" href="https://www.cnblogs.com/MorStar/p/14882813.html"  target="_blank" rel="noopener"
+    >JS散度(Jensen–Shannon divergence) - MorStar - 博客园 (cnblogs.com)</a></p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/js%20div%20problem.png" style="zoom:50%;" />
+<p>直观来看，如果两个分布不重叠，二分类的准确率几乎可以达到100%。</p>
+<h3 id="wasserstein-distance">Wasserstein distance
+</h3><p>考虑两个分布$P$和$Q$，想象一台推土机，$P$是一堆土，$Q$是要堆放的目的地，把$P$挪动到$Q$的平均距离就是Wasserstein distance。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/wasserstein%20distance.png" style="zoom:50%;" />
+<p>考虑更复杂的情况，移动的方案可能有无穷多种。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/wasserstein%20distance2.png" style="zoom:50%;" />
+<p>穷举所有的移动方法，看哪一个移动方法可以让平均的距离最小，最小的值就是Wasserstein distance。但计算方法似乎比较复杂，要计算距离还需要求解这样一个最优化问题。</p>
+<p>假设现在我们已经可以计算Wasserstein distance，就可以解决JS散度带来的问题。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/wasserstein%20distance3.png" style="zoom:50%;" />
+<h3 id="wgan">WGAN
+</h3><p>WGAN使用Wasserstein distance取代JS散度。</p>
+$$
+\max_{D\in 1-Lipschitz}\{E_{y\sim P_{data}}[D(y)]-E_{y\sim P_G}[D(y)]\}
+$$<p>
+$D\in 1-Lipschitz$：$D$需要是一个足够平滑的函数，不能是变动很剧烈的函数，若没有这个限制，单纯让生成数据越小越好，真实数据越大越好，在生成数据和真实数据没有重叠的情况下，会给真实数据无穷大的正值而给生成数据无穷小的负值。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/wasserstein%20distance4.png" style="zoom:50%;" />
+<h3 id="din-1-lipschitz">$D\in 1-Lipschitz$
+</h3><ul>
+<li>
+<p>Original WGAN：Weight</p>
+<p>强制参数$w$在$c$和$-c$之间，参数更新后若$w\gt c$，则$w=c$，若$w\lt -c$，则$w=-c$。</p>
+</li>
+<li>
+<p>Improved WGAN：Gradient Penalty</p>
+<p>在真实数据和生成数据中各取一个样本，两点连线中再取一个样本，要求这个点的梯度接近1。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-2/gradient%20penalty.png" style="zoom:50%;" />
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1704.00028"  target="_blank" rel="noopener"
+    >1704.00028] Improved Training of Wasserstein GANs (arxiv.org)</a></li>
+</ul>
+</li>
+<li>
+<p>Spectral Normalization（SNGAN）：让梯度模长在任何地方都小于1</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1802.05957"  target="_blank" rel="noopener"
+    >1802.05957] Spectral Normalization for Generative Adversarial Networks (arxiv.org)</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="more-tips">More Tips
+</h3><ul>
+<li>Tops from Soumith
+<ul>
+<li><a class="link" href="https://github.com/soumith/ganhacks"  target="_blank" rel="noopener"
+    >soumith/ganhacks: starter from &ldquo;How to Train a GAN?&rdquo; at NIPS2016 (github.com)</a></li>
+</ul>
+</li>
+<li>Tips in DCGAN：Guideline for network architecture design for image generation
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1511.06434"  target="_blank" rel="noopener"
+    >1511.06434] Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks (arxiv.org)</a></li>
+</ul>
+</li>
+<li>Improved techniques for training GANs
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1606.03498"  target="_blank" rel="noopener"
+    >1606.03498] Improved Techniques for Training GANs (arxiv.org)</a></li>
+</ul>
+</li>
+<li>Tips from BigGAN
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1809.11096"  target="_blank" rel="noopener"
+    >1809.11096] Large Scale GAN Training for High Fidelity Natural Image Synthesis (arxiv.org)</a></li>
+</ul>
+</li>
+</ul>
+<p>GAN的训练需要Generator和Discriminator共同配合，若有其中一方不再进步，另一方也会停下来，<em>Generator和Discriminator需要棋逢敌手</em>。</p>
+<h2 id="gan-for-sequence-generation">GAN for Sequence Generation
+</h2><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/GAN%20seq.png" style="zoom:50%;" />
+<p>Decoder参数改变后，经过max输出的文字可能不会发生改变，就无法完成参数更新。可以用RL来训练。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1905.09922"  target="_blank" rel="noopener"
+    >1905.09922] Training language GANs from Scratch (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/scratch.png" style="zoom:50%;" />
+<h2 id="more-generative-models">More Generative Models
+</h2><ul>
+<li><a class="link" href="https://www.youtube.com/playlist?list=PLJV_el3uVTsMq6JEFPW35BCiOQTsoqwNw"  target="_blank" rel="noopener"
+    >GAN（Full version）</a></li>
+<li><a class="link" href="https://youtu.be/8zomhgKrsmQ"  target="_blank" rel="noopener"
+    >Variational Autoencoder（VAE）</a></li>
+<li><a class="link" href="https://youtu.be/uXY18nzdSsM"  target="_blank" rel="noopener"
+    >FLOW-based Model</a></li>
+</ul>
+<h2 id="evaluation-of-generation">Evaluation of Generation
+</h2><h3 id="quality-of-image">Quality of Image
+</h3><p>评价图像质量最直接的做法是找人来看，在Generator研究初期，有人会选几张图说“看，这个结果应该比目前的结果都要好，应该是SOTA。”，这显然不够客观，如何自动地评价生成图像的质量？</p>
+<p>一个方法是使用图像分类器，输入一张图片$y$，输出图片属于各个类的概率分布$p(c|y)$，分布越集中，产生的图片可能就越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/quality%20of%20img.png" style="zoom:50%;" />
+<h3 id="diversity---mode-collapse">Diversity - Mode Collapse
+</h3><p>仅使用以上这种方法评估图像质量时可能会遇到Mode Collapse（模式坍塌）的问题。</p>
+<p>训练GAN的过程可能会遇到以下问题：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/mode%20collapse.png" style="zoom:50%;" />
+<p>Generator生成出来的图片可能来来去去都是那几张：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/mode%20collapse2.png" style="zoom:50%;" />
+<p>直觉上看，这样的点是Discriminator的“盲点”，Discriminator没办法看出这样的图片是假的，当Generator学会产生这种图片后，就永远都可以骗过Discriminator。</p>
+<h3 id="diversity---mode-dropping">Diversity - Mode Dropping
+</h3><p>Mode Dropping可能比Mode Collapse更难侦测出来，产生出来的数据可能只能贴近已有真实数据的分布，但真实的数据分布的多样性其实是更大的。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/mode%20dropping.png" style="zoom:50%;" />
+<p>一个人脸生成的例子：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/mode%20dropping2.png" style="zoom:50%;" />
+<h3 id="diversity">Diversity
+</h3><p>过去判定多样性的做法是将一批图片输入到图片分类器中，计算所有图片的概率分布的均值，若平均的分布非常集中，则代表多样性不够。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/diversity.png" style="zoom:50%;" />
+<p>若输入这批图片产生的分布都非常不同，平均后的结果非常平坦，则代表多样性是足够的。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/diversity2.png" style="zoom:50%;" />
+<p>Diversity和Quality的评估方式相反，Diversity看的是一批图片的平均，而Quality看的是一张图片。</p>
+<p><strong>Inception Score（IS）</strong>：质量越高，多样性越大，则IS越高。</p>
+<h3 id="fréchet-inception-distancefid">Fréchet Inception Distance（FID）
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1706.08500"  target="_blank" rel="noopener"
+    >1706.08500] GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium (arxiv.org)</a></li>
+</ul>
+<p>取Softmax前的输出向量，假设真实图像和生成图像都是高斯分布，计算这两个高斯分布之间的Fréchet distance，这个距离越小说明真实图像与生成图像越接近，生成图像品质越高。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/FID.png" style="zoom:50%;" />
+<p>可能需要大量的图片样本才能做到。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1711.10337"  target="_blank" rel="noopener"
+    >1711.10337] Are GANs Created Equal? A Large-Scale Study (arxiv.org)</a></li>
+</ul>
+<h3 id="we-dont-want-memory-gan">We don&rsquo;t want memory GAN
+</h3><p>生成出来的图片有可能和训练集一模一样，这种情况下FID非常小，也有可能仅仅把图片翻转，这样很难侦测出来。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1511.01844"  target="_blank" rel="noopener"
+    >1511.01844] A note on the evaluation of generative models (arxiv.org)</a></li>
+</ul>
+<h3 id="more-about-evaluation">More about evaluation
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1802.03446"  target="_blank" rel="noopener"
+    >1802.03446] Pros and Cons of GAN Evaluation Measures (arxiv.org)</a></li>
+</ul>
+<h2 id="conditional-generation">Conditional Generation
+</h2><p>前面所提到的Unconditional GAN的输入都是一个随机的分布。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/conditional%20generation.png" style="zoom:50%;" />
+<p>例如要做文本转图片，需要给模型一个文本输入$x$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/text-to-img.png" style="zoom:50%;" />
+<h3 id="conditional-gan">Conditional GAN
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/conditional%20GAN.png" style="zoom:50%;" />
+<p>在Unconditional GAN中，Discriminator接受一个图片$y$作为输入，输出一个数值，代表图片是真实的或是生成的，但这样的方法无法解Conditional GAN的问题，Generator可以产生非常接近真实的图片，但是忽略了输入的条件。</p>
+<p>Conditional GAN中，需要成对的训练数据。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-3/conditional%20GAN2.png" style="zoom:50%;" />
+<p>Conditional GAN也可以用图像来生成图像，例如图像去雾，黑白转彩色，白天转黑夜，素描转实物。也叫<strong>Image translation</strong>或<strong>pix2pix</strong>。</p>
+<p>通常可以将GAN和有监督学习结合，得到更好的结果。</p>
+<h3 id="其他应用">其他应用
+</h3><ul>
+<li>Sound-to-image</li>
+<li>Talking Head Generation
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1905.08233"  target="_blank" rel="noopener"
+    >1905.08233] Few-Shot Adversarial Learning of Realistic Neural Talking Head Models (arxiv.org)</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="learning-from-unpaired-data">Learning from Unpaired Data
+</h2><p>有一堆$x$和一堆$y$，但$x$和$y$不成对（未标注）。pseudo labeling（伪标签）和back translation（反向翻译）都需要一些成对的数据。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/unpaired%20data.png" style="zoom:50%;" />
+<p>例如在影像风格转换，将定义域$\mathcal{X}$真人头像转为定义域$\mathcal{Y}$二次元头像：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/image%20style%20transfer.png" style="zoom:50%;" />
+<h3 id="cycle-gan">Cycle GAN
+</h3><p>输入一个Domain $\mathcal{X}$，输出Domain $\mathcal{Y}$。但如果仍然按照之前的方法学习，GAN无法判断生成的二次元图像是否与输入的真人图像是相似的，可能会将输入当作为高斯噪声，忽略输入的内容。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/cycle%20gan.png" style="zoom:50%;" />
+<p>Cycle GAN中会训练两个Generator，第一个Generator $G_{\mathcal{X}\rightarrow \mathcal{Y}}$将$\mathcal{X}$ domain的图变成$\mathcal{Y}$ domain的图，第二个Generator $G_{\mathcal{Y}\rightarrow \mathcal{X}}$将$\mathcal{Y}$ domain的图还原为$\mathcal{X}$ domain的图。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/cycle%20gan2.png" style="zoom:50%;" />
+<p>Cycle GAN能保证真实图片和生成图片有一些关系，但如何保证这种关系是我们想要的呢？例如输入一个戴眼镜的人，$G_{\mathcal{X}\rightarrow \mathcal{Y}}$将眼镜转成痣，但$G_{\mathcal{Y}\rightarrow \mathcal{X}}$又会把痣转成眼镜。理论上可能会出现这样的情况，不过在实际中这种情况往往不会出现。</p>
+<p>类似地还有Disco GAN和Dual GAN，思想与Cycle GAN基本相同。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1703.05192"  target="_blank" rel="noopener"
+    >1703.05192] Learning to Discover Cross-Domain Relations with Generative Adversarial Networks (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1704.02510"  target="_blank" rel="noopener"
+    >1704.02510] DualGAN: Unsupervised Dual Learning for Image-to-Image Translation (arxiv.org)</a></li>
+</ul>
+<p>此外还有能够在多种风格之间转换的Star GAN：</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1704.02510"  target="_blank" rel="noopener"
+    >1704.02510] DualGAN: Unsupervised Dual Learning for Image-to-Image Translation (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/starGAN.png" style="zoom:50%;" />
+<h3 id="selfie2anime">SELFIE2ANIME
+</h3><ul>
+<li>
+<p><a class="link" href="https://selfie2anime.com/"  target="_blank" rel="noopener"
+    >Selfie2Anime</a></p>
+</li>
+<li>
+<p>[<a class="link" href="https://arxiv.org/abs/1907.10830"  target="_blank" rel="noopener"
+    >1907.10830] U-GAT-IT: Unsupervised Generative Attentional Networks with Adaptive Layer-Instance Normalization for Image-to-Image Translation (arxiv.org)</a></p>
+</li>
+</ul>
+<h3 id="text-style-transfer">Text Style Transfer
+</h3><p>文字风格转换，例如将负面的句子转为正面的句子。和Cycle GAN的做法类似。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/6/6-4/text%20style%20transfer.png" style="zoom:50%;" />
+<h3 id="more">More
+</h3><ul>
+<li>Unsupervised Abstractive Summarization
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1810.02851"  target="_blank" rel="noopener"
+    >1810.02851] Learning to Encode Text as Human-Readable Summaries using Generative Adversarial Networks (arxiv.org)</a></li>
+</ul>
+</li>
+<li>Unsupervised Translation
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1710.04087"  target="_blank" rel="noopener"
+    >1710.04087] Word Translation Without Parallel Data (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1710.11041"  target="_blank" rel="noopener"
+    >1710.11041] Unsupervised Neural Machine Translation (arxiv.org)</a></li>
+</ul>
+</li>
+<li>Unsupervised ASR
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1804.00316"  target="_blank" rel="noopener"
+    >1804.00316] Completely Unsupervised Phoneme Recognition by Adversarially Learning Mapping Relationships from Audio Embeddings (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1812.09323"  target="_blank" rel="noopener"
+    >1812.09323] Unsupervised Speech Recognition via Segmental Empirical Output Distribution Matching (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1904.04100"  target="_blank" rel="noopener"
+    >1904.04100] Completely Unsupervised Speech Recognition By A Generative Adversarial Network Harmonized With Iteratively Refined Hidden Markov Models (arxiv.org)</a></li>
+</ul>
+</li>
+</ul>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

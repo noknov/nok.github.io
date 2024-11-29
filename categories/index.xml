@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Categories on zn.yan</title>
+        <link>https://demo.stack.jimmycai.com/categories/</link>
+        <description>Recent content in Categories on zn.yan</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 20 Dec 2022 16:29:46 +0000</lastBuildDate><atom:link href="https://demo.stack.jimmycai.com/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>JavaScript</title>
+        <link>https://demo.stack.jimmycai.com/categories/javascript/</link>
+        <pubDate>Tue, 20 Dec 2022 16:29:46 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/javascript/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>机器学习</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 30 Nov 2022 11:01:19 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>图像处理</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/</link>
+        <pubDate>Sun, 31 Jul 2022 22:24:28 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>目标检测</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</link>
+        <pubDate>Thu, 14 Jul 2022 09:41:05 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>随笔</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E9%9A%8F%E7%AC%94/</link>
+        <pubDate>Fri, 31 Dec 2021 22:54:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/%E9%9A%8F%E7%AC%94/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>数据挖掘</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/</link>
+        <pubDate>Tue, 29 Jun 2021 21:15:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Example Category</title>
+        <link>https://demo.stack.jimmycai.com/categories/example-category/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/categories/example-category/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

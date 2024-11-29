@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="本文从Head、Backbone、Neck等方面介绍了YOLO的核心演变过程。\n">
+<title>YOLO v1 - v7</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/yolo-v1-v7/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="YOLO v1 - v7">
+<meta property='og:description' content="本文从Head、Backbone、Neck等方面介绍了YOLO的核心演变过程。\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/yolo-v1-v7/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-07-14T09:41:05&#43;00:00'/><meta property='article:modified_time' content='2022-07-14T09:41:05&#43;00:00'/>
+<meta name="twitter:title" content="YOLO v1 - v7">
+<meta name="twitter:description" content="本文从Head、Backbone、Neck等方面介绍了YOLO的核心演变过程。\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#yolov0">YOLOv0</a></li>
+    <li><a href="#yolov1">YOLOv1</a>
+      <ol>
+        <li><a href="#head">Head</a></li>
+        <li><a href="#损失函数">损失函数</a></li>
+        <li><a href="#backbone">Backbone</a></li>
+        <li><a href="#训练过程">训练过程</a></li>
+      </ol>
+    </li>
+    <li><a href="#yolov2--yolo9000">YOLOv2 &amp; YOLO9000</a>
+      <ol>
+        <li><a href="#head-1">Head</a>
+          <ol>
+            <li><a href="#基于偏移量的边框回归">基于偏移量的边框回归</a></li>
+          </ol>
+        </li>
+        <li><a href="#backbone-1">Backbone</a></li>
+        <li><a href="#训练过程-1">训练过程</a></li>
+      </ol>
+    </li>
+    <li><a href="#yolov3">YOLOv3</a>
+      <ol>
+        <li><a href="#head-2">Head</a></li>
+        <li><a href="#训练策略">训练策略</a></li>
+        <li><a href="#损失函数-1">损失函数</a></li>
+        <li><a href="#backbone-2">Backbone</a></li>
+        <li><a href="#neck">Neck</a></li>
+      </ol>
+    </li>
+    <li><a href="#yolov4">YOLOv4</a>
+      <ol>
+        <li><a href="#head-3">Head</a>
+          <ol>
+            <li><a href="#iou-threshold">IoU threshold</a></li>
+            <li><a href="#eliminate-grid-sensitivity">Eliminate grid sensitivity</a></li>
+            <li><a href="#ciou-loss">CIoU-loss</a></li>
+          </ol>
+        </li>
+        <li><a href="#损失函数-2">损失函数</a></li>
+        <li><a href="#输入端">输入端</a>
+          <ol>
+            <li><a href="#mosaic数据增强">Mosaic数据增强</a></li>
+          </ol>
+        </li>
+        <li><a href="#backbone-3">Backbone</a>
+          <ol>
+            <li><a href="#csp结构">CSP结构</a></li>
+            <li><a href="#mish激活函数">Mish激活函数</a></li>
+            <li><a href="#dropblock">Dropblock</a></li>
+          </ol>
+        </li>
+        <li><a href="#neck-1">Neck</a>
+          <ol>
+            <li><a href="#spp模块">SPP模块</a></li>
+            <li><a href="#fpn--pan">FPN + PAN</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#yolov5">YOLOv5</a>
+      <ol>
+        <li><a href="#输入端-1">输入端</a>
+          <ol>
+            <li><a href="#自适应锚框计算">自适应锚框计算</a></li>
+            <li><a href="#letterbox自适应图片缩放">letterbox自适应图片缩放</a></li>
+          </ol>
+        </li>
+        <li><a href="#backbone-4">Backbone</a>
+          <ol>
+            <li><a href="#focus结构">Focus结构</a></li>
+            <li><a href="#csp结构-1">CSP结构</a></li>
+          </ol>
+        </li>
+        <li><a href="#四种网络的深度和宽度">四种网络的深度和宽度</a></li>
+      </ol>
+    </li>
+    <li><a href="#yolov7">YOLOv7</a>
+      <ol>
+        <li><a href="#architecture">Architecture</a>
+          <ol>
+            <li><a href="#extended-efficient-layer-aggregation-networks">Extended efficient layer aggregation networks</a></li>
+            <li><a href="#model-scaling-for-concatenation-based-models">Model scaling for concatenation-based models</a></li>
+          </ol>
+        </li>
+        <li><a href="#trainable-bag-of-freebies">Trainable bag-of-freebies</a>
+          <ol>
+            <li><a href="#repconv">RepConv</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+            <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" >
+                目标检测
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/yolo-v1-v7/">YOLO v1 - v7</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 14, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>本文从Head、Backbone、Neck等方面介绍了YOLO的核心演变过程。</p>
+<h1 id="yolov1---yolov7">YOLOv1 - YOLOv7
+</h1><h2 id="yolov0">YOLOv0
+</h2><p>将目标检测任务当作是遍历性的分类任务，就可以使用分类器来完成检测。</p>
+<p>例如可以用一个框分别落在图片的各个区域，对框住的区域进行二分类，然后因为目标大小的不同，可能还需要使用不同大小的框来遍历图片，另外，为了提高检测精度，还可以使用滑动窗口的方法来遍历图像的所有位置&hellip;</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/2.png" style="zoom:75%;" />
+<p>R-CNN所采用的就是滑动窗口策略。</p>
+<p>而YOLO的思路是，将分类器的输出从一个One-hot向量换成$(c,x,y,w,h)$，直接输出这个框和置信度，将问题转化为一个回回归问题。要组织训练也比较简单，只需找很多的图片，标注框的位置，并将置信度$c$设为1，送入网络即可。</p>
+<p>以上便是YOLO最简单的版本。</p>
+<h2 id="yolov1">YOLOv1
+</h2><h3 id="head">Head
+</h3><p>在YOLOv0中，一张图片输出一个五元组$(c,x,y,w,h)$，只能输出一个目标。要输出多个目标，YOLOv1中采用的方式是将图片分为多个的网格（$S\times S$），每个网格单元对应一个五元组，就可以输出$S\times S$个框，如果目标的中心落在一个网格单元中，那么这个网格单元就会负责检测这个对象，如果网格单元中不存在目标，则置信度为0。</p>
+<p>例如当$S=4$时，输入一张图片：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/3.png" style="zoom:50%;" />
+<p>所返回的tensor为$(5,4,4)$，其中标签的置信度如下所示：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/4.png" style="zoom:50%;" />
+<p>现在暂不考虑一个网格单元中存在多个目标的问题（上图3行3列），当得到$S\times S$个框后，YOLOv1中使用NMS（非极大值抑制）将目标所在的框保留下来而去除其它框。</p>
+<ul>
+<li>Step1. 保留得分最高的框；</li>
+<li>Step2. 根据交并比，去掉与置信度最高的框重合度较高的框；</li>
+<li>Step3. 在剩下的框中继续选择得分最高的框，以此类推，直到没有剩下的框。</li>
+</ul>
+<p>当要检测多个目标（$C$）时（例如既要检测葫芦娃的头，又要检测葫芦娃的葫芦），在返回的结果中多加一个二维的One-hot向量，此时输入一张图片后，返回的结果为：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/5.png" style="zoom:50%;" />
+<p>考虑到小目标检测效果不佳的问题，针对不同尺寸的目标，YOLOv1中为每个网格单元预测多个五元组（$B$），分别负责不同尺寸的目标的回归。</p>
+<p>以上，YOLO v1的预测结果为一个$S\times S\times(B*5+C)$的tensor，在YOLOv1中，$S=7$，$B=2$，$C=20$（PASCAL VOC数据集有20类），即每张图片的最终输出为$7\times 7\times 30$的tensor。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/6.png" style="zoom:50%;" />
+<p>YOLOv1的整体结构如下（在ImageNet上训练时使用$224\times 224$的分辨率，检测时使用$448\times 448$。）：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/7.png" style="zoom:75%;" />
+<p>YOLOv1对平方和误差（sum-squared error）进行优化，但它对定位误差和分类误差的权重相等，YOLOv1引入$\lambda_{coord}$和$\lambda_{noobj}$增加边界框坐标预测的损失，并减少不包含对象的框的置信度预测的损失，设$\lambda_{coord}=5,\lambda_{noobj}=.5$。此外，为了反映大检测框中的小偏差要比小检测框中的小偏差影响要小，YOLOv1对边界框宽度和高度的平方根进行预测，而不是直接预测宽度和高度。</p>
+<h3 id="损失函数">损失函数
+</h3>$$
+\begin{aligned}
+&\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}[(x_i-\hat{x}_i)^2+(y_i-\hat{y}_i)^2] \\
++&\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w}_i})^2+(\sqrt{h_i}-\sqrt{\hat{h}_i})^2] \\
++&\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}(C_i-\hat{C}_i)^2 \\
++&\lambda_{noobj}\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{noobj}(C_i-\hat{C}_i)^2 \\
++&\sum_{i=0}^{S^2}\mathbb{1}_i^{obj}\sum_{c\in classes}(p_i(c)-\hat{p}_i(c))^2
+\end{aligned}
+$$$$
+\mathbb{1}_{ij}^{obj}=\left\{
+\begin{aligned}
+&1,\quad第i个网格第j个\text{anchor box}负责预测这个物体 \\
+&0,\quad其他
+\end{aligned}
+\right.
+$$<h3 id="backbone">Backbone
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv1/7.png" style="zoom:75%;" />
+<p>还是这张图，YOLOv1的backbone是参考GoogLeNet设计的，除最后两层全连接外，其它都大量使用了卷积层。下图是YOLOv4的论文中总结的检测类网络的结构：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/1.png" style="zoom:80%;" />
+<p>在YOLOv1中只有backbone，没有neck，属于Dense Prediction，一阶段检测器属于Dense Prediction，二阶段检测器既有Dense Prediction，又有Sparse Prediction。</p>
+<h3 id="训练过程">训练过程
+</h3><ul>
+<li>Step1. 在ImageNet上使用$224\times224$分辨率的图片训练分类器网络；</li>
+<li>Step2. 用$448\times448$分辨率端到端地训练目标检测网络。</li>
+</ul>
+<h2 id="yolov2--yolo9000">YOLOv2 &amp; YOLO9000
+</h2><h3 id="head-1">Head
+</h3><p>YOLOv1虽然检测速度快，但是定位不够准确，召回率较低，YOLOv2在YOLOv1的基础上提出了一些改进策略：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv2/1.png" style="zoom:75%;" />
+<h4 id="基于偏移量的边框回归">基于偏移量的边框回归
+</h4><p>同时代的R-CNN所预测的是偏移量，而YOLOv1直接预测框的坐标和大小，范围较大，YOLOv2中使用到了两种边框回归方式：基于anchor的偏移量和基于grid的偏移量。（anchor是R-CNN系列的一个概念，可以简单理解为一个预定义好的框，位置、宽高均已知，供预测时参考。）</p>
+<p>YOLOv2中的预测方式如下图所示：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv2/2.png" style="zoom:50%;" />
+<p>其中，$b_x,b_y,b_w,b_h$是最终得到的检测结果，$t_x,t_y,t_w,t_h$是模型要预测的值，$c_x,c_y$是grid左上角的坐标，$p_w,p_h$是anchor的宽和高。YOLOv2基于anchor框的宽高和grid的先验位置预测的偏移量。</p>
+<p>例如对于下图，图片被分为9个grid，红色框为ground truth，紫色框为anchor：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv2/3.png" style="zoom:50%;" />
+$$
+\begin{aligned}
+c_x&=\frac{149}{149}=1\quad c_y=\frac{149}{149}=1 \\
+b_x&=\frac{230}{149}=1.543\quad b_y=\frac{218}{149}=1.463
+\end{aligned}
+$$$$
+\begin{aligned}
+b_x&=\sigma(t_x)+c_x \\
+b_y&=\sigma(t_y)+c_y \\
+b_w&=p_we^{t_w} \\
+b_h&=p_he^{t_h}
+\end{aligned}
+$$$$
+\begin{aligned}
+t_x&=\log\frac{1.543-1}{1-(1.543-1)}=0.172\\
+t_y&=\log\frac{1.463-1}{1-(1.463-1)}=-0.148 \\
+t_w&=\log\frac{224}{315}=-0.340 \\
+t_h&=\log\frac{202}{280}=-0.326
+\end{aligned}
+$$$$
+\sigma(x)=\frac{1}{1+e^{-x}}\quad(\text{Sigmoid})
+$$$$
+125=5\times 5(c,x,y,w,h)+5\times 20\text{classes}
+$$<p>
+最后，关于每个网格中anchor个数的选择，YOLOv2的作者对VOC和COCO数据集的GT bounding box进行聚类，发现$k=5$时能够较好的平衡召回率和模型的复杂度。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv2/4.png" style="zoom:50%;" />
+<h3 id="backbone-1">Backbone
+</h3><p>为了进一步提升性能，YOLOv2重新训练了一个DarkNet-19（下图双横线上方）：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/2.png" style="zoom:50%;" />
+<p>VGGNet中得到一个结论，$7\times7$卷积可以用更小的卷积代替，且$3\times 3$卷积更加节约参数，使模型更小，且网络可以做得更深，因为能够引入更多的非线性的激活函数，能够更好地提取到特征。</p>
+<p>此外，还使用了bottleneck结构：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/3.png" style="zoom:75%;" />
+<p>使用$1\times1$的网络结构可以很方便的改变维度，灵活设计网络且减少计算量。</p>
+<p>同时在backbone中也没有FC层了，而是使用了GAP（Global Average Pooling）层，将$1000\times7\times7$映射为$1000\times1$，满足了不同尺度的输入图片的需求。并且针对较小的目标，只需把图片放大，就可以放大目标，提高检测精度。</p>
+<p>最后，由于backbone网络DarkNet-19是单独在ImageNet上训练的，所以最后加了softmax。</p>
+<p>完整的YOLOv2网络结构如下图：</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/4.jpg"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>reorg即passthrough layer，将$26\times26\times64$转为$13\times13\times256$，特征图大小减少4倍，通道数增加4倍，如下图：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/5.png" style="zoom:80%;" />
+<h3 id="训练过程-1">训练过程
+</h3><ul>
+<li>Step1. 在ImageNet上训练DarkNet-19，输入为$224\times224$，训练160个epoch；</li>
+<li>Step2. 将网络输入调整为$448\times 448$（测试时使用$416\times416$），继续在ImageNet上finetune，训练10个epoch；（将$448\times448$改为$416\times416$，将创建奇数空间维度，对于一些大目标，其中心点往往落入图片的中心位置，使用特征图中心的1个网格单元去预测bounding box要更容易。）</li>
+<li>Step3. 修改DarkNet-19模型：移除最后的卷积层、GAP层和softmax层，新增3个$3\times3\times1024$的卷积层和1个passthrough层，最后用$1\times1$的卷积层输出预测结果，并在检测数据集上继续finetune网络。</li>
+</ul>
+<h2 id="yolov3">YOLOv3
+</h2><h3 id="head-2">Head
+</h3><p>YOLOv2对于小目标的检测效果仍然不佳，在YOLOv3中，检测头分成了三部分：$13\times 13\times[3*(4+1+80)]$、$26\times 26\times[3*(4+1+80)]$和$52\times 52\times[3*(4+1+80)]$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv3/2.png" style="zoom:75%;" />
+<p>检测头的三个分支分别为32倍、16倍和8倍下采样，感受野由大变小，分别去预测大、中、小目标，对于每一个grid，共设置了9个先验框，大、中、小各3个，每个框预测一个五元组和80维的One-hot分类向量。三个特征图一共可以解码出$(52\times52+26\times26+13\times13)\times3=10647$个bounding box。</p>
+<p>YOLOv3仍然采用k-means聚类来确定先验框的个数，对于COCO数据集，9个聚类簇为$(10\times13),(16\times30),(33\times23),(30\times61),(62\times45),(59\times119),(116\times90),(156\times198),(373\times326)$。</p>
+<p>YOLOv3的网络结构如下：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv3/1.png" style="zoom:75%;" />
+<p>YOLOv3使用多标签分类，使用多个独立的logistic分类器代替softmax，因为部分数据集中存在许多重叠的标签（Woman and Person），多标签方法可以建立更优的模型。</p>
+<h3 id="训练策略">训练策略
+</h3><p>YOLOv3的训练策略非常重要，论文中的表述如下：</p>
+<blockquote>
+<p>YOLOv3 predicts an objectness score for each bounding box using logistic regression. This should be 1 if the bounding box prior overlaps a ground truth object by more than any other bounding box prior. If the bounding box prior is not the best but does overlap a ground truth object by more than some threshold we ignore the prediction, following. We use the threshold of .5. Unlike our system only assigns one bounding box prior for each ground truth object. If a bounding box prior is not assigned to a ground truth object it incurs no loss for coordinate or class predictions, only objectness.</p>
+</blockquote>
+<p>预测框分为正例、负例和忽略样例三种情况：</p>
+<ul>
+<li>正例：任取一个ground truth，与10647个框计算IoU，IoU最大的预测框即为正例，下一个ground truth在余下的10646个检测框中寻找IoU最大的检测框作为正例。
+<ul>
+<li>正例产生置信度loss、检测框loss和类别loss；</li>
+<li>置信度标签为1，对应的类别标签为1（其余为0），预测框为$(t_x,t_y,t_w,t_h)$。</li>
+</ul>
+</li>
+<li>负例：正例除外，与全部的ground truth的IoU都小于阈值（论文中为0.5）则为负例。（注：与ground truth计算IoU最大的检测框，即使IoU小于阈值，仍然为正例。）
+<ul>
+<li>负例仅产生置信度loss；</li>
+<li>置信度标签为0。</li>
+</ul>
+</li>
+<li>忽略样例：正例除外，与任意一个ground truth的IoU大于阈值则为忽略样例。
+<ul>
+<li>忽略样例不产生任何loss。</li>
+</ul>
+</li>
+</ul>
+<h3 id="损失函数-1">损失函数
+</h3>$$
+\begin{aligned}
+loss_{N_1}&=\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}[(t_{xi}-\hat{t}_{xi})^2+(t_{yi}-\hat{t}_{yi})^2] \\
+&+\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}[(t_{wi}-\hat{t}_{wi})^2+(t_{hi}-\hat{t}_{hi})^2] \\
+&+\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}(C_i-\hat{C}_i)^2 \\
+&+\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{noobj}(C_i-\hat{C}_i)^2 \\
+&-\sum_{i=0}^{S^2}\sum_{j=0}^B\mathbb{1}_{ij}^{obj}\sum_{c\in classes}[\hat{p}_i(c)\log(p_i(c))+(1-\hat{p}_i(c))\log(1-p_i(c))]
+\end{aligned}
+$$$$
+Loss=loss_{N_1}+loss_{N_2}+loss_{N_3}
+$$<h3 id="backbone-2">Backbone
+</h3><p>YOLOv3使用的backbone为Darknet-53：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/6.png" style="zoom:50%;" />
+<p>Darknet-53中依然采用了bottleneck结构，并添加了残差结构，但是没有池化层了，而是使用步长为2的卷积来替代池化层完成下采样的工作。</p>
+<h3 id="neck">Neck
+</h3><p>相比YOLOv1和YOLOv2，YOLOv3增加了neck这一部分。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/8.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>YOLOv3的neck部分使用的是FPN（Feature Pyramid Networks），生成不同尺寸的图片，最后统计所有图片的预测结果。</p>
+<p>YOLOv3的backbone有$(13,13,1024),(26,26,512),(52,52,256)$三个输出：</p>
+<ul>
+<li>对于$(13,13,1024)$的输出，经过5次DBL，输出$(13,13,512)$，然后一部分传到head中，另一部分经过DBL和上采样，得到$(26,26,256)$；</li>
+<li>对于$(26,26,512)$的输出，直接与上一步上采样后的结果concat，得到$(26,26,768)$，同时concat的结果经过5次DBL，得到$(26,26,256)$，一部分传入head中，另一部分经过DBL和上采样，得到$(52,52,128)$；</li>
+<li>对于$(52,52,256)$的输出，直接与上一步上采样后的结构concat，得到$(52,52,384)$，经过5次DBL后输入到head中。</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/9.jpg" style="zoom:61%;" />
+<h2 id="yolov4">YOLOv4
+</h2><p>YOLOv4在原有YOLO架构的基础上，采用了近年CNN领域中最优秀的优化策略，YOLOv4的文章如同一篇目标检测trick的综述。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/10.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<h3 id="head-3">Head
+</h3><h4 id="iou-threshold">IoU threshold
+</h4><p>在YOLOv3中，1个anchor负责一个ground truth，而YOLOv4使用多个anchor负责一个ground truth，对于$GT_j$而言，只要$IoU(anchor_i,GT_j)\gt threshold$，就让$anchor_i$负责$GT_j$。</p>
+<p>该方法使得在anchor框数量不变的情况下，正样本比例增加，缓解了正负样本不均衡的问题。</p>
+<h4 id="eliminate-grid-sensitivity">Eliminate grid sensitivity
+</h4>$$
+\begin{aligned}
+b_x&=1.1\cdot\sigma(t_x)+c_x \\
+b_y&=1.1\cdot\sigma(t_y)+c_y
+\end{aligned}
+$$$$
+\begin{aligned}
+b_x&=scale_{xy}\cdot\sigma(t_x)-\frac{scale_{xy}-1}{2}+c_x \\
+b_y&=scale_{xy}\cdot\sigma(t_y)-\frac{scale_{xy}-1}{2}+c_y \\
+\end{aligned}
+$$<p>此处的1.1也可以替换成一个其它的略大于1的数。</p>
+<h4 id="ciou-loss">CIoU-loss
+</h4>$$
+L_{IoU}=1-\frac{B\cap B_{gt}}{B\cup B_{gt}}
+$$<p>
+但这样带来的问题是，当ground truth和bounding box没有重合时，没有梯度回传，并且对于以下这种情况，三者IoU相等，但重合度不一样，左边较好，右边较差：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv4/1.png" style="zoom:67%;" />
+$$
+L_{GIoU}=1-IoU+\frac{|C-B\cup B_{gt}|}{|C|}
+$$<p>
+其中，$C$为同时包含预测框和真实框的最小框的面积。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv4/2.png" style="zoom:67%;" />
+<p>GIoU Loss解决了IoU Loss对距离不敏感的问题，但GIoU Loss存在训练过程中发散等问题，针对此，DIoU被提出，DIoU的作者提出了两个问题：</p>
+<ul>
+<li>是否可以直接最小化anchor与目标框的归一化距离，使其更快速收敛？</li>
+<li>如何使回归在与目标框有重叠甚至包含时更准确、更快？</li>
+</ul>
+$$
+L_{DIoU}=1-IoU+\frac{\rho^2(b,b^{gt})}{c^2}
+$$<p>
+其中$b$、$b^{gt}$分别代表预测框和真实框的中心点，$\rho$表示计算两个中心点间的欧氏距离，$c$代表能够同时包含预测框和真实框的最小闭包区域的对角线距离。</p>
+<p>DIoU Loss除了收敛速度比GIoU Loss要快不少外，对于下面这种情况：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv4/3.png" style="zoom:67%;" />
+<p>三者IoU Loss和GIoU Loss都一样，但DIoU Loss从左到右依次减小。</p>
+<p>但DIoU Loss仅缓解了bounding box全包含ground truth的问题，但没有彻底解决包含的问题，例如对于下面这种情况：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv4/4.png" style="zoom:50%;" />
+$$
+\mathcal{R}_{CIoU}=\frac{\rho^2(b,b^{gt})}{c^2}+\alpha v
+$$$$
+v=\frac{4}{\pi^2}\left(\arctan\frac{w^{gt}}{h^{gt}}-\arctan\frac{w}{h}\right)^2
+$$$$
+\mathcal{L}_{CIoU}=1-IoU+\frac{\rho^2(b,b^{gt})}{c^2}+\alpha v
+$$<p>
+CIoU Loss需要考虑$v$的梯度，长宽在$[0,1]$的情况下，$w^2+h^2$的值通常很小，会导致梯度爆炸，因此在实现时将$1/(w^2+h^2)$替换为1。</p>
+<h3 id="损失函数-2">损失函数
+</h3>$$
+\begin{aligned}
+&\lambda_{iou}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbb{1}_{ij}^{obj}L_{CIoU}\\
++&\lambda_{cls}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbb{1}_{ij}^{obj}\lambda_c(C_i-\hat{C}_i)^2+\lambda_{cls}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbb{1}_{ij}^{noobj}\lambda_c(C_i-\hat{C}_i)^2 \\
+-&\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbb{1}_{ij}^{obj}\sum_{c\in classes}\lambda_c[\hat{p}_i(c)\log(p_i(c))+(1-\hat{p}_i(c))\log(1-p_i(c))]
+\end{aligned}
+$$<p>
+从上到下三行式子分别为定位损失、目标置信度损失和分类损失。</p>
+<h3 id="输入端">输入端
+</h3><p>YOLOv4对训练的输入端进行改进，比如数据增强Mosaic、CmBN、SAT自对抗训练。</p>
+<h4 id="mosaic数据增强">Mosaic数据增强
+</h4><p>YOLOv4中使用的Mosaic参考了2019年提出的CutMix数据增强方式，CutMix使用两张图片进行拼接，而Mosaic采用四张图片，使用随机缩放、随机裁剪、随机排布的方式进行拼接。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/17.png" style="zoom:50%;" />
+<p>小目标的定义是目标框长宽在$0\times0 \sim 32\times 32$的物体，数据集中小目标框占所有框达到41.4%，但仅有52.3%的图片有小目标，中目标和大目标的分布相对来说更加均匀一些。</p>
+<p>使用四张图片拼接的方法大大丰富了检测数据集，并且经过随机缩放后增加了很多小目标，增强网络鲁棒性，并且可以减少GPU，直接计算4张图片的数据，Mini-batch大小不需要很大。</p>
+<h3 id="backbone-3">Backbone
+</h3><p>YOLOv4使用CSPDarknet-53作为backbone。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/11.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<h4 id="csp结构">CSP结构
+</h4><p>CSPDarknet-53是在Darknet-53的基础上，借鉴2019年CSPNet的经验产生的结构，其中包含5个CSP模块，经过5次CSP模块得到的特征图大小变化为：$608\rightarrow304\rightarrow152\rightarrow76\rightarrow38\rightarrow19$。</p>
+<p>CSPNet的作者认为推理计算过高的问题是由于网络优化中的梯度信息重复导致的，先将基础层的特征映射划分为两部分（$w<em>h</em>i\rightarrow w<em>h</em>i/2+w<em>h</em>i/2$），然后通过跨阶段层次结构将其合并，减少计算量的同时保证准确率。</p>
+<h4 id="mish激活函数">Mish激活函数
+</h4><p>YOLOv4的backbone中都使用了Mish激活函数（后面的网络仍为Leaky ReLU）。</p>
+<p>在介绍Mish前，需要先了解softplus和tanh。</p>
+$$
+\zeta(x)=\log(1+e^x)
+$$<p>
+softplus与ReLU的曲线相似，但比ReLU更为平滑：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/Figure_1.png" style="zoom:72%;" />
+$$
+\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}
+$$$$
+Mish(x)=x\times\tanh(\zeta(x))
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/Figure_2.png" style="zoom:72%;" /></p>
+<h4 id="dropblock">Dropblock
+</h4><p>Dropblock于2018年提出，和Dropout功能类似，是一种缓解过拟合的一种正则化方式。</p>
+<p>Dropout会在神经网络的学习过程中，将部分隐含层节点的权重归零，但卷积层后的dropout层对网络的泛化能力影响不大，即使随机丢弃，卷积层仍然可以从相邻的激活单元学到相同的信息。</p>
+<p>而Dropblock在整个局部区域进行删减丢弃。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/12.png" style="zoom:67%;" />
+<h3 id="neck-1">Neck
+</h3><p>YOLOv4的neck采用了SPP模块和FPN + PAN。</p>
+<h4 id="spp模块">SPP模块
+</h4><p>SPP模块中采用$k={1\times1,5\times5,9\times9,13\times13}$的最大池化方式，再将不同尺度的特征图concat起来。（池化时采用padding操作，移动的步长为1，故池化后的特征图大小均为$13\times13$）。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/13.png" style="zoom:67%;" />
+<h4 id="fpn--pan">FPN + PAN
+</h4><p>PAN是借鉴2018年图像分割领域PANet的创新点，在YOLOv3中引入了FPN，将高层的特征信息通过上采样的方式进行传递融合，如下图：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/14.png" style="zoom:50%;" />
+<p>YOLOv4在FPN层后面还添加了一个自底向上的特征金字塔，其中包含两个PAN结构，如下图：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/15.png" style="zoom:50%;" />
+<p>FPN层自顶向下传达强语义特征，特征金字塔自底向上传达强定位特征，将二者特征进行聚合。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/16.png" style="zoom:50%;" />
+<h2 id="yolov5">YOLOv5
+</h2><p>YOLOv5结构和YOLOv5结构比较类似。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/19.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<h3 id="输入端-1">输入端
+</h3><p>YOLOv5的输入端采用了和YOLOv4相同的Mosaic数据增强。</p>
+<h4 id="自适应锚框计算">自适应锚框计算
+</h4><p>在YOLOv3、YOLOv4中，初始锚框的值是通过单独的程序运行的，YOLOv5在每次训练时都自适应地计算不同训练集中的最佳锚框值。如果觉得计算锚框的效果不好，也可以在代码中将自动计算锚框的功能关闭。</p>
+<h4 id="letterbox自适应图片缩放">letterbox自适应图片缩放
+</h4><p>常用目标检测算法中，对于不同长宽的图片，常用方式是将图片统一缩放到一个标准尺寸再送入检测网络，例如$416\times416$和$608\times608$，但如果简单的使用resize，可能会导致图片信息的丢失。</p>
+<p>letterbox的主要思想是尽可能的利用网络感受野的信息特征，YOLOv5的网络经过5次下采样，$2^5=32$，最后一层特征图上的每个点可以对应原图中$32\times$32的区域信息。</p>
+<p>以$800\times600$的图片为例，原始缩放尺寸为$416\times416$：</p>
+<ul>
+<li>
+$$
+  \left\{
+  \begin{aligned}
+  &416\div800=\bf{0.52} \\
+  &416\div600=0.69
+  \end{aligned}
+  \right.
+  $$</li>
+<li>
+$$
+  \left\{
+  \begin{aligned}
+  &800\times0.52=416 \\
+  &600\times0.52=312
+  \end{aligned}
+  \right.
+  $$</li>
+<li>
+$$
+  \left\{
+  \begin{aligned}
+  &416-312=104 \\
+  &104\mod32=8 \\
+  &8\div2=4
+  \end{aligned}
+  \right.
+  \quad\Rightarrow 416\times320\quad(312+8)
+  $$</li>
+</ul>
+<h3 id="backbone-4">Backbone
+</h3><h4 id="focus结构">Focus结构
+</h4><p>Focus结构中比较关键的是切片操作，如下图：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/20.png" style="zoom:50%;" />
+<p>以YOLOv5s为例，原始$608\times608\times3$的图像输入到Focus结构中后，得到$304\times304\times12$的特征图，再经过卷积得到$304\times304\times32$的特征图。</p>
+<h4 id="csp结构-1">CSP结构
+</h4><p>与YOLOv4不同点在于，YOLOv4只有主干网络使用了CSP结构，而YOLOv5中设计了两种CSP结构，分别应用在backbone和neck中。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/21.png" style="zoom:67%;" />
+<h3 id="四种网络的深度和宽度">四种网络的深度和宽度
+</h3><p>YOLOv5s、YOLOv5m、YOLOv5l和YOLOv5x。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/18.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/backbone/22.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<h2 id="yolov7">YOLOv7
+</h2><p>Alexey Bochkovskiy大佬的重磅Paper，YOLOv7相同体量下比YOLOv5精度更高，速度快120%（FPS），比 YOLOX 快180%（FPS），比 Dual-Swin-T 快1200%（FPS），比 ConvNext 快550%（FPS），比 SWIN-L快500%（FPS）&hellip;</p>
+<h3 id="architecture">Architecture
+</h3><h4 id="extended-efficient-layer-aggregation-networks">Extended efficient layer aggregation networks
+</h4><p>除参数量、计算量和计算密度外，还可以从访存代价的角度来设计高效体系结构，ShuffleNet V2中分析了输入/输出通道比、结构的分支数量和Element-wise操作（ReLU、Add）对网络推理速度的影响。</p>
+<p>ShuffleNet V2中给出结论：在计算量和参数量固定的前提下，<strong>输入和输出的通道数相等</strong>时MAC（Memory Access Cost）取下界，此时的设计是最高效的。</p>
+<p><em>ShuffleNet V2的文章中提出了多个设计准则来帮助模型提速。</em></p>
+<ul>
+<li><a class="link" href="https://arxiv.org/abs/1807.11164"  target="_blank" rel="noopener"
+    >ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design</a></li>
+</ul>
+<h5 id="vovnet">VoVNet
+</h5><ul>
+<li><a class="link" href="https://arxiv.org/abs/1904.09730"  target="_blank" rel="noopener"
+    >An Energy and GPU-Computation Efficient Backbone Network for Real-Time Object Detection</a></li>
+</ul>
+<h6 id="网络结构">网络结构
+</h6><p>VoVNet的网络结构如下：</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/10.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>VoVNet-27的前两个stage如下：</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/11.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>对于VoVNet-27：</p>
+<ul>
+<li>
+<p>第1个stage：包含3个$3\times3$卷积，通道数分别为64、64、128；</p>
+</li>
+<li>
+<p>第2个stage：经过一个OSA模块后，输出特征变为原来的$1/4$，其中OSA模块包括5个通道数为64的$3\times3$卷积，然后将这5个卷积的输出concat在一起，通道数变为$64\times5=320$，再经过1个$1\times1$卷积。输出通道数为128；</p>
+</li>
+<li>
+<p>后面3个stage均为OSA模块，只是通道数量不同。</p>
+</li>
+<li>
+<p>注：每个stage结束后都会有一次$3\times3$、stride=2的max-pooling层，用来减小特征的维度，且每个卷积层都有序列Conv-BN-ReLU。</p>
+</li>
+</ul>
+<h6 id="osaone-shot-aggregation模块">OSA（One-Shot Aggregation）模块
+</h6><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/12.png" style="zoom:42%;" />
+$$
+X_l=H_l([X_0,X_1,...,X_{l-1}])
+$$<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/13.png" style="zoom:42%;" />
+<p>DenseNet的输入与输出通道数不一致，且通道数较高，DenseNet采用了$1\times1$卷积压缩特征，下图第一行是DenseNet各个卷积层之间的相互关系的大小，$(s,l)$表示第$s$和第$l$层之间权重的归一化L1范数，可以看出浅层特征图对深层特征图的贡献很少。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/17.png" style="zoom:67%;" />
+<p>DenseNet带来了大量的特征冗余，OSA模块只在最后一层聚集前面所有的层，经过这一改动，每层输入和输出的通道数是固定的，就可以让输入和输出的通道数相等而取到最小的MAC，且不需要$1\times1$卷积来压缩特征（$1\times1$卷积会引入大量的激活函数计算）。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/16.png" style="zoom:56%;" />
+<h5 id="cspvovnet">CSPVoVNet
+</h5><p>CSPVoVNet考虑了梯度路径，使不同层学到更多样化的特征。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/18.png" style="zoom:50%;" />
+<h5 id="elan">ELAN
+</h5><p>//TODO</p>
+<h5 id="e-elan">E-ELAN
+</h5><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/19.png" style="zoom:67%;" />
+<h4 id="model-scaling-for-concatenation-based-models">Model scaling for concatenation-based models
+</h4><p>EfficientNet、Scaled-YOLOv4等方法的模型缩放主要用于PlainNet或ResNet等架构中，当这些架构执行扩容、缩容时，每一层的入度和出度都不会改变，因此可以独立分析每个伸缩因子对参数和计算量的影响，但如果将这些方法用于基于级联的体系结构，对深度执行放大或缩小时，紧接在基于级联的计算快之后的translation层的入度就会增加或减小。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/14.png" style="zoom:67%;" />
+<p>对于基于级联的模型，不能单独分析不同的比例因子，当缩放计算块的深度时，还必须计算该块的输出通道变化，然后在过渡层执行宽度因子缩放，提出的复合尺度方法既能保持模型在初始设计时的性质，又能保持最优结构。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/15.png" style="zoom:67%;" />
+<h3 id="trainable-bag-of-freebies">Trainable bag-of-freebies
+</h3><h4 id="repconv">RepConv
+</h4><h5 id="repvgg">RepVGG
+</h5><p>RepVGG（CVPR-2021）使用“VGG式”单路极简架构，仅用$3\times3$卷积和ReLU，在速度和性能上都达到了SOTA水平。</p>
+<p>“VGG式”模型有以下几大优势：</p>
+<ul>
+<li>$3\times3$卷积速度极快（现有加速库都对$3\times3$卷积有所优化）；</li>
+<li>单路架构速度快（减少分支可以加快推理速度）；</li>
+<li>单路架构省内存；</li>
+<li>单路架构灵活性更好，可灵活改变各层宽度。</li>
+</ul>
+<p>RepVGG最大的亮点是利用了结构重参数化，训练一个模型后，将多分支模型等价转换为单路模型，通过这种方式同时利用多分支模型训练性能高的优势和单路模型推理速度快的优势。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/1.png" style="zoom:50%;" />
+$$
+Conv(x,W1)+Conv(x,W2)+Conv(x,W3)=Conv(x,(W1+W2+W3))
+$$<p>
+$1\times1$相当于一个特殊的$3\times3$卷积，而恒等映射相当于一个特殊的$1\times1$卷积，因此也是一个特殊的$3\times3$卷积，所以只需：</p>
+<ul>
+<li>Step1. 将identity转换为$1\times1$卷积（单位矩阵，当前通道为1，其他通道为0）；</li>
+<li>Step2. 将$1\times1$卷积转换为$3\times3$卷积（用0填充）。</li>
+</ul>
+<p>下图是输入、输出通道均为2的情况，$3\times3$卷积的参数是4个$3\times3$矩阵，$1\times1$卷积的参数是1个$2\times2$矩阵。</p>
+<p>三个分支均有BN层，但这并不会妨碍转换的可行性。</p>
+$$
+\begin{aligned}
+\mu_\mathcal{B}&\leftarrow\frac{1}{m}\sum_{i=1}^mx_i \\
+\sigma_\mathcal{B}^2&\leftarrow\frac{1}{m}\sum_{i=1}^{m}(x_i-\mu_\mathcal{B})^2 \\
+\hat{x}_i&\leftarrow\frac{x_i-\mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2+\epsilon}} \\
+y_i&\leftarrow\gamma\hat{x}_i+\beta\equiv\textbf{BN}_{\gamma,\beta}(x_i)
+\end{aligned}
+$$$$
+y_i=\gamma\frac{x_i-\mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2+\epsilon}}+\beta=\frac{\gamma}{\sqrt{\sigma_\mathcal{B}^2+\epsilon}}x_i+\left(\beta-\frac{\gamma\mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2+\epsilon}}\right)
+$$$$
+W'_{i,:,:,:}=\frac{\gamma_i}{\sigma_i}W_{i,:,:,:}\ ,\quad b'_i=\frac{\mu_i\gamma_i}{\sigma_i}+\beta_i
+$$<p>
+因此训练好的模型可以等价转换为只有$3\times3$卷积的单路模型。</p>
+<h6 id="planned-repconv">Planned RepConv
+</h6><p>尽管RepConv在VGG上取得了优异的性能，但将其直接应用于ResNet和DenseNet等网络结构上时，其精度会显著降低，作者使用<strong>梯度流传播路径</strong>来分析不同的重参化模块应该和哪些网络搭配使用。</p>
+<p>通过分析RepConv与不同架构的组合以及产生的性能，作者发现RepConv中的identity破坏了ResNet中的残差结构和DenseNet中的跨层连接，而残差结构和跨层连接为不同的特征图提供了梯度的多样性。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/3.png" style="zoom:60%;" />
+<p>（RepConvN：RepConv without identity connection）</p>
+<p>得到的结论是：具有残差连接的层，其RepConv不应该具有identity连接。</p>
+<h5 id="coarse-for-auxiliary-and-fine-for-lead-loss">Coarse for auxiliary and fine for lead loss
+</h5><h6 id="deep-supervision">Deep supervision
+</h6><p>深度监督作为一个训练技巧于2014年在<a class="link" href="https://arxiv.org/abs/1409.5185"  target="_blank" rel="noopener"
+    >Deeply-Supervised Nets</a>提出来，深度监督又称中继监督，在深度神经网络的某些中间隐藏层加了一个辅助的分类器作为一种网络分支来对主干网络进行监督，目的是为了浅层能够得到更加充分的训练，解决梯度消失和收敛速度过慢的问题。</p>
+<p>如下图：</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/4.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/5.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/6.png" style="zoom:70%;" />
+<h5 id="label-assignment">Label assignment
+</h5><p>首先简单介绍一下Label assignment，在监督学习中，计算loss，需要有预测结果和标签，在目标检测中最后输出的是框，需要把一些有价值的输出和GT匹配，简单的做法是人工定义规则，例如当生成的矩形框和GT的矩形框之间的IoU大于多少，就认为是目标，小于多少就认为是背景。</p>
+<p>YOLOv7中将负责最终输出的head为lead head，用于辅助训练head称为auxiliary head。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/7.png" style="zoom:50%;" />
+<p>近年来，研究者经常利用网络预测输出的质量和分布，并结合GT考虑，使用一些计算和优化方法来生成可靠的软标签，例如目标检测中，YOLO使用边界框的回归预测和GT的IoU作为客观的软标签。YOLOv7中，将网络预测结果与GT一起考虑。将结合模型预测结果和GT来获取软标签的模块称为“label assigner”。</p>
+<p>新的问题是：如何将软标签分配给auxiliary head和lead head，目前常用的方法是将auxiliary head和lead head分开，然后使用各自的结果和GT执行标签分配。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/8.png" style="zoom:50%;" />
+<p>YOLOv7中，通过lead head预测来引导auxiliary head和lead  head，使用lead head预测作为指导，生成由粗到细的层次标签，分别用于auxiliary head和lead head的学习。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/YOLO/YOLOv7/9.png" style="zoom:50%;" />
+<p>具体地，lead head的预测结果和GT为依据生成软标签，但生成两个不同集合的软标签，粗粒度和细粒度，粗粒度标签是通过放松约束条件来让更多网格当作正样本，专注于提高auxiliary head的召回能力，lead head的输出结果可以从高召回的结果中过滤高准确的结果作为最终输出。</p>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">自编码器</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

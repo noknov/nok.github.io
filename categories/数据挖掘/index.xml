@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>数据挖掘 on zn.yan</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/</link>
+        <description>Recent content in 数据挖掘 on zn.yan</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 29 Jun 2021 21:15:00 +0000</lastBuildDate><atom:link href="https://demo.stack.jimmycai.com/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2021 中国高校计算机大赛 - 微信大数据挑战赛</title>
+        <link>https://demo.stack.jimmycai.com/p/2021-%E4%B8%AD%E5%9B%BD%E9%AB%98%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A4%A7%E8%B5%9B-%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9B/</link>
+        <pubDate>Tue, 29 Jun 2021 21:15:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/p/2021-%E4%B8%AD%E5%9B%BD%E9%AB%98%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A4%A7%E8%B5%9B-%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9B/</guid>
+        <description>&lt;p&gt;多任务推荐系统赛题，初赛Rank 68/6768，复赛Rank 70。&lt;/p&gt;
+&lt;h1 id=&#34;2021中国高校计算机大赛---微信大数据挑战赛&#34;&gt;2021中国高校计算机大赛 - 微信大数据挑战赛
+&lt;/h1&gt;&lt;h2 id=&#34;赛题描述&#34;&gt;赛题描述
+&lt;/h2&gt;&lt;p&gt;　　本次比赛基于脱敏和采样后的数据信息，对于给定的一定数量到访过微信视频号“热门推荐”的用户， 根据这些用户在视频号内的历史n天的行为数据，通过算法在测试集上预测出这些用户对于不同视频内容的互动行为（包括点赞、点击头像、收藏、转发等）的发生概率。 本次比赛以多个行为预测结果的加权uAUC值进行评分。&lt;br&gt;
+　　比赛提供训练集用于训练模型，测试集用于评估模型效果，提交结果demo文件用于展示提交结果的格式。 所有数据文件格式都是带表头的.csv格式，不同字段列之间用英文逗号分隔。初赛与复赛的数据分布一致，数据规模不同。 初赛提供百万级训练数据，复赛提供千万级训练数据。&lt;/p&gt;
+&lt;h2 id=&#34;baseline&#34;&gt;Baseline
+&lt;/h2&gt;&lt;p&gt;　　主办方为本次比赛提供了一份基线:&lt;a class=&#34;link&#34; href=&#34;https://github.com/WeChat-Big-Data-Challenge-2021/WeChat_Big_Data_Challenge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Wechat_Big_Data_Challenge_Baseline&lt;/a&gt;，该基线基于Wide &amp;amp; Deep模型实现，除6列原始id特征和feed时长特征外，在id特征的基础上构造了一些统计特征。Weight_uAUC线下0.657003，线上0.607908。&lt;br&gt;
+　　官方提供的这份基线分为数据集生成、离线模型训练、离线模型评估、在线模型训练、生成线上提交结果几个步骤，流程比较复杂，且线上线下gap较大，达到了5个百分点（经验证是统计特征涉及时间穿越，删去此部分特征可以提高2-3个百，群里也有人在基线基础上调参也能得到线上0.65+的分数），故我并没有过多参考此份基线。&lt;br&gt;
+　　我所使用的是讨论区深度匹配树大佬所开源的基于MMoE的多任务学习模型，由于MMoE的多任务训练机制，训练速度相比四个任务逐个建模大大提升，可以迅速验证一些特征的有效性。线上分数约为0.635。&lt;br&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/wechat_algo_stage1/MMoE.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;MMoE&#34;
+	
+	
+&gt;
+　　TensorFlow版：&lt;a class=&#34;link&#34; href=&#34;https://github.com/zanshuxun/WeChat_Big_Data_Challenge_DeepCTR_baseline&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;mmoe_tf&lt;/a&gt;，Pytorch版：&lt;a class=&#34;link&#34; href=&#34;https://github.com/dpoqb/wechat_big_data_baseline_pytorch&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;mmoe_torch&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;统计特征&#34;&gt;统计特征
+&lt;/h2&gt;&lt;p&gt;　　基线中仅使用了6列id类特征，第一想法是在这六列id的基础上构建统计特征，由于数据带有时间序列的性质，提取特征时要注意时间穿越问题。我根据user、feed等多侧的历史行为，构建了点击、曝光、CTR等相关特征，这些特征在CTR类的比赛中非常常见，Kaggle、Github上也有非常多优秀的开源代码，故这部分特征的具体提取不再赘述。&lt;br&gt;
+　　但将此部分统计特征喂给nn时，nn几乎不收敛，loss波动极大，归一化后线上成绩也非常低，于是开始思考什么样的特征适合喂给nn，开始下一阶段的特征构建。&lt;/p&gt;
+&lt;h2 id=&#34;512维多模态向量&#34;&gt;512维多模态向量
+&lt;/h2&gt;&lt;p&gt;　　这部分特征的正确使用能够获得较大幅度的提升，我尝试了两种方法，第一种是直接merge到训练集上，不过直接merge极容易OOM（除非内存足够），第二种是给feedid的嵌入赋值权重，不过后者经过实验效果不佳，也可能是我使用的方式不对。我租用的服务器配置为2*P40 + 112G RAM，将512维多模态向量经过PCA降维到48维后并在训练集上送入nn进行训练，线上线下均有大幅度提升，仅加入多模态这部分embedding特征后，线上成绩可以直接突破0.65。&lt;/p&gt;
+&lt;h2 id=&#34;tagkeyword多值离散特征&#34;&gt;tag、keyword：多值离散特征
+&lt;/h2&gt;&lt;p&gt;　　这部分特征的处理方式有很多，例如作为序列提取通过word2vec提取embedding，将每个离散取值当成词，整个tag/keyword列表当作句子，获取每个词的词向量后做pooling操作得到该部分的embedding，此处可参考&lt;a class=&#34;link&#34; href=&#34;https://mp.weixin.qq.com/s?__biz=Mzk0NDE5Nzg1Ng==&amp;amp;mid=2247496721&amp;amp;idx=1&amp;amp;sn=c7fab106254f555cbea64e8464c84074&amp;amp;chksm=c32aed9ef45d64887f23606031d052c3fdce868b975644ca62db52bfd70185d4ddd212f0364f&amp;amp;mpshare=1&amp;amp;scene=23&amp;amp;srcid=0701JaeEB4Z1IDrtYDj3zaDK&amp;amp;sharer_sharetime=1625107770080&amp;amp;sharer_shareid=8c3bd21461ee94c3d6cc62dff5de10ac#rd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;序列问题必备特征工程——基于Word2Vec的文本向量&lt;/a&gt;，或者通过embedding_lookup，此处可参考&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/149014347&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;推荐算法-4.多值离散特征的embedding解决方案&lt;/a&gt;。&lt;br&gt;
+　　该部分特征对分数的提升也能达到7-8个千，我的线上分数也达到了0.659。&lt;/p&gt;
+&lt;h2 id=&#34;多种子融合&#34;&gt;多种子融合
+&lt;/h2&gt;&lt;p&gt;　　由于tensorflow的内部机制，导致其无法完全固定随机种子，同特征同参数下训练结果有一定幅度波动，波动幅度大概有2-3个千，通过多次训练，取平均可以稳定结果，线上成绩有约2个千的小幅度提升。&lt;/p&gt;
+&lt;h2 id=&#34;树模型&#34;&gt;树模型
+&lt;/h2&gt;&lt;p&gt;　　我在0.664附近卡了近两周的时间，比赛中后期的时候，天才儿童在6.14的周周星分享中开源了一份线上成绩0.645的&lt;a class=&#34;link&#34; href=&#34;https://developers.weixin.qq.com/community/minihome/article/doc/0006467d05427892b94c341aa56813&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;梯度提升决策树模型基线&lt;/a&gt;，当时队伍中仅我自己一人，仅靠单模进入复赛不太稳定，而且初赛由于数据采样的原因，树模型会比nn更有优势，故决定转手再做一个树模型。&lt;br&gt;
+　　树模型中主要构造了一些统计类特征，和前文提到的类似，主要包括曝光、转化、视频观看等情况的滑窗统计特征，以及包括曝光、偏好等&lt;strong&gt;全局信息统计特征&lt;/strong&gt;（全局统计也能上分..Orz）。&lt;br&gt;
+　　我在此份基线的基础上添加了nn中使用的几个embedding特征，树模型单模单折分数做到0.655。和我此前0.664的nn仅5/5平均后，就能够有3个k的提升。&lt;/p&gt;
+&lt;h2 id=&#34;基于embedding的衍生特征&#34;&gt;基于embedding的衍生特征
+&lt;/h2&gt;&lt;p&gt;　　这时距离比赛结束还有一周的时间，我在群里找到了一个做nn的和一个做树模型的队有，单模分数都在0.664上下，我和另一个队友的sub简单融合后分数达到了0.670，提升较大，然后继续优化nn单模。&lt;br&gt;
+　　基于前面提取的多个embedding特征，我在此基础上又提取了一些衍生特征，方式包括滑窗pooling等，收益较大，简单衍生后就能提升3个千。&lt;/p&gt;
+&lt;h2 id=&#34;初赛b榜&#34;&gt;初赛B榜
+&lt;/h2&gt;&lt;p&gt;　　B榜数据和A榜的user无重叠，分布一致，排行榜上普遍有3个k到6个k的下降，我们的B榜最终分数为0.67093。&lt;/p&gt;
+&lt;h2 id=&#34;待解决的问题&#34;&gt;待解决的问题
+&lt;/h2&gt;&lt;h3 id=&#34;部分feed冷启动&#34;&gt;部分feed冷启动
+&lt;/h3&gt;&lt;p&gt;　　简单观察数据可发现，第15天仍有2607个feed冷启动（未在user_action中出现），样本量为72758。&lt;br&gt;
+　　对于冷启动问题，目前的基本思路是做矩阵SVD分解，构建用户和商品的交互矩阵，对稀疏矩阵进行SVD分解，得到用户和商品的向量，将用户向量和商品向量作为特征拼接到用户和商品侧。
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/wechat_algo_stage1/feed%E5%86%B7%E5%90%AF%E5%8A%A8&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;每日冷启动feed数量&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;模型结构&#34;&gt;模型结构
+&lt;/h3&gt;&lt;p&gt;　　比赛初期GDY郭大使用Transformer输入原始的id类特征轻松上到了0.65+，从后面周周星分享的一些思路也可以看出，模型结构的修改可以带来比较大的收益，例如参考DIN对用户的长短期兴趣进行表征等。&lt;/p&gt;
+&lt;h2 id=&#34;参考代码&#34;&gt;参考代码
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/meurice996/WBDC2021_Solution&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/meurice996/WBDC2021_Solution&lt;/a&gt;&lt;/p&gt;</description>
+        </item>
+        <item>
+        <title>2021 招商银行 FinTech 数据赛道</title>
+        <link>https://demo.stack.jimmycai.com/p/2021-%E6%8B%9B%E5%95%86%E9%93%B6%E8%A1%8C-fintech-%E6%95%B0%E6%8D%AE%E8%B5%9B%E9%81%93/</link>
+        <pubDate>Tue, 18 May 2021 00:48:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/p/2021-%E6%8B%9B%E5%95%86%E9%93%B6%E8%A1%8C-fintech-%E6%95%B0%E6%8D%AE%E8%B5%9B%E9%81%93/</guid>
+        <description>&lt;p&gt;时间序列回归赛题，一个简单的方案分享+指标MAPE翻车记录，B榜Rank53。magic number yyds~&lt;/p&gt;
+&lt;h1 id=&#34;2021招商银行-fintech-精英训练营---数据赛道&#34;&gt;2021招商银行 FinTech 精英训练营 - 数据赛道
+&lt;/h1&gt;&lt;h2 id=&#34;赛题任务&#34;&gt;赛题任务
+&lt;/h2&gt;&lt;p&gt;　　本次竞赛给出的数据包含日期、节假日信息、时间段、岗位（含2种岗位A、B）、业务类型和业务量数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;任务1：预测未来31天各岗位每天的业务量总量&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;任务2：预测未来31天各岗位每天每半小时粒度的业务总量&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A榜：提供2018年1月1日到2020年10月31日的训练数据（train_v1），选手提交2020年11月1日到2020年11月30日的预测结果。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;B榜：提供2018年1月1日到2020年11月30日的训练数据（train_v2），选手提交2020年12月1日到2020年12月31日的预测结果。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{aligned}
+MAPE = \frac{1}{N} \sum_{i=1}^{N} \left| \frac{Y_i - \hat{Y_i}}{Y_i + 1} \right| \times 100\%\\
+\end{aligned}
+$$&lt;h2 id=&#34;解决方案&#34;&gt;解决方案
+&lt;/h2&gt;&lt;h3 id=&#34;任务1&#34;&gt;任务1
+&lt;/h3&gt;&lt;p&gt;　　简单观察数据可发现，A、B岗位业务量差距较大，故A、B岗位分开建模。
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/fintech2021/A%E5%B2%97%E4%BD%8D%E6%97%A5%E4%B8%9A%E5%8A%A1%E9%87%8F.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;A岗位日业务量&#34;
+	
+	
+&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/fintech2021/B%E5%B2%97%E4%BD%8D%E6%97%A5%E4%B8%9A%E5%8A%A1%E9%87%8F.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;B岗位日业务量&#34;
+	
+	
+&gt;
+　　对于日业务量，我均采用&lt;strong&gt;LightGBM回归模型&lt;/strong&gt;进行预测。&lt;br&gt;
+　　考虑到特殊时期对业务量的影响（特别是2020年上半年的Covid-19疫情），仅采用&lt;strong&gt;2018年3月1日至2018年11月30日&lt;/strong&gt;的数据作为训练集，采用&lt;strong&gt;2018年12月1日至2018年12月30日&lt;/strong&gt;的数据作为验证集（B榜，A榜划分类似，向前推一个月即可）。&lt;br&gt;
+　　特征工程方面，所做的工作并不太多，特征包括&lt;strong&gt;日期特征&lt;/strong&gt;（day_of_week、day_of_month&amp;hellip;）、&lt;strong&gt;节假日特征&lt;/strong&gt;（节假日类型、距离下个工作日的天数、距离下个节假日的天数&amp;hellip;）等。&lt;br&gt;
+　　&lt;strong&gt;后处理&lt;/strong&gt;是本题上分的一个关键点。观察数据，可以大致推断出接近年底的业务量是一个逐渐升高的趋势，将模型所预测的结果拼接到原数据集后再对整体走势做可视化分析，可以对模型预测结果的合理性做出大致判断。最开始，我尝试对预测的所有结果都乘一个系数（大约1.25左右，具体根据训练集和使用的特征等的不同会有一定的差异），获得了比较大的收益，随后我又对这个系数更加细化，月上旬、中旬、下旬分别乘不同的系数（逐渐递增），也获得了一定的提升，继续细化这个粒度（按周、按日）应该还会有提升，不过我并没有做更多这方面的尝试。&lt;br&gt;
+　　&lt;strong&gt;PS&lt;/strong&gt;：关于后处理还有一些比较不寻常的方法，比如老肥将每一条预测结果都加上大小为666的偏移量，同样取得了较好的线上分数&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;任务2&#34;&gt;任务2
+&lt;/h3&gt;&lt;p&gt;　　任务2同样采用LightGBM回归模型，训练数据与任务1相同，特征方面主要就增加了periods。由于与任务1相比，任务2的误差较大，所以我将任务2的训练从直接预测业务量改为了&lt;strong&gt;预测当前时间段的业务量占当天全部业务量的比例&lt;/strong&gt;，利用到了任务1的预测结果来调整任务2，这样做还一个好处是，任务1、2基本是同增同减的状态。&lt;/p&gt;
+&lt;h2 id=&#34;关于指标mape&#34;&gt;关于指标MAPE
+&lt;/h2&gt;&lt;p&gt;　　本次比赛中，我一开始就错误的将MAPE当作Lgb的metric，后面一直都忽略了这点，导致任务2的预测结果问题很大，特别是业务量较少（接近0）时，对指标的影响非常大。当我任务1优化到0.059时，任务2的MAPE仍为0.20，最终B榜也仅位于第53名，将metric调整为MSE即可。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当实际值为零时，MAPE会采用未定义的值，例如在需求预测中可能会发生这种情况。此外，当实际值非常接近零时，它将采用极值。&lt;/li&gt;
+&lt;li&gt;MAPE是不对称的，它对负误差（当预测值高于实际值时）要比对正误差施加更大的罚款。解释如下：对于过低的预测，百分比误差不能超过100％。虽然没有太高的预测上限。因此，MAPE将偏向于预测不足而不是过度预测的模型。&lt;/li&gt;
+&lt;li&gt;MAPE假定变量的度量单位具有有意义的零值。因此，尽管预测需求并使用MAPE是有意义的，但当预测温度以摄氏度（不仅是那个）表示时，却没有意义，因为温度具有任意零点。&lt;/li&gt;
+&lt;li&gt;MAPE并非到处都是可微的，在将其用作优化标准时可能会导致问题。&lt;/li&gt;
+&lt;/ul&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

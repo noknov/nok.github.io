@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——各式各样的神奇的自注意力\n">
+<title>各式各样的自注意力机制</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E5%90%84%E5%BC%8F%E5%90%84%E6%A0%B7%E7%9A%84%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="各式各样的自注意力机制">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——各式各样的神奇的自注意力\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E5%90%84%E5%BC%8F%E5%90%84%E6%A0%B7%E7%9A%84%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-04-30T19:29:00&#43;00:00'/><meta property='article:modified_time' content='2022-04-30T19:29:00&#43;00:00'/>
+<meta name="twitter:title" content="各式各样的自注意力机制">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——各式各样的神奇的自注意力\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#human-knowledge">Human knowledge</a>
+      <ol>
+        <li><a href="#local-attention--truncated-attention">Local Attention / Truncated Attention</a></li>
+        <li><a href="#stride-attention">Stride Attention</a></li>
+        <li><a href="#global-attention">Global Attention</a></li>
+        <li><a href="#papers">Papers</a></li>
+      </ol>
+    </li>
+    <li><a href="#clustering">Clustering</a>
+      <ol>
+        <li><a href="#reformer">Reformer</a>
+          <ol>
+            <li><a href="#步骤">步骤</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#learnable-patterns">Learnable Patterns</a>
+      <ol>
+        <li><a href="#sinkhorn-sorting-network">Sinkhorn Sorting Network</a></li>
+      </ol>
+    </li>
+    <li><a href="#representative-key">Representative key</a>
+      <ol>
+        <li><a href="#linformer">Linformer</a>
+          <ol>
+            <li><a href="#reduce-number-of-keys">Reduce Number of Keys</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#kq-first-rightarrow-vk-first">$k,q$ first $\rightarrow$ $v,k$ first</a>
+      <ol>
+        <li><a href="#忽略softmax的情况">忽略Softmax的情况</a></li>
+        <li><a href="#加回softmax">加回Softmax</a></li>
+        <li><a href="#self-attention中的qkv">Self-attention中的$q$、$k$、$v$</a></li>
+        <li><a href="#实现">实现</a></li>
+      </ol>
+    </li>
+    <li><a href="#new-framework">New framework</a>
+      <ol>
+        <li><a href="#无需qk产生attentionsynthesizer">无需$q,k$产生Attention——Synthesizer</a></li>
+      </ol>
+    </li>
+    <li><a href="#attention-free">Attention-free</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%90%84%E5%BC%8F%E5%90%84%E6%A0%B7%E7%9A%84%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/">各式各样的自注意力机制</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 30, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=51"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——各式各样的神奇的自注意力</a></p>
+<h1 id="self-attention变型">Self-attention变型
+</h1><p>Sequence length=$N$，产生的$N$个key向量和$N$个query向量两两之间做Dot-product，共$N^2$平方次计算，得到一个$N\times N$的矩阵Attention Matrix，根据该矩阵对value向量加权求和。Self-attention往往是模型里面的一个小模块，当$N$很大时，模型的主要计算量都集中在Self-attention上，对于计算速度的优化往往都是用在影像上。</p>
+<h2 id="human-knowledge">Human knowledge
+</h2><h3 id="local-attention--truncated-attention">Local Attention / Truncated Attention
+</h3><p>某些问题不用看完整的序列，只用看左右邻居的信息即可，将其他位置的信息设为0。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/local%20attention.png" style="zoom:50%;" />
+<p>可以加快运算速度，但每次做Attention只能看到某个小范围的信息，和CNN的差别就不大了。</p>
+<h3 id="stride-attention">Stride Attention
+</h3><p>与Local Attention类似，看更远的邻居，例如看三个位置之前和三个位置之后的信息。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/stride%20attention.png" style="zoom:50%;" />
+<h3 id="global-attention">Global Attention
+</h3><p>在原始序列中加入一些特殊的token，代表该位置要做Global Attention，Global Attention会从序列中的每一个token去收集信息。</p>
+<ul>
+<li>Attend to every token -&gt; 收集所有的信息</li>
+<li>Attended by every token -&gt; 能获取全局的信息</li>
+</ul>
+<p>Global Attention有两种做法，可以从原始序列中选择一些已有的字符（例如BERT中的[CLS]标志、句号等）作为token，或外加额外的token。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/global%20attention.png" style="zoom:50%;" />
+<h3 id="papers">Papers
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2004.05150"  target="_blank" rel="noopener"
+    >2004.05150] Longformer: The Long-Document Transformer (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2007.14062"  target="_blank" rel="noopener"
+    >2007.14062] Big Bird: Transformers for Longer Sequences (arxiv.org)</a></li>
+</ul>
+<h2 id="clustering">Clustering
+</h2><p>在Attention矩阵，可能有些值很大，有些值特别小，可以直接把较小的权值置0，问题在于如何快速估计哪些地方的Attention值较高，而哪些地方的Attention值较低。</p>
+<h3 id="reformer">Reformer
+</h3><ul>
+<li>
+<p><a class="link" href="https://openreview.net/forum?id=rkgNKkHtvB"  target="_blank" rel="noopener"
+    >Reformer: The Efficient Transformer | OpenReview</a></p>
+</li>
+<li>
+<p>[<a class="link" href="https://arxiv.org/abs/2003.05997"  target="_blank" rel="noopener"
+    >2003.05997] Efficient Content-Based Sparse Attention with Routing Transformers (arxiv.org)</a></p>
+</li>
+</ul>
+<h4 id="步骤">步骤
+</h4><ul>
+<li>
+<p>Step 1：对query和key做聚类</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/clustering1.png" style="zoom:50%;" />
+<p>聚类有很多可以加速的方法，对query和key做聚类时，会采取精度相对较低但速度很快的方法。</p>
+</li>
+<li>
+<p>Step 2 对同一Cluster的query和key计算Attention分数</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/clustering2.png" style="zoom:50%;" />
+<p>不属于同一类的直接将Attention值设为0。</p>
+</li>
+</ul>
+<h2 id="learnable-patterns">Learnable Patterns
+</h2><h3 id="sinkhorn-sorting-network">Sinkhorn Sorting Network
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2002.11296"  target="_blank" rel="noopener"
+    >2002.11296] Sparse Sinkhorn Attention (arxiv.org)</a></li>
+</ul>
+<p>让机器去学习两个位置的向量要不要做Attention。</p>
+<p>Sinkhorn Sorting Network里面有一个额外需要学习的矩阵，来决定哪些地方需要计算Attention。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/sinkhorn%20sorting%20network.png" style="zoom:50%;" />
+<p>多个向量会共享一个矩阵以加快计算速度。（例如对于长度为100的输入，会分成10组，每组都是同一个矩阵。）</p>
+<h2 id="representative-key">Representative key
+</h2><p>Attention矩阵中有很多冗余列，往往无需$N\times N$的Attention矩阵。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/Linformer.png" style="zoom:50%;" />
+<h3 id="linformer">Linformer
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.04768"  target="_blank" rel="noopener"
+    >2006.04768] Linformer: Self-Attention with Linear Complexity (arxiv.org)</a></li>
+</ul>
+<p>从$N$个key中选出最有代表性的$K$个key，只需算$N\times K$的Attention矩阵。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/Linformer2.png" style="zoom:50%;" />
+<h4 id="reduce-number-of-keys">Reduce Number of Keys
+</h4>$$
+M_{d\times N}\times M_{N\times K}=M_{d\times K}
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/Linformer3.png" style="zoom:50%;" /></p>
+<p>在<strong>Compressed Attention</strong>中的处理方式是对输入的较长序列用CNN去处理，得到一个较长的序列。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/compressed%20attention.png" style="zoom:50%;" />
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1801.10198"  target="_blank" rel="noopener"
+    >1801.10198] Generating Wikipedia by Summarizing Long Sequences (arxiv.org)</a></li>
+</ul>
+<h2 id="kq-first-rightarrow-vk-first">$k,q$ first $\rightarrow$ $v,k$ first
+</h2><h3 id="忽略softmax的情况">忽略Softmax的情况
+</h3>$$
+O\approx VK^TQ
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/attention.png" style="zoom:50%;" /></p>
+$$
+O\approx V[K^TQ]\rightarrow O\approx [VK^T]Q
+$$<ul>
+<li>对于计算方法$O\approx V[K^TQ]$：
+<ul>
+<li>$A=K^TQ$：$N\times d\times N$</li>
+<li>$O=VA$：$d&rsquo;\times N\times N$</li>
+<li>求和：$(d+d&rsquo;)N^2$</li>
+</ul>
+</li>
+<li>而对于计算方法$O\approx [VK^T]Q$：
+<ul>
+<li>$M_1=VK^T$：$d&rsquo;\times N\times d$</li>
+<li>$M_2=M_1Q$：$d&rsquo;\times d\times N$</li>
+<li>求和：$2d&rsquo;dN$</li>
+</ul>
+</li>
+</ul>
+<h3 id="加回softmax">加回Softmax
+</h3><p>已知存在一个$\phi$，使得有<a class="link" href="#%e5%ae%9e%e7%8e%b0" >以下式子</a>成立：</p>
+<blockquote>
+$$
+> \exp(q\cdot k)\approx \phi(q)\cdot\phi(k)
+> $$</blockquote>
+$$
+\begin{aligned}
+b^1=\sum_{i=1}^Na'_{1,i}v^i&=\sum_{i=1}^N\frac{\exp{(q^1\cdot k^i)}}{\sum_{j=1}^{N}\exp{(q^1\cdot k^j)}}v^i \\
+&=\sum_{i=1}^N\frac{\phi(q^1)\cdot\phi(k^i)}{\sum_{j=1}^{N}\phi(q^1)\cdot\phi(k^j)}v^i \\
+&=\frac{\sum_{i=1}^{N}[\phi(q^1)\cdot\phi(k^i)]v^i}{\sum_{j=1}^{N}\phi(q^1)\cdot\phi(k^j)}
+\end{aligned}
+$$$$
+\sum_{j=1}^{N}\phi(q^1)\cdot\phi(k^j)=\phi(q^1)\cdot\sum_{j=1}^{N}\phi(k^j)
+$$$$
+\phi(q^1)=
+\begin{bmatrix}
+q_1^1 \\
+q_2^1 \\
+\vdots
+\end{bmatrix}
+\quad
+\phi(k^1)=
+\begin{bmatrix}
+k_1^1 \\
+k_2^1 \\
+\vdots
+\end{bmatrix}
+$$<p>
+则有：
+$$
+\begin{aligned}
+&amp;\quad\sum_{i=1}^N[\phi(q^1)\cdot \phi(k^i)]v^i \
+&amp;=[\phi(q^1)\cdot\phi(k^1)]v^1+[\phi(q^1)\cdot\phi(k^2)]v^2+\cdots \
+&amp;=(q_1^1k_1^1+q_2^1k_2^1+\cdots)v^1+(q_1^1k_1^2+q_2^1k_2^2+\cdots)v^2+\cdots \
+&amp;=(q_1^1k_1^1v^1+q_2^1k_2^1v^1+\cdots)+(q_1^1k_1^2v^2+q_2^1k_2^2v^2+\cdots)+\cdots \
+&amp;=q_1^1(k_1^1v^1+k_1^2v^2+\cdots)+q_2^1(k_2^1v^1+k_2^2v^2+\cdots)+\cdots \</p>
+<p>\end{aligned}
+$$
+设$\phi(q^1)$的维度为$M$，则：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/res1.png" style="zoom:50%;" />
+<p>即在分子中的$M$个向量中，每一个向量都是通过，拿出$\phi(k^1)$、$\phi(k^2)$、&hellip;、$\phi(k^N)$中的第$i$个分量，对$v^1$、$v^2$、&hellip;、$v^N$做加权和。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/res2.png" style="zoom:50%;" />
+<p>可以看出，每次计算$b^i$时，除了$\phi(q^i)$以外，其他部分没有发生变化，这部分内容无需<strong>再重复计算</strong>。</p>
+<h3 id="self-attention中的qkv">Self-attention中的$q$、$k$、$v$
+</h3><p>计算$b^1$：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/res3.png" style="zoom:50%;" />
+<p>产生的$M$个向量以及$\sum_{j=1}^{N}\phi(k^j)$在后面$b^2$、$b^3$、$b^4$的计算中无需再进行计算。</p>
+<h3 id="实现">实现
+</h3><p>关于$\phi$的实现：</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1812.01243"  target="_blank" rel="noopener"
+    >1812.01243] Efficient Attention: Attention with Linear Complexities (arxiv.org)</a></li>
+<li><a class="link" href="https://linear-transformers.com/"  target="_blank" rel="noopener"
+    >Linear Transformers (linear-transformers.com)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2103.02143"  target="_blank" rel="noopener"
+    >2103.02143] Random Feature Attention (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2009.14794"  target="_blank" rel="noopener"
+    >2009.14794] Rethinking Attention with Performers (arxiv.org)</a></li>
+</ul>
+<h2 id="new-framework">New framework
+</h2><h3 id="无需qk产生attentionsynthesizer">无需$q,k$产生Attention——Synthesizer
+</h3>$$
+\begin{bmatrix}
+\alpha_{1,1} & \alpha_{1,2} & \alpha_{1,3} & \alpha_{1,4} \\
+\alpha_{1,2} & \alpha_{2,2} & \alpha_{2,3} & \alpha_{2,4} \\
+\alpha_{1,3} & \alpha_{2,3} & \alpha_{3,3} & \alpha_{3,4} \\
+\alpha_{1,4} & \alpha_{2,4} & \alpha_{3,4} & \alpha_{4,4} \\
+\end{bmatrix}
+$$<h2 id="attention-free">Attention-free
+</h2><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2105.03824"  target="_blank" rel="noopener"
+    >2105.03824] FNet: Mixing Tokens with Fourier Transforms (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2105.08050"  target="_blank" rel="noopener"
+    >2105.08050] Pay Attention to MLPs (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2105.01601"  target="_blank" rel="noopener"
+    >2105.01601] MLP-Mixer: An all-MLP Architecture for Vision (arxiv.org)</a></li>
+</ul>
+<h2 id="总结">总结
+</h2><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/summary.png" style="zoom:50%;" />
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

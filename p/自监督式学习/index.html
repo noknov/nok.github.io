@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——Self-Supervised Learning\n">
+<title>自监督式学习</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="自监督式学习">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——Self-Supervised Learning\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-05-17T14:32:00&#43;00:00'/><meta property='article:modified_time' content='2022-05-17T14:32:00&#43;00:00'/>
+<meta name="twitter:title" content="自监督式学习">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——Self-Supervised Learning\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#芝麻街与进击的巨人">芝麻街与进击的巨人</a>
+      <ol>
+        <li><a href="#芝麻街">芝麻街</a></li>
+        <li><a href="#进击的巨人bertolt-hoover">进击的巨人：Bertolt Hoover</a></li>
+        <li><a href="#主流模型参数量">主流模型参数量</a></li>
+      </ol>
+    </li>
+    <li><a href="#bert">BERT</a>
+      <ol>
+        <li><a href="#self-supervised-learning-1">Self-supervised Learning</a></li>
+        <li><a href="#masked-token-prediction">Masked token prediction</a></li>
+        <li><a href="#next-sentence-prediction">Next Sentence Prediction</a></li>
+        <li><a href="#downstream-tasks">Downstream Tasks</a></li>
+        <li><a href="#glue">GLUE</a></li>
+        <li><a href="#how-to-use-bert">How to use BERT</a>
+          <ol>
+            <li><a href="#case-1">Case 1</a></li>
+            <li><a href="#case-2">Case 2</a></li>
+            <li><a href="#case-3">Case 3</a></li>
+            <li><a href="#case-4">Case 4</a></li>
+          </ol>
+        </li>
+        <li><a href="#bert-embryology胚胎学">BERT Embryology（胚胎学）</a></li>
+        <li><a href="#pre-training-a-seq2seq-model">Pre-training a seq2seq model</a>
+          <ol>
+            <li><a href="#mass--bart">MASS / BART</a></li>
+            <li><a href="#t5---comparison">T5 - Comparison</a></li>
+          </ol>
+        </li>
+        <li><a href="#why-does-bert-work">Why does BERT work?</a></li>
+        <li><a href="#more">More</a></li>
+        <li><a href="#multi-lingual-bert">Multi-lingual BERT</a>
+          <ol>
+            <li><a href="#zero-shot-reading-comprehension">Zero-shot Reading Comprehension</a></li>
+            <li><a href="#cross-lingual-alignment">Cross-lingual Alignment</a></li>
+            <li><a href="#mean-reciprocal-rankmrr">Mean Reciprocal Rank（MRR）</a></li>
+          </ol>
+        </li>
+        <li><a href="#一个神奇的实验">一个神奇的实验</a></li>
+      </ol>
+    </li>
+    <li><a href="#gpt">GPT</a>
+      <ol>
+        <li><a href="#predict-next-token">Predict Next Token</a></li>
+        <li><a href="#how-to-use-gpt">How to use GPT?</a>
+          <ol>
+            <li><a href="#few-shot-learning">“Few-shot” Learning</a></li>
+            <li><a href="#one-shot-learning">“One-shot” Learning</a></li>
+            <li><a href="#zero-shot-learning">“Zero-shot” Learning</a></li>
+          </ol>
+        </li>
+        <li><a href="#more-1">More</a></li>
+      </ol>
+    </li>
+    <li><a href="#beyond-text">Beyond Text</a>
+      <ol>
+        <li><a href="#image---simclr">Image - SimCLR</a></li>
+        <li><a href="#image---byol">Image - BYOL</a></li>
+        <li><a href="#speech">Speech</a></li>
+        <li><a href="#speech-glue---superb">Speech GLUE - SUPERB</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0/">自监督式学习</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 17, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=71"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——Self-Supervised Learning</a></p>
+<h1 id="self-supervised-learning">Self-Supervised Learning
+</h1><h2 id="芝麻街与进击的巨人">芝麻街与进击的巨人
+</h2><h3 id="芝麻街">芝麻街
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-1/stavreal.png" style="zoom:50%;" />
+<h3 id="进击的巨人bertolt-hoover">进击的巨人：Bertolt Hoover
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-1/%E8%B4%9D%E7%89%B9%E9%9C%8D%E5%B0%94%E5%BE%B7%E8%83%A1%E4%BD%9B.png" style="zoom:50%;" />
+<h3 id="主流模型参数量">主流模型参数量
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Model</th>
+          <th style="text-align: center">Parameters</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">ELMO</td>
+          <td style="text-align: center">94M</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">BERT</td>
+          <td style="text-align: center">340M</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">GPT-2</td>
+          <td style="text-align: center">1542M</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Megatron</td>
+          <td style="text-align: center">8B</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">T5</td>
+          <td style="text-align: center">11B</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Turing NLG</td>
+          <td style="text-align: center">17B</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">GPT-3</td>
+          <td style="text-align: center">175B</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Switch Transformer</td>
+          <td style="text-align: center">1.6T</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="bert">BERT
+</h2><h3 id="self-supervised-learning-1">Self-supervised Learning
+</h3><p>对于数据$x$，监督学习需要知道数据的标签$\hat{y}$，来让模型输出我们想要的$y$。而自监督学习没有标注，将$x$分为两部分，一部分$x&rsquo;$输入到模型得到$y$，另一部分$x&rsquo;&rsquo;$作为标签，然后让$y$和$x&rsquo;&rsquo;$越接近越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/self-supervised%20learning.png" style="zoom:50%;" />
+<p>自监督学习可以看作是一种无监督学习的方法，无监督学习的范围很大，里面有很多不同的方法，为了明确说明现在说做的工作，就称为自监督学习。</p>
+<h3 id="masked-token-prediction">Masked token prediction
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1810.04805"  target="_blank" rel="noopener"
+    >1810.04805] BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (arxiv.org)</a></li>
+</ul>
+<p>BERT的架构和Transfromer Encoder相同，输入一排向量，输出另一排向量，一般用在文字处理上。</p>
+<p>输入一串token（token是处理一段文字的单位，在中文里一般把一个方块字当作一个token。），随机盖住一些token，盖住token有两种方法：</p>
+<ul>
+<li>变为某个特殊的token</li>
+<li>随机换为另一个token</li>
+</ul>
+<p>对BERT的输出序列分别做线性变换（乘矩阵），再做Softmax就得到了一个分布。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/masking%20input.png" style="zoom:50%;" />
+<p>BERT不知道被盖住的部分是什么内容，但我们知道这部分内容，BERT学习的目标是输出和盖住的部分越接近越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/masking%20input2.png" style="zoom:50%;" />
+<h3 id="next-sentence-prediction">Next Sentence Prediction
+</h3><p>从资料库中拿出两个句子，两个句子之间加入特殊的分隔符号[SEP]，再整个序号的最前面加[CLS]符号，整个序列输入BERT，看[CLS]对应的输出，[CLS]经过BERT的输出再经过线性变换后输出为Yes/No，代表这两个句子是不是相接的。</p>
+<p><em>例：[CLS] I like cat. [SEP] He likes dog</em></p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/next%20sentence%20prediction.png" style="zoom:50%;" />
+<ul>
+<li>
+<p>Next Sentence Prediction对于BERT接下来要做的事情可能无用</p>
+<ul>
+<li>
+<p>[<a class="link" href="https://arxiv.org/abs/1907.11692"  target="_blank" rel="noopener"
+    >1907.11692] RoBERTa: A Robustly Optimized BERT Pretraining Approach (arxiv.org)</a></p>
+<p>Next Sentence Prediction这个任务可能比较简单，BERT可能学习不到太多有用的东西。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>SOP</strong>：Sentence order prediction Used in ALBERT</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1909.11942"  target="_blank" rel="noopener"
+    >1909.11942] ALBERT: A Lite BERT for Self-supervised Learning of Language Representations (arxiv.org)</a></li>
+</ul>
+<p>两个句子本来就连在一起，人为拆分开，本来放在前面的句子作为Sentence 1，本来放在后面的句子作为Sentence 2，或本来放在前面的句子作为Sentence 2，本来放在后面的句子作为Sentence 1。然后让BERT去回答是哪一种顺序。</p>
+</li>
+</ul>
+<h3 id="downstream-tasks">Downstream Tasks
+</h3><p>在训练BERT时，给了BERT两个任务：</p>
+<ul>
+<li>Masked token prediction</li>
+<li>Next sentence prediction</li>
+</ul>
+<p>在训练BERT时，似乎仅仅在教BERT如何去做“填空题”，但BERT可以用在其他地方，BERT真正在下游任务（Downstream Tasks）中被使用，但需要少量有标注的数据。BERT经过微调（Fine-tune）可以去完成各种其他的任务。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/Fine-tune.png" style="zoom:50%;" />
+<h3 id="glue">GLUE
+</h3><p>任务集GLUE（General Language Understanding Evaluation）共有9个任务，</p>
+<ul>
+<li>Corpus of Linguistic Acceptability（CoLA）</li>
+<li>Stanford Sentiment Treebank（SST-2）</li>
+<li>Microsoft Research Paraphrase Corpus（MRPC）</li>
+<li>Quora Question Pairs（QQP）</li>
+<li>Semantic Textual Similarity Benchmark（STS-B）</li>
+<li>Multi-Genre Natural Language Inference（MNLI）</li>
+<li>Question-answering NLI（QNLI）</li>
+<li>Recognizing Textual Entailment（RTE）</li>
+<li>Winograd NLI（WNLI）</li>
+</ul>
+<p>可以在这9个任务上分别微调模型得到9个模型，通过结果数值来判断模型的好坏。</p>
+<p>中文版本的GLUE：</p>
+<ul>
+<li><a class="link" href="https://www.cluebenchmarks.com/"  target="_blank" rel="noopener"
+    >CLUE中文语言理解基准测评 (cluebenchmarks.com)</a></li>
+</ul>
+<h3 id="how-to-use-bert">How to use BERT
+</h3><h4 id="case-1">Case 1
+</h4><blockquote>
+<ul>
+<li>Input：sequence</li>
+<li>Output：class</li>
+<li>Example：Sentiment analysis</li>
+</ul>
+</blockquote>
+<p>给BERT输入一个句子，前面放[CLS] token，对[CLS]输出的向量做线性变换，Softmax后输出class。需要提供大量的已标注的训练资料。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case1.png" style="zoom:50%;" />
+<p>Linear部分是随机初始化，而BERT部分将学会了做“填空题”的BERT模型的参数拿来初始化。</p>
+<h4 id="case-2">Case 2
+</h4><blockquote>
+<ul>
+<li>Input：sequence</li>
+<li>Output：sequence</li>
+<li>Example：POS tagging（词性标注）</li>
+</ul>
+</blockquote>
+<p>给BERT输入一个句子，前面放[CLS] token，对句子里面每一个token输出的向量做线性变换，Softmax后输出每一个token的类别。需要提供已标注的训练资料。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case2.png" style="zoom:50%;" />
+<h4 id="case-3">Case 3
+</h4><blockquote>
+<ul>
+<li>
+<p>Input：two sequences</p>
+</li>
+<li>
+<p>Output：a class</p>
+</li>
+<li>
+<p>Example：Natural Language Inference（NLI）</p>
+<p>前提：一个人骑马越过了一架坏掉的飞机，假设：这个人在一个小餐馆里面，输出：矛盾。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case3_eg.png" style="zoom:50%;" />
+</li>
+</ul>
+</blockquote>
+<p>输入两个句子，两个句子之间放[SEP] token，第一个句子前放[CLS] token，整串内容输入BERT，对[CLS]输出的向量做线性变换，Softmax后输出class。需要提供已标注的训练资料。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case3.png" style="zoom:50%;" />
+<h4 id="case-4">Case 4
+</h4><blockquote>
+<ul>
+<li>
+<p><strong>Extraction-based Question Answering</strong>（有限制的QA，答案一定能在文章中找到。）</p>
+</li>
+<li>
+<p>Input：</p>
+<ul>
+<li>
+<p>Document：$D={d_1,d_2,\cdots,d_N}$</p>
+</li>
+<li>
+<p>Query：$Q={q_1,q_2,\cdots,q_M}$</p>
+</li>
+</ul>
+<p><em>对于中文，$d_i$和$q_i$都是汉字。</em></p>
+</li>
+<li>
+<p>Output：two integers$(s,e)$</p>
+<ul>
+<li>Answer：$A={d_s,\cdots,d_e}$</li>
+</ul>
+<p><em>输出两个正整数，代表答案的范围。</em></p>
+</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case4_eg.png" style="zoom:50%;" />
+</blockquote>
+<p>输入问题和文章，问题和文章之间放[SEP] token，问题前放[CLS] token，整串内容输入BERT。</p>
+<p>文章的各个token输出的向量先和一个向量（橙）做内积，再对结果做Softmax，得到答案起始的位置。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case4_1.png" style="zoom:50%;" />
+<p>文章的各个token输出的向量再和一个向量（蓝）做内积，再对结果做Softmax，得到答案结束的位置。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/case4_2.png" style="zoom:50%;" />
+<p>以上只有和BERT输出做内积的两个向量是随机初始化的，即这两个向量是重头开始学习的。</p>
+<h3 id="bert-embryology胚胎学">BERT Embryology（胚胎学）
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2010.02480"  target="_blank" rel="noopener"
+    >2010.02480] Pretrained Language Model Embryology: The Birth of ALBERT (arxiv.org)</a></li>
+</ul>
+<p>BERT的训练需要耗费大量的资源，BERT的训练资料大概是30亿个词，是哈利波特全集的3000倍。有没有什么方法去节省计算资源？</p>
+<p>从观察BERT的训练过程开始，BERT在什么时候学会填什么样的词汇？他的填空能力是怎么增进的？</p>
+<h3 id="pre-training-a-seq2seq-model">Pre-training a seq2seq model
+</h3><p>BERT只有预训练的Encoder。</p>
+<p>Encoder和Decoder间通过Cross Atention连接起来，在Encoder的输入中故意加一些扰动，希望Decoder输出的句子和弄坏前的句子是一样的。</p>
+<h4 id="mass--bart">MASS / BART
+</h4><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1905.02450"  target="_blank" rel="noopener"
+    >1905.02450] MASS: Masked Sequence to Sequence Pre-training for Language Generation (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1910.13461"  target="_blank" rel="noopener"
+    >1910.13461] BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension (arxiv.org)</a></li>
+</ul>
+<p>对Encoder的输入加一些扰动来弄坏原本的内容：</p>
+<ul>
+<li>盖住一些词</li>
+<li>删掉一些词</li>
+<li>打乱词顺序</li>
+<li>词顺序旋转</li>
+<li>混合</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/MASS_BART.png" style="zoom:50%;" />
+<h4 id="t5---comparison">T5 - Comparison
+</h4><ul>
+<li>Transfer Text-to-Text Transformer（T5）</li>
+</ul>
+<p>T5在Colossal Clean Crawled Corpus（C4）进行训练，对比了多种弄坏的方法。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-2/T5.png" style="zoom:50%;" />
+<h3 id="why-does-bert-work">Why does BERT work?
+</h3><p>将文字输入到BERT中，得到的输出向量称为<strong>embedding</strong>，代表了各个token的意思，有相似意思的token有着非常相似的embeddng。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/embedding.png" style="zoom:50%;" />
+<p>在语言中常常有一词多义的情况，例如“吃苹果”的“果”和“苹果手机”的“果”的含义可能相差较大。通过Cosine Similarity计算“吃苹果”和“苹果手机”的Embedding的相似度，可以发现它们之间的相似度较低。</p>
+<blockquote>
+<p>&ldquo;You shall know a word by the company it keeps.&rdquo;</p>
+</blockquote>
+<p>一个词的意思可以从上下文看出来，BERT在做“填空题”的过程中所学习的内容也许就是根据上下文来预测当前被盖住的词汇。事实上，BERT之前已经有这样的方法：word embedding，word embedding中的CBOW就是把中间挖空然后预测内容。BERT所抽取出来的向量也叫做<strong>Contextualized word embedding</strong>。</p>
+<p>现在尝试将BERT拿来做蛋白质分类、DNA分类、音乐分类。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2103.07162"  target="_blank" rel="noopener"
+    >2103.07162] Is BERT a Cross-Disciplinary Knowledge Learner? A Surprising Finding of Pre-trained Models&rsquo; Transferability (arxiv.org)</a></li>
+</ul>
+<p>以DNA分类为例：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/DNA.png" style="zoom:50%;" />
+<p>将DNA中的序列替换成文字，输入到BERT中，输出分类，当作是文章分类的任务来处理。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/DNA_2.png" style="zoom:50%;" />
+<p>类似地，对于蛋白质，随意给各个氨基酸映射到词汇上，对于音乐，将各个音符映射到词汇上，得到了下面的结果：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/Protein_DNA_music_res.png" style="zoom:50%;" />
+<p>BERT的表现是比较好的，就算给BERT乱七八糟的句子，它可能也能把任务完成的比较好，这也说明BERT的表现可能并不完全来自于它“看得懂”文章这件事，关于BERT到底为什么好的问题可能还有很大的研究空间。</p>
+<h3 id="more">More
+</h3><ul>
+<li>[<a class="link" href="https://www.youtube.com/watch?v=1_gRK9EIQpc"  target="_blank" rel="noopener"
+    >DLHLP 2020] BERT and its family - Introduction and Fine-tune - YouTube</a></li>
+<li>[<a class="link" href="https://www.youtube.com/watch?v=Bywo7m6ySlk"  target="_blank" rel="noopener"
+    >DLHLP 2020] BERT and its family - ELMo, BERT, GPT, XLNet, MASS, BART, UniLM, ELECTRA, and more - YouTube</a></li>
+</ul>
+<h3 id="multi-lingual-bert">Multi-lingual BERT
+</h3><p>在训练的时候，会拿各种各样的语言来给BERT做“填空题”，Multi-BERT使用了104种语言来训练。拿英文的QA资料去训练，Multi-BERT就会做中文的QA问题。</p>
+<h4 id="zero-shot-reading-comprehension">Zero-shot Reading Comprehension
+</h4><p>在英文数据集SQuAD和中文数据集DRCD上：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/zero-shot.png" style="zoom:50%;" />
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1909.09587"  target="_blank" rel="noopener"
+    >1909.09587] Zero-shot Reading Comprehension by Cross-lingual Transfer Learning with Multi-lingual Language Representation Model (arxiv.org)</a></li>
+</ul>
+<h4 id="cross-lingual-alignment">Cross-lingual Alignment
+</h4><p>也许对Multi-lingual BERT来说，不同语言间没有什么差别。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/cross-lingual.png" style="zoom:50%;" />
+<h4 id="mean-reciprocal-rankmrr">Mean Reciprocal Rank（MRR）
+</h4><p>MRR值越高，两个不同语言align的越好（同样意思但不同语言的词汇的向量比较接近）。</p>
+<p>在1000k资料量下，相比200k资料量下的效果显著提升：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/mrr1.png" style="zoom:50%;" />
+<h3 id="一个神奇的实验">一个神奇的实验
+</h3><p>BERT可以让同样意思但不同语言的词汇的向量很接近，但在训练Multi-lingual BERT时，还是给BERT喂中文，它能够做中文填空，喂英文能够做英文填空，不会混在一起，给他喂英文他并没有填中文进去。说明来自不同语言的符号终究还是不一样，并没有完全抹掉语言的资讯。</p>
+<p>把所有英文的embedding平均起来，再把所有中文的embedding平均起来，两者相减得到的向量就是中文和英文之间的差距。给Multi-lingual BERT一句英文，得到一串embedding，将embedding加上相减得到的向量，这些向量对于Multi-lingual BERT就变成了中文的句子，再让BERT去做“填空题”，就填出了中文的答案。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/wired.png" style="zoom:50%;" />
+<p>语言的资讯还是藏在Multi-lingual BERT中：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-3/unsupervised%20learning.png" style="zoom:50%;" />
+<h2 id="gpt">GPT
+</h2><h3 id="predict-next-token">Predict Next Token
+</h3><p>GPT修改了BERT中模型的任务，GPT的任务是预测接下来的句子是什么。</p>
+<p>对于训练资料“台湾大学”，在最前面加上[BOS] token，对于[BOS] token，GPT输出一个embedding，接下来用这个embedding预测下一个应该出现的“台”这个token。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/predict%20next%20sentence.png" style="zoom:50%;" />
+<p>GPT与拿掉Cross attention后的Transformer Decoder结构类似。</p>
+<p>GPT要预测下一个token，有生成的能力，GPT最知名的例子就是用GPT写了一篇关于独角兽的假新闻。</p>
+<ul>
+<li><a class="link" href="https://app.inferkit.com/demo"  target="_blank" rel="noopener"
+    >Demo – InferKit</a></li>
+</ul>
+<h3 id="how-to-use-gpt">How to use GPT?
+</h3><p>GPT有一个更“狂“的使用方式，和人类更接近。</p>
+<h4 id="few-shot-learning">“Few-shot” Learning
+</h4><p>例如在进行外语考试时，首先会看题目的说明（<em>“&hellip;从A、B、C、D四个选项中选出最佳选项&hellip;”</em>），再会看一个例子（<em>“&hellip;衬衫的价格是9镑15便士，所以你选择&hellip;”</em>）。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/few-shot%20learning.png" style="zoom:50%;" />
+<p>“Few-shot” Learning中完全没有Gradient Descent，GPT文献中将这种训练称为“In-context Learning”。</p>
+<p>类似地，还有“One-shot” Learning、甚至“Zero-shot” Learning。</p>
+<h4 id="one-shot-learning">“One-shot” Learning
+</h4><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/one-shot%20learning.png" style="zoom:50%;" />
+<h4 id="zero-shot-learning">“Zero-shot” Learning
+</h4><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/zero-shot%20learning.png" style="zoom:50%;" />
+<p>第三代GPT测试了42个任务：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/GPT_benchmarks.png" style="zoom:50%;" />
+<h3 id="more-1">More
+</h3><ul>
+<li>[<a class="link" href="https://www.youtube.com/watch?v=DOG1L9lvsDY"  target="_blank" rel="noopener"
+    >DLHLP 2020] 來自獵人暗黑大陸的模型 GPT-3 - YouTube</a></li>
+</ul>
+<h2 id="beyond-text">Beyond Text
+</h2><p>不止NLP，在语音、图像上都可以用Self-Supervised Learning的技术。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/beyond%20text.png" style="zoom:50%;" />
+<h3 id="image---simclr">Image - SimCLR
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2002.05709"  target="_blank" rel="noopener"
+    >2002.05709] A Simple Framework for Contrastive Learning of Visual Representations (arxiv.org)</a></li>
+<li><a class="link" href="https://github.com/google-research/simclr"  target="_blank" rel="noopener"
+    >google-research/simclr: SimCLRv2 - Big Self-Supervised Models are Strong Semi-Supervised Learners (github.com)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/SimCLR.png" style="zoom:50%;" />
+<h3 id="image---byol">Image - BYOL
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.07733"  target="_blank" rel="noopener"
+    >2006.07733] Bootstrap your own latent: A new approach to self-supervised Learning (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/BYOL.png" style="zoom:50%;" />
+<h3 id="speech">Speech
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/speech.png" style="zoom:50%;" />
+<h3 id="speech-glue---superb">Speech GLUE - SUPERB
+</h3><p><strong>S</strong>peech processing <strong>U</strong>niversal <strong>PER</strong>formance <strong>B</strong>enchmark，包含了十多个下游任务，包含内容、说话的人、情感、语义等。</p>
+<ul>
+<li>Toolkit：<a class="link" href="https://github.com/s3prl/s3prl/"  target="_blank" rel="noopener"
+    >s3prl/s3prl: Self-Supervised Speech Pre-training and Representation Learning Toolkit. (github.com)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/7-4/toolkit.png" style="zoom:50%;" />
+<ul>
+<li><a class="link" href="https://github.com/andi611/Self-Supervised-Speech-Pretraining-and-Representation-Learning"  target="_blank" rel="noopener"
+    >https://github.com/andi611/Self-Supervised-Speech-Pretraining-and-Representation-Learning</a></li>
+</ul>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

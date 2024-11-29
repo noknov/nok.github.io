@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——Transformer\n">
+<title>Attention Is All You Need</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/attention-is-all-you-need/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Attention Is All You Need">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——Transformer\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/attention-is-all-you-need/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-04-25T23:01:32&#43;00:00'/><meta property='article:modified_time' content='2022-04-25T23:01:32&#43;00:00'/>
+<meta name="twitter:title" content="Attention Is All You Need">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——Transformer\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#sequence-to-sequence">Sequence-to-sequence</a>
+      <ol>
+        <li><a href="#应用">应用</a>
+          <ol>
+            <li><a href="#questions-answeringqa">Questions Answering（QA）</a></li>
+            <li><a href="#multi-label-classification">Multi-label Classification</a></li>
+            <li><a href="#object-detection">Object Detection</a></li>
+          </ol>
+        </li>
+        <li><a href="#结构">结构</a></li>
+      </ol>
+    </li>
+    <li><a href="#encoder">Encoder</a>
+      <ol>
+        <li><a href="#transformer-encoder">Transformer Encoder</a></li>
+        <li><a href="#more">More</a></li>
+      </ol>
+    </li>
+    <li><a href="#decoderautoregressiveat">Decoder——Autoregressive（AT）</a>
+      <ol>
+        <li><a href="#decoder的运作方式">Decoder的运作方式</a></li>
+        <li><a href="#transformer-decoder">Transformer Decoder</a>
+          <ol>
+            <li><a href="#masked-self-attention">Masked Self-attention</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#decodernon-autoregressivenat">Decoder——Non-autoregressive（NAT）</a>
+      <ol>
+        <li><a href="#at-vs-nat">AT v.s. NAT</a></li>
+      </ol>
+    </li>
+    <li><a href="#encoder-decoder">Encoder-Decoder</a></li>
+    <li><a href="#training">Training</a></li>
+    <li><a href="#tips">Tips</a>
+      <ol>
+        <li><a href="#copy-mechanism">Copy Mechanism</a></li>
+        <li><a href="#guided-attention">Guided Attention</a></li>
+        <li><a href="#beam-search">Beam Search</a></li>
+      </ol>
+    </li>
+    <li><a href="#optimizing-evaluation-metrics">Optimizing Evaluation Metrics</a></li>
+    <li><a href="#scheduled-sampling">Scheduled Sampling</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/attention-is-all-you-need/">Attention Is All You Need</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 25, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=49"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——Transformer</a></p>
+<h1 id="transformer">Transformer
+</h1><p>Transformer是一个Sequence-to-sequence（Seq2seq）的模型，输出的长度由模型自己来决定。</p>
+<h2 id="sequence-to-sequence">Sequence-to-sequence
+</h2><h3 id="应用">应用
+</h3><ul>
+<li>
+<p>Maching Translation</p>
+</li>
+<li>
+<p>Speech Translation</p>
+</li>
+<li>
+<p>Text-to-Speech（TTS）</p>
+</li>
+</ul>
+<h4 id="questions-answeringqa">Questions Answering（QA）
+</h4>$$
+\text{question}, \text{context} \stackrel{Seq2seq}{\longrightarrow} \text{answer}
+$$<h4 id="multi-label-classification">Multi-label Classification
+</h4>$$
+\text{data} \stackrel{Seq2seq}{\longrightarrow} \text{class 7, class 9, class 13}
+$$<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1909.03434"  target="_blank" rel="noopener"
+    >1909.03434] Order-free Learning Alleviating Exposure Bias in Multi-label Classification (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1707.05495"  target="_blank" rel="noopener"
+    >1707.05495] Order-Free RNN with Visual Attention for Multi-Label Classification (arxiv.org)</a></li>
+</ul>
+<h4 id="object-detection">Object Detection
+</h4><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2005.12872"  target="_blank" rel="noopener"
+    >2005.12872] End-to-End Object Detection with Transformers (arxiv.org)</a></li>
+</ul>
+<h3 id="结构">结构
+</h3>$$
+\text{Encoder}\longrightarrow \text{Decoder}
+$$<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1409.3215"  target="_blank" rel="noopener"
+    >1409.3215] Sequence to Sequence Learning with Neural Networks (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1706.03762"  target="_blank" rel="noopener"
+    >1706.03762] Attention Is All You Need (arxiv.org)</a></li>
+</ul>
+<h2 id="encoder">Encoder
+</h2><ul>
+<li>输入一排向量：${x^1,x^2,x^3,x^4}$</li>
+<li>输出一排向量：${h^1,h^2,h^3,h^4}$</li>
+</ul>
+<p>Self-attention、RNN、CNN&hellip;均可用来作为Encoder。</p>
+<h3 id="transformer-encoder">Transformer Encoder
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/seq2seq.png" style="zoom:50%;" />
+<p>在Transformer Encoder中，加入了Residual Connection，经过Self-attention输出的向量加上原输入的向量后当作新的输出向量。</p>
+<p>得到Residual的结果以后，进行Normalization，但此处使用的是Layer Normalization而非Batch Normalization。对于输入的向量，Layer Norm会计算它的均值$m$和标准差$\sigma$，与Batch Norm不同点在于，Batch Norm是对不同特征、样本的同一个维度计算均值和标准差，而Layer Norm是对同一个特征、样本的不同维度去计算均值和标准差。</p>
+<p>Layer Norm的结果将作为FC的输入，经过FC Network得到新的向量，在FC层也同样地加入了Residual Connection，得到的结果再做一次Layer Norm，则得到了此Block的输出。</p>
+<p>即一个Block的结构如下：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/encoder.png" style="zoom:50%;" />
+<p>此Block会重复N次，组成Transformer的Encoder，BERT与Transformer Encoder采用了相同的结构。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/encoder2.png" style="zoom:50%;" />
+<h3 id="more">More
+</h3><ul>
+<li>
+<p>[<a class="link" href="https://arxiv.org/abs/2002.04745"  target="_blank" rel="noopener"
+    >2002.04745] On Layer Normalization in the Transformer Architecture (arxiv.org)</a></p>
+</li>
+<li>
+<p>[<a class="link" href="https://arxiv.org/abs/2003.07845"  target="_blank" rel="noopener"
+    >2003.07845] PowerNorm: Rethinking Batch Normalization in Transformers (arxiv.org)</a></p>
+</li>
+</ul>
+<h2 id="decoderautoregressiveat">Decoder——Autoregressive（AT）
+</h2><h3 id="decoder的运作方式">Decoder的运作方式
+</h3><p>除了Encoder产生的输出以外，Decoder中还会加入一个BOS（Begin of Sequence）符号（token），用来表示开始，BOS token是一个One-hot表示的向量。</p>
+<p>输出一个向量，向量的长度应该和Vocabulary Size相等来表示所有的汉字（对于中文，Vocabulary Size就是所有汉字的数量），每一个中文对应向量中的一个数值，这个向量是经过Soft-max得到的，取最大的作为输出的文字，Decoder会将这个输出的文字的One-hot向量作为新的输入。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/decoder.png" style="zoom:50%;" />
+<p>但是按照这样的运作方式，后面会产生无穷尽的文字，像文字接龙一样一直不能停下来，所以，还应该加一个EOS（End of Sequence） token来表示文字的结束，一般情况下，EOS token和BOS token都用一个相同的向量来表示，故向量的长度应该为Vocabulary Size + 1。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/decoder2.png" style="zoom:50%;" />
+<p>在这种运作方式下，某步的错误预测可能影响后面的预测（“一步错，步步错。”），具体参考最后一节<a class="link" href="#Scheduled-Sampling" >Scheduled Sampling</a>。</p>
+<h3 id="transformer-decoder">Transformer Decoder
+</h3><p>Transformer中的Decoder和Encoder结构类似，除中间的Multi-Head Attention和Add &amp; Norm结构外，在第一次Multi-Head Attention计算中加入了Mask。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/encodervsdecoder.png" style="zoom:50%;" />
+<h4 id="masked-self-attention">Masked Self-attention
+</h4><p>在产生$b^1$的时候，只能考虑$a^1$的信息，而不能考虑$a^2$、$a^3$、$a^4$的信息；在产生$b^2$的时候，只能考虑$a^1$、$a^2$的信息，而不能考虑$a^3$、$a^4$的信息。</p>
+<p>具体来说，在产生$b^2$时，只会拿第二个位置的query去跟第一个位置的key和第二个位置的key来计算Attention，而不管第三、四个位置的key。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/mask.png" style="zoom:50%;" />
+<p>对于Decoder而言，先有$a^1$才有$a^2$，才有接下来的$a^3$、$a^4$，计算$b^2$的时候无法考虑$a^3$、$a^4$。</p>
+<h2 id="decodernon-autoregressivenat">Decoder——Non-autoregressive（NAT）
+</h2><h3 id="at-vs-nat">AT v.s. NAT
+</h3><p>AT分别输入BOS token、$w_1$、$w_2$、$w_3$、EOS token，而NAT一次输入一整排BOS token。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/ATvsNAT.png" style="zoom:50%;" />
+<p>优点：</p>
+<ul>
+<li>并行</li>
+<li>输出长度可控</li>
+</ul>
+<p>问题：模型如何知道输出的长度，从而确定输入的BOS token的数量？</p>
+<ul>
+<li>用一个模型来预测输出长度；</li>
+<li>输出一个很长的句子，忽略EOS token以后的内容。</li>
+</ul>
+<p>NAT的表现往往比AT要差（Multi-modality）。</p>
+<h2 id="encoder-decoder">Encoder-Decoder
+</h2><p>Transformer中由<strong>Cross Attention</strong>模块来连接Encoder和Decoder。该模块接收Encoder的两个输出和Decoder的一个输出作为输入。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/cross%20attention.png" style="zoom:50%;" />
+<p>将BOS token输入到Decoder的Masked Self-attention模块后，将输出的向量进行线性变换得到query $q$，再将$q$与Encoder中的key $k^1$、$k^2$、$k^3$计算Attention分数，与value $v^1$、$v^2$、$v^3$相乘加权求和得到$v$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/cross%20attention2.png" style="zoom:50%;" />
+<p>Cross Attention比Self-Attention出现要更早。</p>
+<ul>
+<li><a class="link" href="https://ieeexplore.ieee.org/document/7472621"  target="_blank" rel="noopener"
+    >Listen, attend and spell: A neural network for large vocabulary conversational speech recognition | IEEE Conference Publication | IEEE Xplore</a></li>
+</ul>
+<p>Transformer中，Decoder中每一层都与Encoder的最后一层做Cross Attention，也有论文的工作中尝试了与其他层的不同的连接方式。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2005.08081"  target="_blank" rel="noopener"
+    >2005.08081] Layer-Wise Multi-View Decoding for Improved Natural Language Generation (arxiv.org)</a></li>
+</ul>
+<h2 id="training">Training
+</h2><p>以下以一段标签为“机器学习”的语音数据为例。</p>
+<p>在Decoder中输入BOS token后，输出的向量应该和“机”对应的向量越接近越好，即通过计算两个向量的交叉熵，交叉熵越小越好，这个过程和分类非常相似。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/training.png" style="zoom:50%;" />
+<p>包括最后一个EOS token，模型希望最后一个字所输出的内容与EOS token的One-hot向量是接近的。</p>
+<p>在训练过程中，Decoder的输入是真实标签，训练过程中会给Decoder看正确答案，即给Decoder输入BOS token和“机”以后，希望模型的输出是“器”，给Decoder输入BOS token、“机”和“器”之后，希望模型输出的是“学”。这种方法叫做<strong>Teacher Forcing</strong>，将正确答案作为输入。</p>
+<p>训练时Decoder可以看到完全正确的信息，而测试的时候Decoder可能会看到一些错误的信息，可能会导致“一步错，步步错。”，训练与测试不一致的现象叫做<strong>exposure bias</strong>，方法是在学习时，给Decoder的输入加入一些错误的信息，具体参考最后一节<a class="link" href="#Scheduled-Sampling" >Scheduled Sampling</a>。</p>
+<h2 id="tips">Tips
+</h2><h3 id="copy-mechanism">Copy Mechanism
+</h3><p>某些信息并不需要机器来学习，可能是从输入信息中复制出来，例如聊天机器人中：</p>
+<ul>
+<li>
+<p>eg1</p>
+<blockquote>
+<p>User：你好，我是<em>库洛洛</em>。</p>
+<p>Machine：<em>库洛洛</em>你好，很高兴认识你。</p>
+</blockquote>
+</li>
+<li>
+<p>eg2</p>
+<blockquote>
+<p>User：小杰<em>不能使用念能力了</em>！</p>
+<p>Machine：你所谓的*「不能使用念能力」*是什么意思？</p>
+</blockquote>
+</li>
+</ul>
+<p>又例如从文章中提取摘要这一任务，从文章中复制一些信息是很模型很关键的能力。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1704.04368"  target="_blank" rel="noopener"
+    >1704.04368] Get To The Point: Summarization with Pointer-Generator Networks (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1603.06393"  target="_blank" rel="noopener"
+    >1603.06393] Incorporating Copying Mechanism in Sequence-to-Sequence Learning (arxiv.org)</a></li>
+</ul>
+<h3 id="guided-attention">Guided Attention
+</h3><p>在一些任务中（例如语音辨识、TTS等），对于输入的每一个内容都要看到，不能漏掉某些信息。</p>
+<p>Guided Attention要求机器以特定的方式完成Attention的计算，应该由左向右分别产生输出。例如在TTS中，应该先看最左边的文字产生输出，最后看最右的文字产生输出。</p>
+<ul>
+<li>Monotonic Attention Location-aware attention</li>
+</ul>
+<h3 id="beam-search">Beam Search
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/5/beam%20search.png" style="zoom:50%;" />
+<p>要找到最优解，暴力搜索难以计算。通过Beam Search找一个不是完全精准的解。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1904.09751"  target="_blank" rel="noopener"
+    >1904.09751] The Curious Case of Neural Text Degeneration (arxiv.org)</a></li>
+</ul>
+<p>假设一个任务的答案非常明确，Beam Search会比较有帮助，但对于一些答案不唯一的任务（例如文本补全），分数最高的路径可能结果并不是很好，往往需要在Decoder中加入随机性（noise）。</p>
+<h2 id="optimizing-evaluation-metrics">Optimizing Evaluation Metrics
+</h2><p>训练时使用交叉熵，在评估时使用BLEU。BLEU不可微分，无法作为Loss。不过对于无法优化的Loss，可以将其当作Reinforcement Learning（RL）的reward，Decoder作为Agent，将其看作是RL问题来解决。</p>
+<h2 id="scheduled-sampling">Scheduled Sampling
+</h2><p>Schedule可能会影响计算的并行化，对于Transformer的Scheduled Sampling另有方法。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1506.03099"  target="_blank" rel="noopener"
+    >1506.03099] Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1906.07651"  target="_blank" rel="noopener"
+    >1906.07651] Scheduled Sampling for Transformers (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1906.04331"  target="_blank" rel="noopener"
+    >1906.04331] Parallel Scheduled Sampling (arxiv.org)</a></li>
+</ul>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——语音与影像上的神奇自督导式学习模型\n">
+<title>语音与影像上的自监督式学习模型</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E8%AF%AD%E9%9F%B3%E4%B8%8E%E5%BD%B1%E5%83%8F%E4%B8%8A%E7%9A%84%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="语音与影像上的自监督式学习模型">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——语音与影像上的神奇自督导式学习模型\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E8%AF%AD%E9%9F%B3%E4%B8%8E%E5%BD%B1%E5%83%8F%E4%B8%8A%E7%9A%84%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-05-20T21:39:00&#43;00:00'/><meta property='article:modified_time' content='2022-05-20T21:39:00&#43;00:00'/>
+<meta name="twitter:title" content="语音与影像上的自监督式学习模型">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——语音与影像上的神奇自督导式学习模型\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#introduction">Introduction</a>
+      <ol>
+        <li><a href="#review-self-supervised-learning-for-text">Review: Self-supervised Learning for <strong>Text</strong></a></li>
+        <li><a href="#self-supervised-learning-for-speech">Self-supervised Learning for <strong>Speech</strong></a></li>
+        <li><a href="#self-supervised-learning-for-image">Self-supervised Learning for <strong>Image</strong></a></li>
+      </ol>
+    </li>
+    <li><a href="#generative-approaches">Generative Approaches</a>
+      <ol>
+        <li><a href="#maskingbert-series">Masking（BERT series）</a></li>
+        <li><a href="#predicting-futuregpt-series">Predicting Future（GPT series）</a></li>
+        <li><a href="#how-about-image">How about <strong>image</strong>?</a></li>
+      </ol>
+    </li>
+    <li><a href="#predictive-approach">Predictive Approach</a>
+      <ol>
+        <li><a href="#image---predicting-rotation">Image - Predicting Rotation</a></li>
+        <li><a href="#image---context-prediction">Image - Context Prediction</a>
+          <ol>
+            <li><a href="#similar-idea-on-speech">Similar idea on <strong>Speech</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#predict-simplified-objects">Predict Simplified Objects</a></li>
+      </ol>
+    </li>
+    <li><a href="#contrastive-learning">Contrastive Learning</a>
+      <ol>
+        <li><a href="#basic-idea-of-contrastive-learning">Basic Idea of Contrastive Learning</a></li>
+        <li><a href="#simclr">SimCLR</a></li>
+        <li><a href="#moco">MoCo</a></li>
+        <li><a href="#contrastive-learning-for-speech">Contrastive Learning for <strong>Speech</strong></a></li>
+        <li><a href="#alterative-way-to-understand-wav2vec-20">Alterative way to understand Wav2vec 2.0</a>
+          <ol>
+            <li><a href="#classification-vs-contrastive">Classification vs. Contrastive</a></li>
+          </ol>
+        </li>
+        <li><a href="#selecting-negative-examples-is-not-trivial">Selecting Negative Examples is not trivial</a></li>
+      </ol>
+    </li>
+    <li><a href="#bootstrapping-approaches">Bootstrapping Approaches</a>
+      <ol>
+        <li><a href="#alterative-way-to-understand-bootstrapping">Alterative way to understand Bootstrapping</a>
+          <ol>
+            <li><a href="#typical-knowledge-distillation知识蒸馏">Typical Knowledge Distillation（知识蒸馏）</a></li>
+          </ol>
+        </li>
+        <li><a href="#image">Image</a>
+          <ol>
+            <li><a href="#bootstrap-your-own-latentbyol">Bootstrap your own latent（BYOL）</a></li>
+            <li><a href="#simple-siamesesimsiam">Simple Siamese（SimSiam）</a></li>
+          </ol>
+        </li>
+        <li><a href="#speech">Speech</a>
+          <ol>
+            <li><a href="#data2vec">Data2vec</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#simply-extra-regularization">Simply Extra Regularization</a>
+      <ol>
+        <li><a href="#variance-invariance-convariance-regularization"><strong>Variance</strong>-<strong>Invariance</strong>-<strong>Convariance</strong> Regularization</a>
+          <ol>
+            <li><a href="#invariance">Invariance</a></li>
+            <li><a href="#variance">Variance</a></li>
+            <li><a href="#covariance">Covariance</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E8%AF%AD%E9%9F%B3%E4%B8%8E%E5%BD%B1%E5%83%8F%E4%B8%8A%E7%9A%84%E8%87%AA%E7%9B%91%E7%9D%A3%E5%BC%8F%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B/">语音与影像上的自监督式学习模型</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 20, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=76"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——语音与影像上的神奇自督导式学习模型</a></p>
+<h1 id="self-supervised-learning-for-speech-and-image">Self-supervised Learning for Speech and Image
+</h1><h2 id="introduction">Introduction
+</h2><h3 id="review-self-supervised-learning-for-text">Review: Self-supervised Learning for <strong>Text</strong>
+</h3><p>使用大量无标注的资料来训练BERT，然后在BERT的输出后接下游模型，并提供少量有标注的资料来完成下游任务的训练，下游模型往往都是比较简单的模型。这些有标注的训练资料也可以同时拿来微调BERT。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/review.png" style="zoom:50%;" />
+<h3 id="self-supervised-learning-for-speech">Self-supervised Learning for <strong>Speech</strong>
+</h3><p>使用未标注的语音讯号来训练语音版的BERT，BERT会将声音讯号变为一排向量，将少量的标注资料提供给下游模型。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/speech%20bert.png" style="zoom:50%;" />
+<p><strong>Benchmark</strong>：<a class="link" href="https://superbbenchmark.org/"  target="_blank" rel="noopener"
+    ><strong>S</strong>peech processing <strong>U</strong>niversal <strong>PER</strong>formance <strong>B</strong>enchmark（SUPERB）</a></p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/superb.png" style="zoom:50%;" />
+<h3 id="self-supervised-learning-for-image">Self-supervised Learning for <strong>Image</strong>
+</h3><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/for%20image.png" style="zoom:50%;" />
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2011.13377"  target="_blank" rel="noopener"
+    >2011.13377] How Well Do Self-Supervised Models Transfer? (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/1905.01235"  target="_blank" rel="noopener"
+    >1905.01235] Scaling and Benchmarking Self-Supervised Visual Representation Learning (arxiv.org)</a></li>
+</ul>
+<p>不仅是在语言上，自监督式学习在语音和图像上也有着非常好的表现，下面将介绍在影像和语音上使用自监督学习的五大方法。</p>
+<h2 id="generative-approaches">Generative Approaches
+</h2><p>将文字上已经非常成功的方法（BERT、GPT）拿来语音和图像上使用。</p>
+<h3 id="maskingbert-series">Masking（BERT series）
+</h3><p>将某些声音讯号盖起来，让模型去还原被盖起来的部分。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1910.12638"  target="_blank" rel="noopener"
+    >1910.12638] Mockingjay: Unsupervised Speech Representation Learning with Deep Bidirectional Transformer Encoders (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/mockingjay.png" style="zoom:50%;" />
+<ul>
+<li>
+<p>Smoothness of acoustic features（Mockingjay）</p>
+<p>语音和文字有所不同，声音讯号表示成一排向量，但相邻的向量和向量之间非常接近，把某个向量盖起来后，只需拿两边的向量做内插，就可以大致还原出被盖住的内容，故每次Mask时，Mask一长排的数据。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/masking%20consecutive%20features.png" style="zoom:50%;" />
+</li>
+<li>
+<p>Masking strategies for speech</p>
+<p>在语音上可以做新的尝试，不再时间的方向上做Masking，而是Mask这些向量的某几个dimension。这种方法可以学到更多语者方面的信息。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/masking%20specific%20dimensions.png" style="zoom:50%;" />
+</li>
+</ul>
+<h3 id="predicting-futuregpt-series">Predicting Future（GPT series）
+</h3><p>在文字上，GPT预测下一个会出现的token（$n=1$），而在语音上，由于相邻向量很接近，所以通常会预测接下来<strong>某一段时间之后</strong>的向量（$n\gt 3$）。</p>
+<p>代表性的模型是APC（Autoregressive Predictive Coding）。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/predicting%20future.png" style="zoom:50%;" />
+<h3 id="how-about-image">How about <strong>image</strong>?
+</h3><ul>
+<li><a class="link" href="https://openai.com/blog/image-gpt/"  target="_blank" rel="noopener"
+    >Image GPT (openai.com)</a></li>
+</ul>
+<p>将一张图片的各个pixel拉直，训练模型，再将训练后的模型用在下游任务中。</p>
+<ul>
+<li>影像版的GPT：给一段pixel，预测下一个pixel。</li>
+<li>影像版的BERT：将一段pixel的一部分盖起来，让机器预测被盖起来的部分。</li>
+</ul>
+<p>相较由token来表示的文字，语音和影像中包含了更多的信息，让机器产生复杂的影像和声音讯号往往不是一件容易的事情。除了让机器还原影像和声音讯号外，能否还原、预测其他内容，从而达到和Self-supervised learning一样的效果？</p>
+<h2 id="predictive-approach">Predictive Approach
+</h2><h3 id="image---predicting-rotation">Image - Predicting Rotation
+</h3><p>让机器去学习一张图片有没有被旋转过。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1803.07728"  target="_blank" rel="noopener"
+    >1803.07728] Unsupervised Representation Learning by Predicting Image Rotations (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/predicting%20rotation.png" style="zoom:50%;" />
+<h3 id="image---context-prediction">Image - Context Prediction
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1505.05192"  target="_blank" rel="noopener"
+    >1505.05192] Unsupervised Visual Representation Learning by Context Prediction (arxiv.org)</a></li>
+</ul>
+<p>给一张比较大的图片，将图片中的两个小块切出来，让模型去回答第一块在第二块的哪个方向。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/context%20prediction.png" style="zoom:50%;" />
+<h4 id="similar-idea-on-speech">Similar idea on <strong>Speech</strong>
+</h4><ul>
+<li><a class="link" href="https://ieeexplore.ieee.org/abstract/document/9060816"  target="_blank" rel="noopener"
+    >Pre-Training Audio Representations With Self-Supervision | IEEE Journals &amp; Magazine | IEEE Xplore</a></li>
+</ul>
+<p>从一句话中切两段出来，让机器去判断两段声音讯号相距多长时间。</p>
+<h3 id="predict-simplified-objects">Predict Simplified Objects
+</h3><p>把原来要生成的复杂的内容简化。</p>
+<p>以语音讯号为例，对声音讯号中的向量做clustering（K-means, etc.），将其离散化，每个向量变成一个token。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/simplified%20object.png" style="zoom:50%;" />
+<ul>
+<li>
+<p><strong>Speech</strong></p>
+<ul>
+<li>HuBERT：[<a class="link" href="https://arxiv.org/abs/2106.07447"  target="_blank" rel="noopener"
+    >2106.07447] HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units (arxiv.org)</a></li>
+<li>BEST-RQ：[<a class="link" href="https://arxiv.org/abs/2202.01855"  target="_blank" rel="noopener"
+    >2202.01855] Self-supervised Learning with Random-projection Quantizer for Speech Recognition (arxiv.org)</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Image</strong></p>
+<ul>
+<li>DeepCluster：[<a class="link" href="https://arxiv.org/abs/1807.05520"  target="_blank" rel="noopener"
+    >1807.05520] Deep Clustering for Unsupervised Learning of Visual Features (arxiv.org)</a></li>
+</ul>
+</li>
+</ul>
+<p>模型是否在不产生内容的情况下学习？</p>
+<h2 id="contrastive-learning">Contrastive Learning
+</h2><h3 id="basic-idea-of-contrastive-learning">Basic Idea of Contrastive Learning
+</h3><p>一对positive（属于同一类）的样本，扔到Encoder中，他们的输出越接近越好，而对于一对negative（属于不同类）的样本，他们的产生的向量越远越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/basic%20idea%20of%20contrastive%20learning.png" style="zoom:50%;" />
+<p>没有让机器去预测或产生任何内容，而是找出positive的pair，让其向量越近越好，找出negative的pair，其向量越远越好。但目前并没有任何标签，不知道哪些图片是同样类别而哪些图片是不同类别。</p>
+<h3 id="simclr">SimCLR
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2002.05709"  target="_blank" rel="noopener"
+    >2002.05709] A Simple Framework for Contrastive Learning of Visual Representations (arxiv.org)</a></li>
+</ul>
+<p>将同一张图片做数据增强（随机裁切、颜色变型、高斯噪声等），同一张图片做数据增强得到的图片为正样本，而和另一张图片的增强结果为负样本。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/simclr.png" style="zoom:50%;" />
+<p>文章中探讨了各种数据增强的组合，比较一致的发现是，通常随机裁切是不可或缺的方法。</p>
+<ul>
+<li><strong>Speech</strong> SimCLR：[<a class="link" href="https://arxiv.org/abs/2010.13991"  target="_blank" rel="noopener"
+    >2010.13991] Speech SIMCLR: Combining Contrastive and Reconstruction Objective for Self-supervised Speech Representation Learning (arxiv.org)</a></li>
+</ul>
+<h3 id="moco">MoCo
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1911.05722"  target="_blank" rel="noopener"
+    >1911.05722] Momentum Contrast for Unsupervised Visual Representation Learning (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/moco.png" style="zoom:50%;" />
+<ul>
+<li><strong>MoCo v2</strong>（吸收SimCLR的优点后产生）：[<a class="link" href="https://arxiv.org/abs/2003.04297"  target="_blank" rel="noopener"
+    >2003.04297] Improved Baselines with Momentum Contrastive Learning (arxiv.org)</a></li>
+</ul>
+<h3 id="contrastive-learning-for-speech">Contrastive Learning for <strong>Speech</strong>
+</h3><ul>
+<li>CPC：[<a class="link" href="https://arxiv.org/abs/1807.03748"  target="_blank" rel="noopener"
+    >1807.03748] Representation Learning with Contrastive Predictive Coding (arxiv.org)</a></li>
+<li>Wav2vec：[<a class="link" href="https://arxiv.org/abs/1904.05862"  target="_blank" rel="noopener"
+    >1904.05862] wav2vec: Unsupervised Pre-training for Speech Recognition (arxiv.org)</a></li>
+</ul>
+<p>两段声音讯号，经过Encoder后各产生一排向量，将Encoder的输出再通过一个Predicter产生新的输出，新的输出和与它相邻的向量是positive的pair，而与另一个句子中的向量是negative的向量。新的输出向量通过不同的线性变换以后，和下一个时间点的输出越接近越好，和其他的句子的向量越远越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/contrastive%20learning%20for%20speech.png" style="zoom:50%;" />
+<p>可以拿Encoder或Encoder和Predicter用在下游任务中。</p>
+<p>CPC和Wav2vec的主要差别在Predicter上，后来又出现了VQ-wav2vec。</p>
+<ul>
+<li>VQ-wav2vec <em>+ BERT</em>：[<a class="link" href="https://arxiv.org/abs/1910.05453"  target="_blank" rel="noopener"
+    >1910.05453] vq-wav2vec: Self-Supervised Learning of Discrete Speech Representations (arxiv.org)</a></li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/vq-wav2vec.png" style="zoom:50%;" />
+<p>VQ-wav2vec中，Encoder的输出不是向量，而是离散的token。</p>
+<blockquote>
+<p>How to train with quantization：<a class="link" href="https://www.youtube.com/watch?v=JZvEzb5PV3U"  target="_blank" rel="noopener"
+    >【機器學習2021】自編碼器 (Auto-encoder) (下) – 領結變聲器與更多應用 - YouTube</a></p>
+</blockquote>
+<p>在原论文中，VQ-wav2vec的提出是为了在后面接上一个类似文字BERT的Encoder，VQ-wav2vec的输出正好可以当成BERT架构Encoder的输入。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/vq-wav2vec_2.png" style="zoom:50%;" />
+<p>这样做的另一个好处是模型可以比较容易的抽出和声音的内容有关的资讯。</p>
+<p>Discrete BERT中说明了VQ-wav2vec + BERT的结构具有较好的表现。</p>
+<ul>
+<li>Discrete BERT：[<a class="link" href="https://arxiv.org/abs/1911.03912"  target="_blank" rel="noopener"
+    >1911.03912] Effectiveness of self-supervised pre-training for speech recognition (arxiv.org)</a></li>
+</ul>
+<p>在VQ-wav2vec + BERT架构的结构中，VQ-wav2vec和BERT架构是分开训练的，在Wav2vec 2.0中，将二者合并起来一起训练。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.11477"  target="_blank" rel="noopener"
+    >2006.11477] wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations (arxiv.org)</a></li>
+</ul>
+<p>但合起来训练时，由于第一个Encoder的输出是离散token，不方便训练，所以将离散token改为向量，再将向量输入到第二个Encoder中，第二个Encoder会对输入的向量做masking，再用被盖住位置的输出向量去预测这个位置的离散token，同时希望这个向量产生其他向量的可能性越小越好。（<em>在原论文中，离散token都经过一个变换转为了embedding，希望输出的向量和对应位置的embedding越接近越好，实际上这就等价于把第二个Encoder的输出向量做线性变换后当作分类问题，希望分类为当前token的概率越高越好，分类为其他token的概率越小越好。</em>）</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/wav2vec2.png" style="zoom:50%;" />
+<p>不直接将离散token扔到第二个Encoder中，而是将连续向量扔进去，直观的解释是离散token包含的信息较少，而连续向量包含的信息相对要多。若第二个Encoder中输入的是离散token，其表现会掉一大截。</p>
+<p>另外，没有将其当作一个分类问题来做的原因可能是，语音中的token数量太大了，大概是十万量级，而常见语言模型的token数量也只有两万左右。</p>
+<h3 id="alterative-way-to-understand-wav2vec-20">Alterative way to understand Wav2vec 2.0
+</h3><p><strong>文字是否可以做Contrastive learning？</strong></p>
+<p>事实上，BERT也可以看作是一种Contrastive learning的方式。</p>
+<p>BERT可以看作是在完成分类任务，但分类任务也可以看作Contrastive learning，例如“深 [MASK] 学 习”经过BERT得到embedding，通过线性变换和Softmax，希望得到“度”的概率越大越好，其他词的概率越小越好，即BERT输出的embedding和“度”的embedding距离越近越好，和其他词的embedding距离越远越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/bert%20contrastive%20learning.png" style="zoom:50%;" />
+<p>在语音上，不像文字中negative样本是可以穷举的，语音讯号通常会经过一个网络后，将其离散化再进行处理。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/wav2vec2%20speech.png" style="zoom:50%;" />
+<h4 id="classification-vs-contrastive">Classification vs. Contrastive
+</h4><h5 id="classification">Classification
+</h5><p>对于分类问题，模型最后一层的输出向量通过一个线性变换（乘一个矩阵，和矩阵里的行做dot-product），希望和对应的行向量做dot-product后值越大越好，和其他行向量计算后结果越小越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/classification.png" style="zoom:50%;" />
+<h5 id="contrastive">Contrastive
+</h5><p>希望模型最后一层的输出向量和对应分类的embedding越接近越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/contrastive.png" style="zoom:50%;" />
+<h3 id="selecting-negative-examples-is-not-trivial">Selecting Negative Examples is not trivial
+</h3><p>negative样本的选取应该足够困难，但同时也不应该过难。</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/selecting%20negative%20examples.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>如何避开负样本的选择？</p>
+<h2 id="bootstrapping-approaches">Bootstrapping Approaches
+</h2><p>如果训练时不使用正样本，仅用正样本来训练，最后模型对于所有图像都会判断他们很接近。</p>
+<p>解决的办法是，在其中一个Encoder后接一个Predictor（可能是只有几层的前馈神经网络），训练的目标是两个向量越接近越好。但只计算Predictor所在的这一边的梯度，更新这一边的参数，再将这一边Encoder更新后的参数复制到另一边。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/bootstrapping%20approaches.png" style="zoom:50%;" />
+<p>这看起来像是某种“妖术”，但大量实验表明这种方法的确有效&hellip;</p>
+<h3 id="alterative-way-to-understand-bootstrapping">Alterative way to understand Bootstrapping
+</h3><h4 id="typical-knowledge-distillation知识蒸馏">Typical Knowledge Distillation（知识蒸馏）
+</h4><p>Teacher的参数固定，更新Student的参数。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/knowledge%20distillation.png" style="zoom:50%;" />
+<h3 id="image">Image
+</h3><h4 id="bootstrap-your-own-latentbyol">Bootstrap your own latent（BYOL）
+</h4><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.07733"  target="_blank" rel="noopener"
+    >2006.07733] Bootstrap your own latent: A new approach to self-supervised Learning (arxiv.org)</a></li>
+</ul>
+$$
+\theta\leftarrow\lambda\theta+(1-\lambda)\theta'
+$$<p>Teacher Encoder的参数不会马上变得和Student Encoder一样，用一个渐进的方法影响Teacher Encoder。</p>
+<h4 id="simple-siamesesimsiam">Simple Siamese（SimSiam）
+</h4><p>Moving Average不是必要的，直接复制参数同样可行。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.07733"  target="_blank" rel="noopener"
+    >2006.07733] Bootstrap your own latent: A new approach to self-supervised Learning (arxiv.org)</a></li>
+</ul>
+<h3 id="speech">Speech
+</h3><h4 id="data2vec">Data2vec
+</h4><p>在文字、影像、语音上都有不错的结果。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2202.03555"  target="_blank" rel="noopener"
+    >2202.03555] data2vec: A General Framework for Self-supervised Learning in Speech, Vision and Language (arxiv.org)</a></li>
+</ul>
+<h2 id="simply-extra-regularization">Simply Extra Regularization
+</h2><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2103.03230"  target="_blank" rel="noopener"
+    >2103.03230] Barlow Twins: Self-Supervised Learning via Redundancy Reduction (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2105.04906"  target="_blank" rel="noopener"
+    >2105.04906] VICReg: <strong>Variance-Invariance-Covariance Regularization</strong> for Self-Supervised Learning (arxiv.org)</a></li>
+</ul>
+<h3 id="variance-invariance-convariance-regularization"><strong>Variance</strong>-<strong>Invariance</strong>-<strong>Convariance</strong> Regularization
+</h3><h4 id="invariance">Invariance
+</h4><p>用正样本来训练，输出向量越接近越好。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/invariance.png" style="zoom:50%;" />
+<h4 id="variance">Variance
+</h4><p>给Encoder一个batch的图片，得到一个batch数量的向量，这些向量的每一个维度的方差要大于某一个阈值。</p>
+<p>通过这种方法来避免Encoder看到什么图片都输出同一个向量。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/variance.png" style="zoom:50%;" />
+<h4 id="covariance">Covariance
+</h4><p>把一个batch里的向量拿出来计算协方差，协方差矩阵中非对角线的元素接近0。</p>
+<p>有了Covariance后，让所有维度都充分利用到，散布更平均。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/7/Self-supervised%20Learning%20for%20Speech%20and%20Image/covariance.png" style="zoom:50%;" />
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

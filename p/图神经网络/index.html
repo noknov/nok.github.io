@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Graph Neural Network Introduction Graph 图$G$=点集$N$+边集$E$\nWhy? Classification 根据分子结构预测其性质 原子用节点表示，化学键用边表示。\n考虑角色之间的关系来预测一个人是不是凶手 Generation Generator生成出想要的分子结构 How? 对于一个无标签的数据，如何利用仅有的有标签数据和它与其他节点的关系？\nSolution1：类似CNN的方法，CNN利用卷积来获取一张图片的特征图，在卷积的乘法、加法过程中，利用了邻近像素点的信息。&raquo; Spatial-based convolution Solution2：将信号转到Fourier domain，在频域上对信号和滤波器做相乘，再做傅立叶反变换。 &raquo; Spectral-based convolution GNN Roadmap Tasks, Dataset, and Benchmark Spatial-based GNN Aggregate：用邻居的feature更新下一层的hidden state Readout：所有节点的feature集合起来代表整个图 NN4G (Neural Networks for Graph) Neural Network for Graphs: A Contextual Constructive Approach | IEEE Journals &amp; Magazine | IEEE Xplore 例如输入的图有5个节点$v_{0\\dots5}$，5条边，每个节点都有自己的feature，例如对于某种化学物质，将每个节点（原子）的性质作为这个节点的feature，。\n首先需要对每个节点的feature做embeding，得到$h_{0\\dots 5}^0$，得到Hidden layer 0。\n">
+<title>图神经网络</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="图神经网络">
+<meta property='og:description' content="Graph Neural Network Introduction Graph 图$G$=点集$N$+边集$E$\nWhy? Classification 根据分子结构预测其性质 原子用节点表示，化学键用边表示。\n考虑角色之间的关系来预测一个人是不是凶手 Generation Generator生成出想要的分子结构 How? 对于一个无标签的数据，如何利用仅有的有标签数据和它与其他节点的关系？\nSolution1：类似CNN的方法，CNN利用卷积来获取一张图片的特征图，在卷积的乘法、加法过程中，利用了邻近像素点的信息。&raquo; Spatial-based convolution Solution2：将信号转到Fourier domain，在频域上对信号和滤波器做相乘，再做傅立叶反变换。 &raquo; Spectral-based convolution GNN Roadmap Tasks, Dataset, and Benchmark Spatial-based GNN Aggregate：用邻居的feature更新下一层的hidden state Readout：所有节点的feature集合起来代表整个图 NN4G (Neural Networks for Graph) Neural Network for Graphs: A Contextual Constructive Approach | IEEE Journals &amp; Magazine | IEEE Xplore 例如输入的图有5个节点$v_{0\\dots5}$，5条边，每个节点都有自己的feature，例如对于某种化学物质，将每个节点（原子）的性质作为这个节点的feature，。\n首先需要对每个节点的feature做embeding，得到$h_{0\\dots 5}^0$，得到Hidden layer 0。\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-11-30T11:01:19&#43;00:00'/><meta property='article:modified_time' content='2022-11-30T11:01:19&#43;00:00'/>
+<meta name="twitter:title" content="图神经网络">
+<meta name="twitter:description" content="Graph Neural Network Introduction Graph 图$G$=点集$N$+边集$E$\nWhy? Classification 根据分子结构预测其性质 原子用节点表示，化学键用边表示。\n考虑角色之间的关系来预测一个人是不是凶手 Generation Generator生成出想要的分子结构 How? 对于一个无标签的数据，如何利用仅有的有标签数据和它与其他节点的关系？\nSolution1：类似CNN的方法，CNN利用卷积来获取一张图片的特征图，在卷积的乘法、加法过程中，利用了邻近像素点的信息。&raquo; Spatial-based convolution Solution2：将信号转到Fourier domain，在频域上对信号和滤波器做相乘，再做傅立叶反变换。 &raquo; Spectral-based convolution GNN Roadmap Tasks, Dataset, and Benchmark Spatial-based GNN Aggregate：用邻居的feature更新下一层的hidden state Readout：所有节点的feature集合起来代表整个图 NN4G (Neural Networks for Graph) Neural Network for Graphs: A Contextual Constructive Approach | IEEE Journals &amp; Magazine | IEEE Xplore 例如输入的图有5个节点$v_{0\\dots5}$，5条边，每个节点都有自己的feature，例如对于某种化学物质，将每个节点（原子）的性质作为这个节点的feature，。\n首先需要对每个节点的feature做embeding，得到$h_{0\\dots 5}^0$，得到Hidden layer 0。\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#introduction">Introduction</a>
+      <ol>
+        <li><a href="#graph">Graph</a></li>
+        <li><a href="#why">Why?</a>
+          <ol>
+            <li><a href="#classification">Classification</a></li>
+            <li><a href="#generation">Generation</a></li>
+          </ol>
+        </li>
+        <li><a href="#how">How?</a></li>
+      </ol>
+    </li>
+    <li><a href="#gnn-roadmap">GNN Roadmap</a></li>
+    <li><a href="#tasks-dataset-and-benchmark">Tasks, Dataset, and Benchmark</a></li>
+    <li><a href="#spatial-based-gnn">Spatial-based GNN</a>
+      <ol>
+        <li><a href="#nn4g-neural-networks-for-graph">NN4G (Neural Networks for Graph)</a></li>
+        <li><a href="#dcnn-diffusion-convolution-neural-network">DCNN (Diffusion Convolution Neural Network)</a></li>
+        <li><a href="#dgc-diffusion-graph-convolution">DGC (Diffusion Graph Convolution)</a></li>
+        <li><a href="#monet-mixture-model-networks">MoNET (Mixture Model Networks)</a></li>
+        <li><a href="#graphsage">GraphSAGE</a></li>
+        <li><a href="#gat-graph-attention-networks">GAT (Graph Attention Networks)</a></li>
+        <li><a href="#gin-graph-isomorphism-network">GIN (Graph Isomorphism Network)</a></li>
+      </ol>
+    </li>
+    <li><a href="#graph-signal-processing--spectral-based-gnn">Graph Signal Processing &amp; Spectral-Based GNN</a>
+      <ol>
+        <li><a href="#signal-and-system">Signal and System</a></li>
+        <li><a href="#spectral-graph-theory">Spectral Graph Theory</a>
+          <ol>
+            <li><a href="#vertex-domain-signal">Vertex domain signal</a></li>
+            <li><a href="#discrete-time-fourier-basis">Discrete time Fourier basis</a></li>
+            <li><a href="#interpreting-vertex-frequency">Interpreting vertex frequency</a></li>
+            <li><a href="#graph-fourier-transform-of-signal-x">Graph Fourier Transform of signal $x$</a></li>
+            <li><a href="#inverse-graph-fourier-transform-of-signal-hatx">Inverse Graph Fourier Transform of signal $\hat{x}$</a></li>
+            <li><a href="#filtering">Filtering</a></li>
+            <li><a href="#localize">Localize</a></li>
+          </ol>
+        </li>
+        <li><a href="#chebnet">ChebNet</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 30, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="graph-neural-network">Graph Neural Network
+</h1><h2 id="introduction">Introduction
+</h2><h3 id="graph">Graph
+</h3><p>图$G$=点集$N$+边集$E$</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/graph_sample.png" style="zoom:50%;" />
+<h3 id="why">Why?
+</h3><h4 id="classification">Classification
+</h4><ul>
+<li>根据分子结构预测其性质</li>
+</ul>
+<p>原子用节点表示，化学键用边表示。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/classfication.png" style="zoom:35%;" />
+<ul>
+<li>考虑角色之间的关系来预测一个人是不是凶手</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/classification2.png" style="zoom:35%;" />
+<h4 id="generation">Generation
+</h4><ul>
+<li>Generator生成出想要的分子结构</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/generation.png" style="zoom:40%;" />
+<h3 id="how">How?
+</h3><p>对于一个无标签的数据，如何利用仅有的有标签数据和它与其他节点的关系？</p>
+<ul>
+<li>Solution1：类似CNN的方法，CNN利用卷积来获取一张图片的特征图，在卷积的乘法、加法过程中，利用了<em>邻近</em>像素点的信息。&raquo; <strong>Spatial-based convolution</strong></li>
+<li>Solution2：将信号转到Fourier domain，在<em>频域</em>上对信号和滤波器做相乘，再做傅立叶反变换。 &raquo; <strong>Spectral-based convolution</strong></li>
+</ul>
+<h2 id="gnn-roadmap">GNN Roadmap
+</h2><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/roadmap.png" style="zoom:40%;" />
+<h2 id="tasks-dataset-and-benchmark">Tasks, Dataset, and Benchmark
+</h2><h2 id="spatial-based-gnn">Spatial-based GNN
+</h2><ul>
+<li>Aggregate：用邻居的feature更新下一层的hidden state</li>
+<li>Readout：所有节点的feature集合起来代表整个图</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/spatial-based%20convolution.png" style="zoom:33%;" />
+<h3 id="nn4g-neural-networks-for-graph">NN4G (Neural Networks for Graph)
+</h3><ul>
+<li><a class="link" href="https://ieeexplore.ieee.org/document/4773279"  target="_blank" rel="noopener"
+    >Neural Network for Graphs: A Contextual Constructive Approach | IEEE Journals &amp; Magazine | IEEE Xplore</a></li>
+</ul>
+<p>例如输入的图有5个节点$v_{0\dots5}$，5条边，每个节点都有自己的feature，例如对于某种化学物质，将每个节点（原子）的性质作为这个节点的feature，。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/input_layer.png" style="zoom:33%;" />
+<p>首先需要对每个节点的feature做embeding，得到$h_{0\dots 5}^0$，得到Hidden layer 0。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/hidden0.png" style="zoom:33%;" />
+$$
+h_3^1=\hat{w}_{1,0}(h_0^0+h_2^0+h_4^0)+h_3^0
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/hidden1.png" style="zoom:33%;" /></p>
+<p>在做Readout时，将各层的节点feature加起来取平均，各自做一个transform后加起来代表整个图的feature。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/readout.png" style="zoom:33%;" />
+<h3 id="dcnn-diffusion-convolution-neural-network">DCNN (Diffusion Convolution Neural Network)
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1511.02136"  target="_blank" rel="noopener"
+    >1511.02136] Diffusion-Convolutional Neural Networks (arxiv.org)</a></li>
+</ul>
+$$
+h_3^1=w_3^1MEAN(d(3,\cdot)=2)
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/DCNN.png" style="zoom:33%;" /></p>
+$$
+\begin{bmatrix}
+h_1^k \\
+\vdots \\
+h_1^1 \\
+h_1^0
+\end{bmatrix}
+\times
+W=y_1
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/DCNN1.png" style="zoom:33%;" /></p>
+<h3 id="dgc-diffusion-graph-convolution">DGC (Diffusion Graph Convolution)
+</h3><ul>
+<li><a class="link" href="https://arxiv.org/pdf/1707.01926.pdf"  target="_blank" rel="noopener"
+    >1707.01926.pdf (arxiv.org)</a></li>
+</ul>
+<p>与DCNN类似，把各层加起来。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/DGC.png" style="zoom:30%;" />
+<h3 id="monet-mixture-model-networks">MoNET (Mixture Model Networks)
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1611.08402"  target="_blank" rel="noopener"
+    >1611.08402] Geometric deep learning on graphs and manifolds using mixture model CNNs (arxiv.org)</a></li>
+</ul>
+$$
+\mathbf{u}(x,y)=(\frac{1}{\sqrt{\deg(x)}},\frac{1}{\sqrt{\deg{y}}})^T
+$$<p>将距离$\mathbf{u}$（与节点的度有关）做一个transform后，再做加权求和。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/MoNET.png" style="zoom:33%;" />
+<h3 id="graphsage">GraphSAGE
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1706.02216"  target="_blank" rel="noopener"
+    >1706.02216] Inductive Representation Learning on Large Graphs (arxiv.org)</a></li>
+</ul>
+<p>在做Aggregation时，使用mean、max-pooling或LSTM。</p>
+<p>对一个节点来说，邻居是无序的，用LSTM来做时，每次update时都随便sample出一个顺序，来忽略顺序的影响，学到比较好表示。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/GraphSAGE.png" style="zoom:40%;" />
+<h3 id="gat-graph-attention-networks">GAT (Graph Attention Networks)
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1710.10903"  target="_blank" rel="noopener"
+    >1710.10903] Graph Attention Networks (arxiv.org)</a></li>
+</ul>
+<p>不只要做加权求和，权重让网络自己去学，对邻居做Attention。</p>
+<ul>
+<li>输入：节点feature $\mathbf{h}={\vec{h}_1,\vec{h}_2,\dots,\vec{h}_N},\vec{h}_i\in\mathbb{R}^F$</li>
+<li>计算energy：$e_{ij}=\alpha(\mathbf{W}\vec{h}_i,\mathbf{W}\vec{h}_j)$</li>
+<li>通过邻居计算Attention分数：$\alpha_{ij}=\frac{\exp{(\text{LeakyReLU}(\vec{\mathbf{a}}^T[\mathbf{W}\vec{h}_i\Vert\mathbf{W}\vec{h}<em>j]))}}{\sum</em>{k\in \mathcal{N}_i}\exp{(\text{LeakyReLU}(\mathbf{\vec{a}}^T[\mathbf{W}\vec{h}_i\Vert\mathbf{W}\vec{h}_k])})}$</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/GAT.png" style="zoom:33%;" />
+<h3 id="gin-graph-isomorphism-network">GIN (Graph Isomorphism Network)
+</h3><ul>
+<li><a class="link" href="https://openreview.net/forum?id=ryGs6iA5Km"  target="_blank" rel="noopener"
+    >How Powerful are Graph Neural Networks? | OpenReview</a></li>
+</ul>
+$$
+h_v^{(k)}=\text{MLP}^{(k)}\left(\left(1+\epsilon^{(k)}\right)\cdot h_v^{(k-1)}+\sum_{u\in\mathcal{N}(v)}h_{u}^{(k-1)}\right)
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/GIN.png" style="zoom:50%;" /></p>
+<h2 id="graph-signal-processing--spectral-based-gnn">Graph Signal Processing &amp; Spectral-Based GNN
+</h2><h3 id="signal-and-system">Signal and System
+</h3><p>时域上的卷积等于频域上的相乘。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/freq.png" style="zoom:33%;" />
+$$
+\vec{A}=\sum_{k=1}^Na_k\hat{v}_k
+$$$$
+a_j=\vec{A}\cdot \hat{v}_j
+$$$$
+\hat{v}_i\cdot\hat{v}_j=\delta_{ij}
+$$$$
+x(t)=\sum_{k=-\infty}^{\infty}a_ke^{jk\omega_0t}=\sum_{k=-\infty}^{\infty}a_k\phi_k(t)
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/time-freq.png" style="zoom:33%;" /></p>
+<p>傅立叶变换：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/fourier-trans.png" style="zoom:33%;" />
+<h3 id="spectral-graph-theory">Spectral Graph Theory
+</h3><ul>
+<li>图$G=(V,E)$，节点数量$N=\vert V\vert$；</li>
+<li>邻接矩阵（权重矩阵）$A\in \mathbb{R}^{N\times N}$：$A_{i,j}=0\ \text{if}\ e_{i,j}\notin E\ \text{else}\ A_{i,j}=w(i,j)$</li>
+<li>度矩阵$D\in \mathbb{R}^{N\times N}$：</li>
+</ul>
+$$
+D_{i,j}=\left\{
+\begin{aligned} 
+&d(i)\ \ (\sum_kA_{i,k})\quad &\text{if}\ i=j \\
+&0\quad &\text{if}\ i\ne j
+\end{aligned}\right.
+$$<ul>
+<li>$f:V\rightarrow \mathbb{R}^N$</li>
+</ul>
+<p>对于下所示的图，有节点$v_{0\dots 3}$，每个节点上面的信号$f(i)$，例如对于城市路网图，节点对应不同的城市，信号对应着城市的气温、人口等。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/theory1.png" style="zoom:30%;" />
+<ul>
+<li>图拉普拉斯矩阵$L=D-A,L\succcurlyeq0$（半正定，对称）</li>
+<li>可以对$L$做谱分解：$L=U\Lambda U^T$</li>
+<li>对角矩阵$\Lambda=\text{diag}(\lambda_0,\dots,\lambda_{N-1})\in \mathbb{R}^{N\times N}$，$\lambda_l$：frequency</li>
+<li>正交矩阵$U=[u_0,\dots,u_{N-1}]\in \mathbb{R}^{N\times N}$，$u_l$：$\lambda_l$对应的basis</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/graph-laplacian.png" style="zoom:40%;" />
+<h4 id="vertex-domain-signal">Vertex domain signal
+</h4>$$
+D=
+\begin{bmatrix}
+2 & 0 & 0 & 0 \\
+0 & 3 & 0 & 0 \\
+0 & 0 & 2 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\quad
+A=
+\begin{bmatrix}
+0 & 1 & 1 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 \\
+0 & 1 & 0 & 0 
+\end{bmatrix}
+$$$$
+L=
+\begin{bmatrix}
+2 & -1 & -1 & 0 \\
+-1 & 3 & -1 & -1 \\
+-1 & -1 & 2 & 0 \\
+0 & -1 & 0 & 1
+\end{bmatrix}
+$$$$
+\Lambda=
+\begin{bmatrix}
+0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 3 & 0 \\
+0 & 0 & 0 & 4
+\end{bmatrix}
+\quad
+U=
+\begin{bmatrix}
+0.5 & -0.41 & 0.71 & -0.29 \\
+0.5 & 0 & 0 & 0.87 \\
+0.5 & -0.41 & -0.71 & -0.29 \\
+0.5 & 0.82 & 0 & -0.29
+\end{bmatrix}
+$$<p>
+对应在图$G$上：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/theory2.png" style="zoom:34%;" />
+<h4 id="discrete-time-fourier-basis">Discrete time Fourier basis
+</h4><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/discrete-time-fourier-basis.png" style="zoom:50%;" />
+<h4 id="interpreting-vertex-frequency">Interpreting vertex frequency
+</h4><p>把$L$看成是对图的一个运算，对于一个图信号$f$，$Lf=(D-A)f=Df-Af$，对于4个节点的图，会得到形如$Lf=\begin{bmatrix}a \ b \c \ d\end{bmatrix}$的结果，$Lf$代表着某一个节点和他周围节点的能量差异。</p>
+$$
+\begin{aligned}
+(Lf)(vi)&=\sum_{v_j\in V}w(i,j)(f(v_i)-f(v_j)) \\
+&\text{where}\ w_{i,j}\ \text{is the}\ (i,j)^{th}\ \text{entry of}\ A \\
+f^TLf&=\sum_{v_i\in V}f(v_i)\sum_{v_j\in V}w_{i,j}(f(v_i)-f(v_j)) \\
+&=\cdots \\
+&=\frac{1}{2}\sum_{v_i\in V}\sum_{v_j\in V}w_{i,j}\left(f(v_i)-f(v_j)\right)^2
+\end{aligned}
+$$<p>
+可以用$f^TLf$来量化某一个图信号的频率。</p>
+<p>有$u_i^TLu_i=u_i^T\lambda_iu_i=\lambda u_i^Tu_i=\lambda_i$，此时再回到前面$\lambda$和$u$对应在图$G$上的情况，比较小的$\lambda$对应着低通部分。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/theory2.png" style="zoom:34%;" />
+<p>一个特例是一条线上的20个节点$v_{0\dots19}$：</p>
+<p><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/special-example.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>在$\lambda=0$时是一个DC-component，随着$\lambda$越来越大，从一个低频sin变成高频sin。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/special-example-2.png" style="zoom:40%;" />
+<h4 id="graph-fourier-transform-of-signal-x">Graph Fourier Transform of signal $x$
+</h4>$$
+\hat{x}=U^Tx
+$$<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/transform.png" style="zoom:33%;" />
+<p>分别乘内积，将各个节点的$f(i)$转为$u_i\cdot f=\lambda_i$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/transform2.png" style="zoom:35%;" />
+<h4 id="inverse-graph-fourier-transform-of-signal-hatx">Inverse Graph Fourier Transform of signal $\hat{x}$
+</h4>$$
+x=U\hat{x}
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/inverse.png" style="zoom:33%;" /></p>
+<h4 id="filtering">Filtering
+</h4><p>前面将时域转到频域，是为了找到在图上做滤波的方式。</p>
+<p>例如对于频域上的信号$X(j\omega)$，有一个$H(j\omega)$的滤波，直接相乘会得到滤波结果$X^\prime(j\omega)$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/filtering.png" style="zoom:33%;" />
+$$
+\hat{y}=g_\theta(\Lambda)\hat{x}
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/filtering2.png" style="zoom:33%;" /></p>
+$$
+g_\theta(\lambda_i)=\theta_i
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/filtering3.png" style="zoom:33%;" /></p>
+$$
+\begin{aligned}
+y=U\hat{y}&=Ug_\theta(\Lambda)U^T \\
+&=g_\theta(U\Lambda U^T)x \\
+&=g_\theta(L)x
+\end{aligned}
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/filtering4.png" style="zoom:38%;" /></p>
+<p>训练模型需要学习的参数是$g_\theta(\Lambda)$。</p>
+$$
+g_\theta(L)=\log(I+L)=L-\frac{L^2}{2}+\frac{L^3}{3}+\cdots,\lambda_{\max}\lt 1
+$$<p>
+此时存在的问题是：</p>
+<ul>
+<li>计算的复杂度为$O(N)$</li>
+<li>$g_\theta(L)$可能会让模型可能会学到一些本不希望学到的内容（not <em>localize</em>）</li>
+</ul>
+<h4 id="localize">Localize
+</h4><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/theory1.png" style="zoom:35%;" />
+<p>对于上图，例如$g_\theta(L)=L$时，$y=Lx$：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/q-L1.png" style="zoom:35%;" />
+<p>$L$在有些地方（例如1行4列）的值为0，这是因为$v_0$到$v_3$之间没有任何距离为1的路径，此时$v_3$不会影响到$v_0$。</p>
+<p>但当$g_\theta(L)=L^2$时，$y=L^2X$：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/q-L2.png" style="zoom:35%;" />
+<p>$L^2$不再有为值为0的地方，对于任意节点，到其他节点的距离都小于2，此时$v_3$会影响到$v_0$。</p>
+<blockquote>
+<p><strong>Lemma</strong> Let $G$ be a weighted graph, and $\mathscr{L}$ the graph Laplacian of $G$. Fix an integer $s\gt 0$, and pick vertices $m$ and $n$. Then $(\mathscr{L}^s)<em>{m,n}=0$ whenever $d</em>{G}(m,n)\gt s$.</p>
+</blockquote>
+<p>这种情况不是Localize的，例如CNN中，当我们选择$3\times 3$的kernel时，就只能看到邻近区域的内容，希望这个区域变大的话可以选择更大的kernel。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/GNN/CNN-localize.png" style="zoom:40%;" />
+<h3 id="chebnet">ChebNet
+</h3><ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1606.09375"  target="_blank" rel="noopener"
+    >1606.09375] Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering (arxiv.org)</a></li>
+</ul>
+<p>更多可参考：</p>
+<ul>
+<li><a class="link" href="https://distill.pub/2021/gnn-intro/"  target="_blank" rel="noopener"
+    >A Gentle Introduction to Graph Neural Networks (distill.pub)</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">自编码器</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

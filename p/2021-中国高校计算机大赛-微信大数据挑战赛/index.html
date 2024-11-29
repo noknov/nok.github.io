@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="多任务推荐系统赛题，初赛Rank 68/6768，复赛Rank 70。\n">
+<title>2021 中国高校计算机大赛 - 微信大数据挑战赛</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/2021-%E4%B8%AD%E5%9B%BD%E9%AB%98%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A4%A7%E8%B5%9B-%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9B/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="2021 中国高校计算机大赛 - 微信大数据挑战赛">
+<meta property='og:description' content="多任务推荐系统赛题，初赛Rank 68/6768，复赛Rank 70。\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/2021-%E4%B8%AD%E5%9B%BD%E9%AB%98%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A4%A7%E8%B5%9B-%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9B/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-06-29T21:15:00&#43;00:00'/><meta property='article:modified_time' content='2021-06-29T21:15:00&#43;00:00'/>
+<meta name="twitter:title" content="2021 中国高校计算机大赛 - 微信大数据挑战赛">
+<meta name="twitter:description" content="多任务推荐系统赛题，初赛Rank 68/6768，复赛Rank 70。\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#赛题描述">赛题描述</a></li>
+    <li><a href="#baseline">Baseline</a></li>
+    <li><a href="#统计特征">统计特征</a></li>
+    <li><a href="#512维多模态向量">512维多模态向量</a></li>
+    <li><a href="#tagkeyword多值离散特征">tag、keyword：多值离散特征</a></li>
+    <li><a href="#多种子融合">多种子融合</a></li>
+    <li><a href="#树模型">树模型</a></li>
+    <li><a href="#基于embedding的衍生特征">基于embedding的衍生特征</a></li>
+    <li><a href="#初赛b榜">初赛B榜</a></li>
+    <li><a href="#待解决的问题">待解决的问题</a>
+      <ol>
+        <li><a href="#部分feed冷启动">部分feed冷启动</a></li>
+        <li><a href="#模型结构">模型结构</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考代码">参考代码</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" >
+                数据挖掘
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/2021-%E4%B8%AD%E5%9B%BD%E9%AB%98%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%A4%A7%E8%B5%9B-%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9B/">2021 中国高校计算机大赛 - 微信大数据挑战赛</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 29, 2021</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>多任务推荐系统赛题，初赛Rank 68/6768，复赛Rank 70。</p>
+<h1 id="2021中国高校计算机大赛---微信大数据挑战赛">2021中国高校计算机大赛 - 微信大数据挑战赛
+</h1><h2 id="赛题描述">赛题描述
+</h2><p>　　本次比赛基于脱敏和采样后的数据信息，对于给定的一定数量到访过微信视频号“热门推荐”的用户， 根据这些用户在视频号内的历史n天的行为数据，通过算法在测试集上预测出这些用户对于不同视频内容的互动行为（包括点赞、点击头像、收藏、转发等）的发生概率。 本次比赛以多个行为预测结果的加权uAUC值进行评分。<br>
+　　比赛提供训练集用于训练模型，测试集用于评估模型效果，提交结果demo文件用于展示提交结果的格式。 所有数据文件格式都是带表头的.csv格式，不同字段列之间用英文逗号分隔。初赛与复赛的数据分布一致，数据规模不同。 初赛提供百万级训练数据，复赛提供千万级训练数据。</p>
+<h2 id="baseline">Baseline
+</h2><p>　　主办方为本次比赛提供了一份基线:<a class="link" href="https://github.com/WeChat-Big-Data-Challenge-2021/WeChat_Big_Data_Challenge"  target="_blank" rel="noopener"
+    >Wechat_Big_Data_Challenge_Baseline</a>，该基线基于Wide &amp; Deep模型实现，除6列原始id特征和feed时长特征外，在id特征的基础上构造了一些统计特征。Weight_uAUC线下0.657003，线上0.607908。<br>
+　　官方提供的这份基线分为数据集生成、离线模型训练、离线模型评估、在线模型训练、生成线上提交结果几个步骤，流程比较复杂，且线上线下gap较大，达到了5个百分点（经验证是统计特征涉及时间穿越，删去此部分特征可以提高2-3个百，群里也有人在基线基础上调参也能得到线上0.65+的分数），故我并没有过多参考此份基线。<br>
+　　我所使用的是讨论区深度匹配树大佬所开源的基于MMoE的多任务学习模型，由于MMoE的多任务训练机制，训练速度相比四个任务逐个建模大大提升，可以迅速验证一些特征的有效性。线上分数约为0.635。<br>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/wechat_algo_stage1/MMoE.jpg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="MMoE"
+	
+	
+>
+　　TensorFlow版：<a class="link" href="https://github.com/zanshuxun/WeChat_Big_Data_Challenge_DeepCTR_baseline"  target="_blank" rel="noopener"
+    >mmoe_tf</a>，Pytorch版：<a class="link" href="https://github.com/dpoqb/wechat_big_data_baseline_pytorch"  target="_blank" rel="noopener"
+    >mmoe_torch</a>。</p>
+<h2 id="统计特征">统计特征
+</h2><p>　　基线中仅使用了6列id类特征，第一想法是在这六列id的基础上构建统计特征，由于数据带有时间序列的性质，提取特征时要注意时间穿越问题。我根据user、feed等多侧的历史行为，构建了点击、曝光、CTR等相关特征，这些特征在CTR类的比赛中非常常见，Kaggle、Github上也有非常多优秀的开源代码，故这部分特征的具体提取不再赘述。<br>
+　　但将此部分统计特征喂给nn时，nn几乎不收敛，loss波动极大，归一化后线上成绩也非常低，于是开始思考什么样的特征适合喂给nn，开始下一阶段的特征构建。</p>
+<h2 id="512维多模态向量">512维多模态向量
+</h2><p>　　这部分特征的正确使用能够获得较大幅度的提升，我尝试了两种方法，第一种是直接merge到训练集上，不过直接merge极容易OOM（除非内存足够），第二种是给feedid的嵌入赋值权重，不过后者经过实验效果不佳，也可能是我使用的方式不对。我租用的服务器配置为2*P40 + 112G RAM，将512维多模态向量经过PCA降维到48维后并在训练集上送入nn进行训练，线上线下均有大幅度提升，仅加入多模态这部分embedding特征后，线上成绩可以直接突破0.65。</p>
+<h2 id="tagkeyword多值离散特征">tag、keyword：多值离散特征
+</h2><p>　　这部分特征的处理方式有很多，例如作为序列提取通过word2vec提取embedding，将每个离散取值当成词，整个tag/keyword列表当作句子，获取每个词的词向量后做pooling操作得到该部分的embedding，此处可参考<a class="link" href="https://mp.weixin.qq.com/s?__biz=Mzk0NDE5Nzg1Ng==&amp;mid=2247496721&amp;idx=1&amp;sn=c7fab106254f555cbea64e8464c84074&amp;chksm=c32aed9ef45d64887f23606031d052c3fdce868b975644ca62db52bfd70185d4ddd212f0364f&amp;mpshare=1&amp;scene=23&amp;srcid=0701JaeEB4Z1IDrtYDj3zaDK&amp;sharer_sharetime=1625107770080&amp;sharer_shareid=8c3bd21461ee94c3d6cc62dff5de10ac#rd"  target="_blank" rel="noopener"
+    >序列问题必备特征工程——基于Word2Vec的文本向量</a>，或者通过embedding_lookup，此处可参考<a class="link" href="https://zhuanlan.zhihu.com/p/149014347"  target="_blank" rel="noopener"
+    >推荐算法-4.多值离散特征的embedding解决方案</a>。<br>
+　　该部分特征对分数的提升也能达到7-8个千，我的线上分数也达到了0.659。</p>
+<h2 id="多种子融合">多种子融合
+</h2><p>　　由于tensorflow的内部机制，导致其无法完全固定随机种子，同特征同参数下训练结果有一定幅度波动，波动幅度大概有2-3个千，通过多次训练，取平均可以稳定结果，线上成绩有约2个千的小幅度提升。</p>
+<h2 id="树模型">树模型
+</h2><p>　　我在0.664附近卡了近两周的时间，比赛中后期的时候，天才儿童在6.14的周周星分享中开源了一份线上成绩0.645的<a class="link" href="https://developers.weixin.qq.com/community/minihome/article/doc/0006467d05427892b94c341aa56813"  target="_blank" rel="noopener"
+    >梯度提升决策树模型基线</a>，当时队伍中仅我自己一人，仅靠单模进入复赛不太稳定，而且初赛由于数据采样的原因，树模型会比nn更有优势，故决定转手再做一个树模型。<br>
+　　树模型中主要构造了一些统计类特征，和前文提到的类似，主要包括曝光、转化、视频观看等情况的滑窗统计特征，以及包括曝光、偏好等<strong>全局信息统计特征</strong>（全局统计也能上分..Orz）。<br>
+　　我在此份基线的基础上添加了nn中使用的几个embedding特征，树模型单模单折分数做到0.655。和我此前0.664的nn仅5/5平均后，就能够有3个k的提升。</p>
+<h2 id="基于embedding的衍生特征">基于embedding的衍生特征
+</h2><p>　　这时距离比赛结束还有一周的时间，我在群里找到了一个做nn的和一个做树模型的队有，单模分数都在0.664上下，我和另一个队友的sub简单融合后分数达到了0.670，提升较大，然后继续优化nn单模。<br>
+　　基于前面提取的多个embedding特征，我在此基础上又提取了一些衍生特征，方式包括滑窗pooling等，收益较大，简单衍生后就能提升3个千。</p>
+<h2 id="初赛b榜">初赛B榜
+</h2><p>　　B榜数据和A榜的user无重叠，分布一致，排行榜上普遍有3个k到6个k的下降，我们的B榜最终分数为0.67093。</p>
+<h2 id="待解决的问题">待解决的问题
+</h2><h3 id="部分feed冷启动">部分feed冷启动
+</h3><p>　　简单观察数据可发现，第15天仍有2607个feed冷启动（未在user_action中出现），样本量为72758。<br>
+　　对于冷启动问题，目前的基本思路是做矩阵SVD分解，构建用户和商品的交互矩阵，对稀疏矩阵进行SVD分解，得到用户和商品的向量，将用户向量和商品向量作为特征拼接到用户和商品侧。
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/wechat_algo_stage1/feed%E5%86%B7%E5%90%AF%E5%8A%A8"
+	
+	
+	
+	loading="lazy"
+	
+		alt="每日冷启动feed数量"
+	
+	
+></p>
+<h3 id="模型结构">模型结构
+</h3><p>　　比赛初期GDY郭大使用Transformer输入原始的id类特征轻松上到了0.65+，从后面周周星分享的一些思路也可以看出，模型结构的修改可以带来比较大的收益，例如参考DIN对用户的长短期兴趣进行表征等。</p>
+<h2 id="参考代码">参考代码
+</h2><p><a class="link" href="https://github.com/meurice996/WBDC2021_Solution"  target="_blank" rel="noopener"
+    >https://github.com/meurice996/WBDC2021_Solution</a></p>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/2021-%E6%8B%9B%E5%95%86%E9%93%B6%E8%A1%8C-fintech-%E6%95%B0%E6%8D%AE%E8%B5%9B%E9%81%93/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2021 招商银行 FinTech 数据赛道</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

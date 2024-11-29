@@ -1,0 +1,2844 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>图像处理 on zn.yan</title>
+        <link>https://demo.stack.jimmycai.com/categories/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/</link>
+        <description>Recent content in 图像处理 on zn.yan</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 31 Jul 2022 22:24:28 +0000</lastBuildDate><atom:link href="https://demo.stack.jimmycai.com/categories/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>图像质量评价</title>
+        <link>https://demo.stack.jimmycai.com/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/</link>
+        <pubDate>Sun, 31 Jul 2022 22:24:28 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/</guid>
+        <description>&lt;p&gt;本文总结了图像质量评估的相关内容，同时简要总结了基于深度学习的无参考图像质量评价方法。&lt;/p&gt;
+&lt;h1 id=&#34;image-quality-assessment&#34;&gt;Image Quality Assessment
+&lt;/h1&gt;$$
+\text{QA}\left\{
+\begin{aligned}
+&amp;视频质量评估\text{VQA} \\
+&amp;图像质量评估\text{IQA}
+\left\{
+\begin{aligned}
+&amp;主观评估\text{S-IQA}\ ——\ 主观评分\\
+&amp;客观评估\text{O-IQA}
+\left\{
+\begin{aligned}
+&amp;全参考评估\text{FR-IQA} \\
+&amp;半参考评估\text{RR-IQA} \\
+&amp;无参考评估\text{NR-IQA} \\
+\end{aligned}
+\right.
+\end{aligned}
+\right.
+\end{aligned}
+\right.
+$$&lt;h2 id=&#34;主观评估s-iqa&#34;&gt;主观评估S-IQA
+&lt;/h2&gt;&lt;p&gt;主观评估方法主要可分为两种：绝对评价和相对评价。&lt;/p&gt;
+&lt;p&gt;绝对评价是由观察者根据自己的知识和理解，按照某些特定评价性能对图像的绝对好坏进行评价。在具体执行过程中通常采用双刺激连续质量分级法（Double Stimulus Continuous Scale, DSCQS）将待评价图像和原始图像按一定规则交替播放持续一定时间给观察者，然后在播放后留出一定的时间间隔供观察者打分，最后将所有给出的分数取平均作为该序列的评价值。&lt;/p&gt;
+&lt;p&gt;相对评估中没有原始图像作为参考，是由观察者对一批待评价图像进行相互比较，从而判断出每个图像的优劣顺序，并给出相应的评价值。在具体执行过程中通常采用单刺激连续质量评价方法（Single Stimulus Continuous QualityEvaluation, SSCQE）将一批待评价图像按照一定的序列播放，此时观察者在观看图像的同时给出待评图像相应的评价分值。&lt;/p&gt;
+&lt;p&gt;平均意见得分（Mean Opinion Score, MOS）是图像质量最具代表性的主观评价方法，它通过对观察者的评价归一判断图像质量。类似的评价方式还有平均主观得分差异（Differential mean opinion score, DMOS）。&lt;/p&gt;
+&lt;p&gt;绝对评价尺度：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;分数&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;质量尺度&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;妨碍尺度&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;5&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;丝毫看不出图像质量变坏&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;非常好&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;4&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;能看出图像质量变化但不妨碍观看&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;好&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;3&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;清楚看出图像质量变坏，对观看稍有妨碍&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;一般&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;2&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;对观看有妨碍&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;差&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;非常严重的妨碍观看&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;非常差&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;相对评价尺度的评分标准：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;分数&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;相对测量尺度&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;绝对测量尺度&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;5&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;一群中最好的&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;非常好&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;4&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;好于该群中平均水平&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;好&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;3&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;该群中的平均水平&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;一般&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;2&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;差于该群中平均水平&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;差&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;该群中最差的&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;非常差&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;客观评估o-iqa&#34;&gt;客观评估O-IQA
+&lt;/h2&gt;&lt;h3 id=&#34;评价指标&#34;&gt;评价指标
+&lt;/h3&gt;&lt;p&gt;检验一种客观评估算法是否可靠的标准是它“是否与人的主观质量判断相一致”，为了确认某种客观评价指标与主观得分之间的一致性关系，常用四个指标：RMSE、PLCC、SROCC和KROCC。&lt;/p&gt;
+&lt;h4 id=&#34;rmse&#34;&gt;RMSE
+&lt;/h4&gt;$$
+\text{RMSE}=\sqrt{\frac{\sum_{i=1}^n(s_i-p_i)^2}{n}}
+$$&lt;p&gt;
+&lt;strong&gt;RMSE越接近0，表示算法的性能越好&lt;/strong&gt;。为了避免MOS取值不一样而导致RMSE的计算受影响，所以计算前需要归一化。&lt;/p&gt;
+&lt;h4 id=&#34;plcc皮尔逊系数&#34;&gt;PLCC（皮尔逊系数）
+&lt;/h4&gt;$$
+\text{PLCC}=\frac{Cov(S,P)}{\sigma(S)\cdot\sigma(P)}=\frac{\sum_{i=1}^n(p_i-\bar{p})(s_i-\bar{s})}{\sqrt{\sum_{i=1}^n(p_i-\bar{p})^2}\cdot\sqrt{\sum_{i=1}^n(s_i-\bar{s})^2}}
+$$&lt;p&gt;PLCC取值范围为$[-1,1]$，当PLCC的值为零时，表示两组数据完全不相关，&lt;strong&gt;PLCC的值大于0时表示正相关，值越大表示正相关性越强&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;srocc&#34;&gt;SROCC
+&lt;/h4&gt;&lt;p&gt;SROCC和KROCC将具体数值抽象为排序等级。&lt;/p&gt;
+$$
+\text{SROCC}=1-\frac{6\sum_{i=1}^nd_i^2}{n(n^2-1)} \tag{1}
+$$&lt;p&gt;
+其中$d$为$S$和$P$的等级之差（$rank(s)-rank(p)$）。&lt;/p&gt;
+&lt;p&gt;SROCC计算过程可参考下例：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$S$&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$P$&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$rank(s)$&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$rank(p)$&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$d$&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;$d^2$&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;56&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;66&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;9&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;4&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;5&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;25&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;75&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;70&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;3&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;2&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;45&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;40&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;10&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;10&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;71&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;60&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;4&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;7&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;-3&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;9&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;62&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;65&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;6&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;5&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;64&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;56&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;5&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;9&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;-4&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;16&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;58&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;59&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;8&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;8&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;80&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;77&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;0&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;76&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;67&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;2&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;3&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;-1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;61&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;63&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;7&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;6&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;1&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;带入$d^2$的值即可求得SROCC。&lt;/p&gt;
+$$
+\text{SROCC}=\frac{\sum_{i=1}^n(kp_i-\bar{kp})(ks_i-\bar{ks})}{\sqrt{\sum_{i=1}^n(kp_i-\bar{kp})^2}\cdot\sqrt{\sum_{i=1}^n(ks_i-\bar{ks})^2}}\tag{2}
+$$&lt;p&gt;其中$kp$、$ks$分别表示$rank(s)$、$rank(p)$。&lt;/p&gt;
+&lt;p&gt;例如，对于两个第二名，则将等级定位1.5（第一和第二的平均）；对于两个第三名，则将等级定位3.5。&lt;/p&gt;
+&lt;p&gt;可以看出，SROCC就是“等级”的PLCC。&lt;/p&gt;
+&lt;h4 id=&#34;krocc&#34;&gt;KROCC
+&lt;/h4&gt;&lt;p&gt;将MOS和算法预测得分表示为数据对的形式：$(s_1,p_1),(s_2,p_2),\cdots,(s_n,p_n)$，从$n$个数据对中任选两对，组成$[(x_i,y_i),(x_j,y_j)]$（$i\neq j$），一共有$\frac{n(n+1)}{2}$对，将这些对按照下面的情况进行划分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$P$：$x_i\gt x_j\ and\ y_i\gt y_j$ 或 $x_i\lt x_j\ and\ y_i\lt y_j$ 同序对&lt;/li&gt;
+&lt;li&gt;$Q$：$x_i\gt x_j\ and\ y_i\lt y_j$ 或 $x_i\lt x_j\ and\ y_i\gt y_j$ 逆序对&lt;/li&gt;
+&lt;li&gt;$X_0$：$x_i=x_j\ and\ y_i\gt y_j$ 或 $x_i=x_j\ and\ y_i\lt y_j$&lt;/li&gt;
+&lt;li&gt;$Y_0$：$x_i\gt x_j\ and\ y_i=y_j$ 或 $x_i\lt x_j\ and\ y_i=y_j$&lt;/li&gt;
+&lt;li&gt;$XY_0$：$x_i=x_j\ and\ y_i=y_j$&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\text{KROCC}=\frac{P-Q}{\sqrt{P+Q+X_0}\cdot\sqrt{P+Q+Y_0}}
+$$&lt;h3 id=&#34;全参考评估&#34;&gt;全参考评估
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;MSE&lt;/li&gt;
+&lt;li&gt;PSNR&lt;/li&gt;
+&lt;li&gt;SSIM&lt;/li&gt;
+&lt;li&gt;VIF&lt;/li&gt;
+&lt;li&gt;FSIM&lt;/li&gt;
+&lt;li&gt;GMSD&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;mse&#34;&gt;MSE
+&lt;/h4&gt;$$
+\text{MSE}=\frac{1}{mn}\sum_{i=0}^{m-1}\sum_{j=0}^{n-1}[I(i,j)-K(i,j)]^2
+$$&lt;h4 id=&#34;psnr峰值信噪比&#34;&gt;PSNR（峰值信噪比）
+&lt;/h4&gt;$$
+\text{PSNR}=10\lg\left(\frac{MAX_I^2}{MSE}\right)
+$$&lt;p&gt;
+其中，$MAX_I$为图片可能的最大像素值，例如对于8 bit存储的图像，$MAX_I=2^8-1=255$。&lt;/p&gt;
+&lt;h4 id=&#34;ssim&#34;&gt;SSIM
+&lt;/h4&gt;&lt;p&gt;SSIM首先在文章Image Quality Assessment: From Error Visibility to Structural Similarity（IEEE-2004）被引入，作者提出两个要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;大多数图像质量评估技术依赖于量化参考图像和样本图像之间的误差。一种常用的度量是量化样本和参考图像之间对应的每个像素的值的差异（例如均方误差）。&lt;/li&gt;
+&lt;li&gt;人类视觉感知系统能够从一个场景中识别结构信息，从而识别从参考场景和样本场景中提取的信息之间的差异。因此，复制此行为的指标将在涉及区分样本图像和参考图像的任务中执行得更好。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;SSIM从一幅图像中提取3个关键特征：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+$$
+  \mu_x=\frac{1}{N}\sum_{i=1}^Nx_i
+  $$&lt;p&gt;
+其中$x_i$为图像$x$的第$i$个像素值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+  \sigma_x=\sqrt{\frac{1}{N-1}\sum_{i=1}^N(x_i-\mu_x)^2}
+  $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;结构：通过一个合并公式来完成&lt;/p&gt;
+$$
+  r(X,Y)=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}
+  $$$$
+  r=\frac{\sigma_{xy}}{\sigma_x\sigma_y}
+  $$$$
+  \sigma_{xy}=\frac{1}{N-1}\sum_{i=1}^N(x_i-\mu_x)(y_i-\mu_y)
+  $$&lt;/li&gt;
+&lt;/ul&gt;
+$$
+l(x,y)=\frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}
+$$$$
+c(x,y)=\frac{2\sigma_x\sigma_y+C_2}{\sigma_x^2+\sigma_y^2+C_2}
+$$$$
+s(x,y)=\frac{\sigma_{xy}+C_3}{\sigma_x\sigma_y+C_3}
+$$$$
+SSIM(x,y)=[l(x,y)]^\alpha\cdot[c(x,y)]^\beta\cdot [s(x,y)]^\gamma
+$$&lt;p&gt;
+$\alpha,\beta,\gamma$用来表示三个模块的重要性。&lt;/p&gt;
+$$
+SSIM(x,y)=\frac{(2\mu_x\mu_y+C_1)(2\sigma_{xy}+C_2)}{(\mu_x^2+\mu_y^2+C_1)(\sigma_x^2+\sigma_y^2+C_2)}
+$$&lt;h3 id=&#34;半参考评估&#34;&gt;半参考评估
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;RRED&lt;/li&gt;
+&lt;li&gt;OSVP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;rred&#34;&gt;RRED
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Reduced reference entropic differencing for image quality assessment（IEEE Trans. Image Process，2012）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;osvp&#34;&gt;OSVP
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Orientation selectivity based visual pattern for reduced-reference image quality assessment（Information Science，2016）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;无参考评估&#34;&gt;无参考评估
+&lt;/h3&gt;&lt;p&gt;由于没有无失真源图像的参考信息，无参考质量评估方法仅根据失真图像来学习预测图像质量分数，难度大于全参考和部分参考评估方法。&lt;/p&gt;
+&lt;h4 id=&#34;传统图像清晰度评价算法&#34;&gt;传统图像清晰度评价算法
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Tenengrad梯度函数&lt;/li&gt;
+&lt;li&gt;SMD（灰度方差）函数&lt;/li&gt;
+&lt;li&gt;Brenner梯度函数&lt;/li&gt;
+&lt;li&gt;方差函数&lt;/li&gt;
+&lt;li&gt;能量梯度函数&lt;/li&gt;
+&lt;li&gt;Vollath函数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;reblur&#34;&gt;Reblur
+&lt;/h4&gt;&lt;p&gt;如果一幅图像已经模糊了，那么再对它进行一次模糊处理，高频分量变化不大；但如果原图是清楚的，对它进行一次模糊处理，则高频分量变化会非常大。因此可以通过对待评测图像进行一次高斯模糊处理，得到该图像的退化图像，然后再比较原图像和退化图像相邻像素值的变化情况，根据变化的大小确定清晰度值的高低，计算结果越小表明图像越清晰，反之越模糊，这种思路可称作基于二次模糊的清晰度算法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;NRSS（梯度结构相似度）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;nrss&#34;&gt;NRSS
+&lt;/h5&gt;&lt;p&gt;NRSS算法的步骤如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Step1. 为待评价图像构造参考图像：定义待评价图像为$I$，NRSS算法首先参考图像$I_r=LPF(I)$，即对待评价图像$I$进行低通滤波得到参考$I_r$；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Step2. 提取图像$I$和$I_r$的梯度信息：利用人眼对水平和竖直方向的边缘信息最为敏感的特性，使用Sobel算子分别提取水平和竖直方向的边缘信息，定义$I$和$I_r$的梯度图像是$G$和$G_r$；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Step3. 找出梯度图像$G$中梯度信息最丰富的$N$个图像块：通过计算方差找出梯度图像$G$中梯度信息最丰富的$N$个图像块，方差越大说明梯度信息越丰富，根据找到的$G$中的前$N$个块，找出对应的$G_r$的前$N$个块；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+  \text{NRSS}=1-\frac{1}{N}\sum_{i=1}^NSSIM(x_i,y_i)
+  $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;distortion-specific&#34;&gt;Distortion specific
+&lt;/h4&gt;&lt;p&gt;早期的传统方法通过假设存在特定某一类型的失真来评价图像质量，即量化特定失真类型，如块效应、模糊、振铃效应、噪声、压缩或传输损伤等。JNBM、CPBDM和LPCM专注于评价Blur类型的失真图像，NJQA和JPEG-NR分别评价噪声失真和JPEG压缩损伤失真。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CPBDM&lt;/li&gt;
+&lt;li&gt;LPCM&lt;/li&gt;
+&lt;li&gt;NJQA&lt;/li&gt;
+&lt;li&gt;JPEG-NR&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;nss&#34;&gt;NSS
+&lt;/h4&gt;&lt;p&gt;近年来表现优良的无参考图像质量评估模型大部分都是基于自然场景统计特性 (Natural Scene Statistics, NSS)，在不对失真类型做任何假设的前提下设计提取图像特征，通过机器学习回归算法进行质量预测。所选特征具有广泛的感知相关性，且合适的回归模型能自适应地将特征映射到数据集中的主观质量分数，因此基于NSS特征的无参考图像质量评估方法比早期的模型更加通用和一般化。NSS表明经过适当规范化的高质量真实世界摄像图像会遵行一定的统计规律，基于NSS统计量的特征量更能准确预测图像失真。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;BRISQUE&lt;/li&gt;
+&lt;li&gt;GM-LOG&lt;/li&gt;
+&lt;li&gt;HIGRADE&lt;/li&gt;
+&lt;li&gt;FRIQUEE&lt;/li&gt;
+&lt;li&gt;VBLINDS[V]&lt;/li&gt;
+&lt;li&gt;VIDEVAL[V]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;brisque&#34;&gt;BRISQUE
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;No-Reference Image Quality Assessment in the Spatial Domain（IEEE Trans. Image Process，2012）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;BRISQUE是首歌将图像的自然场景统计特性应用到图像质量评估上的模型。其思想是从图像中提取MSCN系数（mean subtracted contrast normalized, 均值减去对比度归一化），将MSCN系数拟合成非对称性广义高斯分布（AGGD），提取拟合的高斯分布的特征，输入到支持向量机SVM中做回归，从而得到图像质量的评估结果。&lt;/p&gt;
+&lt;p&gt;自然图像的像素强度分布与失真图像的像素强度分布不同。当我们对像素强度进行归一化并在这些归一化强度上计算分布时，分布上的差异更加明显。特别地，在归一化之后，自然图像的像素强度近似服从高斯分布（贝尔曲线），而非自然或失真图像的像素强度则不服从高斯分布。因此，分布曲线与理想高斯曲线的偏差是图像失真量的度量。&lt;/p&gt;
+&lt;p&gt;BRISQUE的整体流程有三步：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Step1. 提取自然场景统计信息（NSS）&lt;/li&gt;
+&lt;li&gt;Step2. 计算特征向量&lt;/li&gt;
+&lt;li&gt;Step3. 预测图像质量分数&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\hat{I}(i,j)=\frac{I(i,j)-\mu(i,j)}{\sigma(i,j)+C}
+$$$$
+\mu=\mathbf{W}*\mathbf{I}\quad\sigma=\sqrt{\mathbf{W}*(\mathbf{I}-\mu)^2}
+$$$$
+\begin{aligned}
+H(i,j)&amp;=\hat{H}(i,j)\cdot\hat{H(i,j+1)} \\
+V(i,j)&amp;=\hat{H}(i,j)\cdot\hat{H(i+1,j)} \\
+D1(i,j)&amp;=\hat{H}(i,j)\cdot\hat{H(i+1,j+1)} \\
+D2(i,j)&amp;=\hat{H}(i,j)\cdot\hat{H(i+1,j-1)} \\
+\end{aligned}
+$$&lt;p&gt;
+至此，已从原始图像中生成了5张图像：1张MSCN图像和4张成对乘积图像。&lt;/p&gt;
+&lt;p&gt;接下来，我们将使用这5张图像来计算大小为$36\times1$的特征向量。&lt;/p&gt;
+$$
+\begin{aligned}
+f(x;\alpha,\sigma^2)=\frac{\alpha}{2\beta\Gamma(1/\alpha)}\exp\left(-\left(\frac{|x|}{\beta}\right)^2\right)
+\end{aligned}
+$$$$
+\beta=\sigma\sqrt{\frac{\Gamma(1/\alpha)}{\Gamma(3/\alpha)}},\quad\Gamma(a)=\int_0^\infty t^{a-1}e^{-t}dt\quad (a\gt0).
+$$$$
+f(x;\nu,\sigma_l^2,\sigma_r^2)=
+\left\{
+\begin{aligned}
+&amp;\frac{\nu}{(\beta_l+\beta_r)\Gamma(1/\nu)}\exp\left(-\left(\frac{-x}{\beta_l}\right)^\nu\right)\quad x\lt 0 \\
+&amp;\frac{\nu}{(\beta_l+\beta_r)\Gamma(1/\nu)}\exp\left(-\left(\frac{-x}{\beta_r}\right)^\nu\right)\quad x\geqslant 0
+\end{aligned}
+\right.
+$$$$
+\beta_l=\sigma_l\sqrt{\frac{\Gamma(1/\nu)}{\Gamma(3/\nu)}},\quad \beta_r=\sigma_r\sqrt{\frac{\Gamma(1/\nu)}{\Gamma(3/\nu)}}.
+$$&lt;p&gt;
+将原始图像缩小到原始大小的一半，并重复相同过程，便得到了$36\times1$的特征向量。&lt;/p&gt;
+&lt;p&gt;将特征向量送入到机器学习算法中进行训练，即可使用模型对质量分数进行预测。&lt;/p&gt;
+&lt;p&gt;用广义高斯分布来拟合MSCN的分布，GGD的形状参数α和分布方差sigma。接下来对MSCN系数进行二阶分析，在垂直、水平、主对角和次对角方向上进行非对称广义高斯分布的拟合，分别得到表征分布形状的四个参数。这样在原图像尺度上得到18个特征。图像和视频本质上是多尺度的，失真可以在不同的尺度上表现得不同。因此在降采样2倍的图像上再次提取18维度的特征，这样BRISQUE的特征集是36维。通过机器学习训练出能够从高维特征映射到低维MOS分数上的回归模型。&lt;/p&gt;
+&lt;h4 id=&#34;bag-of-words&#34;&gt;Bag of words
+&lt;/h4&gt;&lt;p&gt;不同于以上基于NSS特征提取模型，传统无参考图像质量评估的另一个方向是词袋 (Bag of Words, BOW) 模型。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CORNIA&lt;/li&gt;
+&lt;li&gt;HOSA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;cornia&#34;&gt;CORNIA
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;Unsupervised Feature Learning Framework for No-reference Image Quality Assessment（IEEE Conf. Comput. Vis. Pattern Recognit.，2012）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;completely-blind&#34;&gt;Completely blind
+&lt;/h4&gt;&lt;p&gt;Completely Blind方法不需要在数据集上进行训练来学习特征到MOS分数的映射，而是能够通过待测图像或者视频直接输出得到质量分数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;NIQE&lt;/li&gt;
+&lt;li&gt;IL-NIQE&lt;/li&gt;
+&lt;li&gt;SLEEQ[V]&lt;/li&gt;
+&lt;li&gt;STEM[V]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;niqe&#34;&gt;NIQE
+&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;Making a &amp;ldquo;Completely Blind&amp;rdquo; Image Quality Analyzer（IEEE Signal Process，2013）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;NIQE（natural image quality evaluator）是Mittal等人提出的基于自然场景统计的盲图像质量评价模型。该方法仅利用从自然图像中观察到的统计规律进行失真偏差的度量，通过构建一系列质量相关的统计特征以实现对图像的质量预测。&lt;/p&gt;
+&lt;p&gt;NIQE算法有以下几个步骤：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Step1. Spatial Domain NSS：提取NSS特征&lt;/li&gt;
+&lt;li&gt;Step2. Patch Selection：图像划分、选择&lt;/li&gt;
+&lt;li&gt;Step3. Characterizing Image Patches：提取Patches的特征&lt;/li&gt;
+&lt;li&gt;Step4. Multivatiate Gaussian Model（MVG）：拟合多元高斯分布&lt;/li&gt;
+&lt;li&gt;Step5. NIQE Index：计算NIQE分数&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\hat{I}(i,j)=\frac{I(i,j)-\mu(i,j)}{\sigma(i,j)+C}
+$$&lt;p&gt;
+其中，$i \in 1,2,\dots,M,j\in 1,2,\dots,N$，$M,N$是图像的高和宽，$C=1$是为了数值稳定的常数；$\omega={ \omega_{k,l}\vert k=-K,\dots,K,l=-L,\dots,L}$是高斯核。&lt;/p&gt;
+$$
+\delta(b)={\sum\sum}_{(i,j)\in patch_b}\sigma(i,j) \quad b=1,2,\dots,P\times P
+$$&lt;p&gt;
+设定阈值$T$，若$\delta(b)\gt T$，则认为$patch_b$是锐利的。将所有图像块的最大锐利程度的 $p$倍设为阈值，其中$p \in [0.6, 0.9]$，论文中取值为0.75。将大于阈值的图像块保留，小于阈值的图像块淘汰掉。&lt;/p&gt;
+&lt;p&gt;选取一些patches后，类似于BRISQUE中的方法，在不同尺度下拟合GGD和AGGD得到36维特征。&lt;/p&gt;
+$$
+f_X(x_1,\dots,x_k)=\frac{1}{(2\pi)^{k/2}\vert\Sigma\vert^{1/2}}\exp(-\frac{1}{2}(x-\nu)^T\Sigma^{-1}(x-\nu))
+$$&lt;p&gt;
+注：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这个模型是由一组清晰图像得到的，用来计算低质量图像与它的距离；&lt;/li&gt;
+&lt;li&gt;采用高斯分布来处理这些特征的基本前提是假设这里所涉及的特征在真实的图像中所反映的也是服从高斯分布的。&lt;/li&gt;
+&lt;/ul&gt;
+$$
+D(\nu_1,\nu_2,\Sigma_1,\Sigma_2)=\sqrt{(\nu_1-\nu_2)^T(\frac{\Sigma_1+\Sigma_2}{2})^{-1}(\nu_1-\nu_2)}
+$$&lt;p&gt;
+由上式即可得出最终得分，$\nu_1,\Sigma_1$是一组清晰图像得到的均值向量和协方差矩阵，$\nu_2,\Sigma_2$是输入的图像得到的均值向量和协方差矩阵。&lt;/p&gt;
+&lt;h4 id=&#34;handcraft&#34;&gt;Handcraft
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;TLVQM[V]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;deep-learning&#34;&gt;Deep learning
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;VSFA[V]&lt;/li&gt;
+&lt;li&gt;VMEON[V]&lt;/li&gt;
+&lt;li&gt;PVQ[V]&lt;/li&gt;
+&lt;li&gt;RAPIQUE[V]&lt;/li&gt;
+&lt;li&gt;CNNIQA&lt;/li&gt;
+&lt;li&gt;PaQ-2-PIQ&lt;/li&gt;
+&lt;li&gt;Hallucinated-IQA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;nr-iqa中的deep-based方法&#34;&gt;NR-IQA中的Deep-based方法
+&lt;/h1&gt;&lt;h2 id=&#34;score-based&#34;&gt;Score-based
+&lt;/h2&gt;$$
+\text{Score-based}\left\{
+\begin{aligned}
+&amp;\text{Patch-wise} \\
+&amp;\text{Image-wise}
+\end{aligned}
+\right.
+$$&lt;p&gt;Score-based方法可以分为Patch-wise和Image-wise。Image-wise直接将图片输入到CNN中；Patch-wise对图像进行分块并分别输入CNN，pooling后得到图像质量。&lt;/p&gt;
+&lt;h3 id=&#34;iqa-cnnpatchcnn直接预测质量&#34;&gt;IQA-CNN（patch/CNN/直接预测质量）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;L. Kang, P. Ye, Y. Li, and D. Doermann, “Convolutional neural networks for no-reference image quality assessment,” in Proc. IEEE Conf. Comput. Vis. Pattern Recognit., 2014.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;IQA-CNN是首个将空间卷积神经网络模型在图像质量评价领域应用的工作，IQA-CNN以patch作为输入，由一层卷积、最大最小池化以及两层全连接组成，将特征学习和回归集成到一个优化过程中。&lt;/p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/4.png&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;h3 id=&#34;dliqanssdbn预测分类置信度&#34;&gt;DLIQA（NSS/DBN/预测分类+置信度）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;W. Hou, X. Gao, D. Tao, and X. Li, “Blind image quality assessment via deep learning,” IEEE Trans. Neural Netw. Learn. Syst., vol. 26, no. 6, pp. 1275–1286, Jun. 2015.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;心理学表明人类更加偏向于定性的评价而不是定量的评价，一幅图片打分为70还是75实际上是很难抉择的问题，用excellent、good、bad这样的语言定性更加自然。&lt;/p&gt;
+&lt;p&gt;DLIQA将BIQA（Bind Image Quality Assessment）作为一个五分类问题，输入图像用NSS特征表示，分类的依据是分类器得到的置信度，然后将分类和对应的置信度转为质量分数。&lt;/p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/5.png&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;p&gt;作者认为IQA问题并不适合用切成patch的方式来做，但直接输入整张图像维度太高，所以使用了可以表征自然图像和畸变图像的差异的NSS特征作为输入。&lt;/p&gt;
+&lt;p&gt;为了将分类结果和置信度转化为质量分数，首先有以下假设：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每张图片都有一个内在质量$Q$；&lt;/li&gt;
+&lt;li&gt;每个训练有素的人在评估具有相同内在质量的图像时，都会给出相同的标签。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;主观评分的似然分布$P(L=\text{Excellent|Q}),P(L=\text{Good}|Q),P(L=\text{Fair}|Q),P(L=\text{Poor}|Q),P(L=\text{Bad}|Q)$和先验分布$P(Q)$如下：&lt;/p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/6.png&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;p&gt;然后通过三角形分布函数和平均分布来模拟各个似然函数和先验分布：&lt;/p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/11.png&#34; style=&#34;zoom:67%;&#34; /&gt;
+$$
+P(Q|L)\sim P(L|Q)P(Q)
+$$$$
+P(Q|X)=\int P(Q|L)P(L|X)dL
+$$$$
+\text{Quality}=\mathbb{E}[P(Q|X)]
+$$&lt;h3 id=&#34;deepiqapatchcnn预测质量权重&#34;&gt;Deepiqa（patch/CNN/预测质量+权重）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;S. Bosse, D. Maniry, T. Wiegand, and W. Samek, “A deep neural network for image quality assessment,” IEEE International Conference on Image Processing, 2016.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Deepiqa将无任何预处理的图像patch作为输入，通过池化获得最终的质量分数，网络的输出定义为2维，其中一维输出图像patch的质量分数的对应权重，通过该权重得到最终的质量分数。&lt;/p&gt;
+&lt;h3 id=&#34;bieconpatchcnnfr中间图&#34;&gt;BIECON（patch/CNN/FR中间图）
+&lt;/h3&gt;&lt;p&gt;使用部分全参考图像质量评价方法中的局部质量图作为中间结果对模型进行训练。&lt;/p&gt;
+&lt;h3 id=&#34;diqam-nrwadiqam-nrpatchcnn预测质量权重&#34;&gt;DIQaM-NR/WaDIQaM-NR（patch/CNN/预测质量+权重）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;S. Bosse, D. Maniry, K.-R. M ̈uller, T. Wiegand, and W. Samek, &amp;ldquo;Deep neural networks for no-reference and full-reference image quality assessment,&amp;rdquo; IEEE Transactions on image processing, vol. 27, no. 1, pp. 206–219, 2017.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://ieeexplore.ieee.org/document/8063957&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Deep Neural Networks for No-Reference and Full-Reference Image Quality Assessment | IEEE Journals &amp;amp; Magazine | IEEE Xplore&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/1.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/2.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;以上分别为FR和NR模型的结构，FR模型去掉孪生网络的分支就是NR模型。&lt;/p&gt;
+&lt;p&gt;FR模型的两个输入（distorted和reference）通过一个共享参数的VGG-Style网络，得到两个特征向量$f_r,f_d$，然后将$\text{concat}(f_r,f_d,f_r-f_d)$用于回归，一个网络用于回归质量，另一个用于回归权重，pooling后得到最终的图像质量。&lt;/p&gt;
+&lt;h3 id=&#34;nimaimagecnn预测主观分数分布&#34;&gt;NIMA（image/CNN/预测主观分数分布）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;H. Talebi, P. Milanfar, &amp;ldquo;NIMA: neural image assessment,&amp;rdquo; IEEE Trans. Image Process., vol. 27, no. 8, pp. 3998-4011, Aug. 2018.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;不同于常见的深度图像质量评价方法，NIMA对人类主观分数的分布$\hat{\mathbf{p}}$进行预测。&lt;/p&gt;
+$$
+\mathbf{p}=[p_{s_1},\dots, p_{s_N}]\quad\sum_{i=1}^Np_{s_i}=1,s_1\leqslant s_i \leqslant s_N
+$$&lt;p&gt;
+其中$s_i$表示第$i$个分值，$N$表示分值总数。&lt;/p&gt;
+$$
+\mu=\sum_{i=1}^Ns_i\cdot p_{s_i}
+$$$$
+\sigma=\sqrt{\sum_{i=1}^N(s_i-\mu)^2\cdotp_{s_i}}
+$$&lt;p&gt;
+NIMA中CNN后接的全连接为10维（AVA和TID数据集中均有$N=10$）。&lt;/p&gt;
+$$
+EMD(\mathbf{p},\hat{\mathbf{p}})=\left(\frac{1}{N}\sum_{k=1}^N|CDF_\mathbf{p}(k)-CDF_{\hat{\mathbf{p}}}(k)|\right)^\frac{1}{r}
+$$&lt;p&gt;
+其中累计分布函数$CDF_\mathbf{p}(k)=\sum_{i=1}^k p_{s_i}$。&lt;/p&gt;
+&lt;h3 id=&#34;hallucinated-iqaimagegan生成幻觉图像感知差异&#34;&gt;Hallucinated-IQA（image/GAN/生成“幻觉”图像感知差异）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;K. Lin, G. Wang, “Hallucinated-IQA: no-reference image quality assessment via adversarial learning” in Proc. IEEE Conf. Comput. Vis. Pattern Recognit., 2018.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;IQA在失真图像的基础上产生一个“幻觉”参考图像，通过捕捉失真图像和“幻觉”图像之间的感知差异来预测图像质量。&lt;/p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/7.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;p&gt;Hallucinated-IQA模型包括生成网络$G$、IQA判别网络$D$和回归网络$R$三个部分，结构如下图所示：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/8.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+$$
+\hat{\theta}=\arg\min_\theta \frac{1}{N}\sum_{i=1}^N(l_p(G_\theta(I_d^i), I_r^i)+l_s(G_\theta(I_d^i),I_r^i))
+$$$$
+l_s(G_\theta(I_d^i),I_r^i)=\Vert\phi(G_\theta(I_d^i))-\phi(I_r^i)\Vert^2
+$$$$
+l_s(G_\theta(I_d^i),I_r^i)=\lambda_1l_v(G_\theta(I_d^i),I_r^i)+\lambda_2l_q(G_\theta(I_d^i),I_r^i)
+$$$$
+\begin{aligned}
+l_v&amp;=\sum_{c_v=1}^{C_v}\frac{1}{W_jH_j}\sum_{x=1}^{W_j}\sum_{y=1}^{H_j}\Vert\phi_j(G_\theta(I_d^i))_{x,y}-\phi_j(I_r^i)_{x,y}\Vert^2 \\
+l_q&amp;=\sum_{c_q=1}^{C_q}\frac{1}{W_kH_k}\sum_{x=1}^{W_k}\sum_{y=1}^{H_k}\Vert\pi_k(G_\theta(I_d^i))_{x,y}-\pi_k(I_r^i)_{x,y}\Vert^2
+\end{aligned}
+$$&lt;p&gt;
+其中$C$表示某一层的特征图数量，$W,H$表示特征图的维度，$\phi_j(\cdot)$表示VGG-19在第$j$层的特征图，$\pi_k(\cdot)$表示$R$在第$k$层的特征图。&lt;/p&gt;
+$$
+\max_\omega\mathbb{E}[\log D_\omega(\mathbf{I_r})]+\mathbb{E}[\log(1-\vert D_\omega(G_\theta(\mathbf{I}_d))-\mathbf{d}_{fake}\vert)]
+$$&lt;p&gt;
+其中，$\mathbf{d}&lt;em&gt;{fake}$定义为：
+$$
+\mathbf{d}_{fake}^i=\left\{
+\begin{aligned}
+&amp;1\quad \text{if}\ \Vert R(I_d^i,I_{sh}^i)-s^i\Vert_F\lt \epsilon\\
+&amp;0\quad \text{if}\ \Vert R(I_d^i,I_{sh}^i)-s^i\Vert_F\geqslant \epsilon
+\end{aligned}
+\right.
+$$
+该式所表达的是，当回归网络预测出来的分数与真实质量分数的差距大于阈值时，认为“幻觉”图像降低了回归网络的性能，$\mathbf{d}&lt;/em&gt;{fake}$为0，此时为了最大化损失函数，需要IQA判别网络将生成图像判别为0，真实图像判别为1；当回归网络预测出来得分数与真实质量分数得差距小于阈值时，幻觉图像提升了回归网络的性能，$\mathbf{d}_{fake}$为1，此时为了最大化损失函数，需要辨别器将生成图像和真实图像均辨别为1。、&lt;/p&gt;
+$$
+\mathcal{L}_{adv}=\mathbb{E}[\log(1-D_\omega(G_\theta(I_d)))]
+$$$$
+\mathcal{L}_G=\mu_1\mathcal{L}_p+\mu_2\mathcal{L}_s+\mu_3\mathcal{L}_{adv}
+$$$$
+\hat{\gamma}=\arg\min_r\frac{1}{N}\sum_{i=1}^Nl_r(\mathcal{R}(I_d^i,I_{map}^i),s^i)
+$$&lt;p&gt;
+其中$I_{map}=\vert I_d-G_{\hat{\theta}}(I_d)\vert$。&lt;/p&gt;
+&lt;p&gt;$R$的精确度在很大程度上取决于“幻觉”场景的合格性。具体地说，合格的幻觉图像作为代理参照可以帮助$R$探索失真图像的感知差异，而不合格的“幻觉”图像则会引入对$R$的偏差。&lt;/p&gt;
+$$
+\mathcal{F}=f(\mathcal{H}_{5,2}(I_d))\otimes(\mathcal{R}_1(I_d,I_{map}))
+$$$$
+\mathcal{L_R}=\frac{1}{T}\sum_{t=1}^T\Vert\mathcal{R}_2(f(\mathcal{H}_{5,2}(I_d))\otimes (\mathcal{R}_1(I_d,I_{map})))-s^t\Vert_{\ell_1}
+$$&lt;h3 id=&#34;ran4iqapatchgan&#34;&gt;RAN4IQA（patch/GAN）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;H. Ren, D. Chen, Y. Wang, “RAN4IQA: Restorative Adversarial Nets for No-reference Image Quality Assessment,” in Thirty-Second AAAI Conference on Artificial Intelligence, 2018.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;通过生成式对抗网络对输入的失真图像进行修复，基于修复收益（gain of restoration, GoR）提取失真图像和修复图像的特征并进行比较以感知质量。&lt;/p&gt;
+&lt;h3 id=&#34;sfapatch语义特征聚集&#34;&gt;SFA（patch/语义特征聚集）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;D. Li, T. Jiang, W. Lin, and M. Jiang, “Which has better visual quality: the clear blue sky or a blurry animal?,” IEEE Trans. Multimedia., vol. 21, no. 5, pp. 1221-1234, Nov. 2019.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;rank-based&#34;&gt;Rank-based
+&lt;/h2&gt;&lt;h3 id=&#34;gao-et-al&#34;&gt;Gao et al
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;F. Gao, D. Tao, X. Gao, and X. Li, “Learning to rank for blind image quality assessment,” IEEE Trans. Neural Netw. Learn. Syst., vol. 26, no. 10, pp. 2275–2290, Oct. 2015.&lt;/li&gt;
+&lt;li&gt;[&lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/abs/1309.0213v2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;1309.0213v2] Learning to Rank for Blind Image Quality Assessment (arxiv.org)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Blind image quality assessment（BIQA）旨在预测图像质量分数，但图像质量分数的获取有一定的局限性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分数不精确；&lt;/li&gt;
+&lt;li&gt;主观判断不准确；&lt;/li&gt;
+&lt;li&gt;不同失真类别之间的质量尺度不一致；&lt;/li&gt;
+&lt;li&gt;大规模数据难以获取。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;作者提出基于偏好图像对（preference image pair, PIPs），对于一个偏好图像对而言，其标签表示的是图像一的质量好于图像二的质量。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/9.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;dipiq&#34;&gt;DipIQ
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;K. Ma, W. Liu, T. Liu, Z. Wang and D. Tao, &amp;ldquo;dipIQ: blind image quality assessment by learning-to-rank discriminable image pairs,&amp;rdquo; IEEE Trans. Image Process., vol. 26, no. 8, pp. 3951-3963, Aug. 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;rankiqa&#34;&gt;RankIQA
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;X. Liu, J. V. D. Weijer, and A. D. Bagdanov, “RankIQA: learning from rankings for no-reference image quality assessment,” in Proc. IEEE Int. Conf. Comput. Vis. 2017.&lt;/li&gt;
+&lt;li&gt;X. Liu, J. V. D. Weijer, and A. D. Bagdanov, “Exploiting unlabeled data in cnns by self-supervised learning to rank,” IEEE Trans. Pattern. Anal. Mach. Intell., vol. 41, no. 8, pp. 1862-1878, Aug. 2019.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;lfma&#34;&gt;LFMA
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;K. Ma, X. Liu, Y. Fang, and E. P. Simoncelli, “Blind image quality assessment by learning from multiple annotators,” IEEE International Conference on Image Processing, 2019.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;multi-task&#34;&gt;Multi-task
+&lt;/h2&gt;&lt;h3 id=&#34;biqi&#34;&gt;BIQI
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A. K. Moorthy, A. C. Bovik, “A two-step framework for constructing blind image quality indices,” IEEE Signal Process. Lett., vol. 17, no. 5, pp. 513-516, May. 2010.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;iqa-cnn&#34;&gt;IQA-CNN++
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;L. Kang, P. Ye, Y. Li, and D. Doermann, “Simultaneous estimation of image quality and distortion via multi-task convolutional neural networks,” in Proc. IEEE Int. Conf. Image Process., 2015, pp. 2791–2795.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;mrliq&#34;&gt;MRLIQ
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;L. Xu, J. Li, W. Lin, Y. Zhang and L. Ma, Y. Fang, and Y. Yan, “Multi-task rank learning for image quality assessment,” IEEE Trans. Circuits Syst. Video Technol., vol. 27, no. 9, pp. 1833-1843, Sep. 2017.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;meon&#34;&gt;MEON
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;K. Ma, W. Liu, T. Liu, K. Zhang, Z. Duanmu, Z. Wang, and W. Zuo, &amp;ldquo;End-to-end blind image quality assessment using deep neural networks,&amp;rdquo; IEEE Trans. Image Process., vol. 27, no. 3, pp. 1202-1213, Mar. 2018.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MEON是用于BIQA（Bind Image Quality Assessment）多任务端到端优化的深度神经网络，包括失真判别网络和质量预测网络两部分。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/3.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;MEON的训练过程分为两个阶段：原始图像经过共享参数层，两个子网络一个用于失真类型判别，另一个用于质量预测，并且其中质量预测阶段使用了失真类型判别子网络的输出。&lt;/p&gt;
+$$
+y_i(m,n)=\frac{x_i(m,n)}{\left(\beta_i+\sum_{j=1}^S\gamma_{ij}x_j(m,n)^2\right)^\frac{1}{2}}
+$$&lt;p&gt;
+$y_i$是根据$x_i$在空间位置$(m,n)$的激活响应，$\beta$和$\gamma$在训练过程中进行优化，GDN操作是一个可微的变换。&lt;/p&gt;
+&lt;h2 id=&#34;more&#34;&gt;More
+&lt;/h2&gt;&lt;h3 id=&#34;ser-fiq&#34;&gt;SER-FIQ
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;SER-FIQ: Unsupervised Estimation of Face Image Quality Based on Stochastic Embedding Robustness&lt;/li&gt;
+&lt;li&gt;[&lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/abs/2003.09373&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;2003.09373] SER-FIQ: Unsupervised Estimation of Face Image Quality Based on Stochastic Embedding Robustness (arxiv.org)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;SER-FIQ用于人脸图像质量评估，作者认为人脸图像的质量来自于图像的embedding的鲁棒性，同一张图片经过人脸识别模型的不同的子网络得到的不同的embedding的方差反映了人脸图像的质量。&lt;/p&gt;
+$$
+X(I)=\{x_s\},s\in 1,2,\dots,m
+$$$$
+q(X(I))=2\sigma\left(-\frac{2}{m^2}\sum_{i\lt j} d(x_i,x_j)\right)
+$$&lt;p&gt;
+&lt;img src=&#34;https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/IQA/10.png&#34; style=&#34;zoom:75%;&#34; /&gt;&lt;/p&gt;</description>
+        </item>
+        <item>
+        <title>数字图像处理</title>
+        <link>https://demo.stack.jimmycai.com/p/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/</link>
+        <pubDate>Sat, 05 Feb 2022 11:23:00 +0000</pubDate>
+        
+        <guid>https://demo.stack.jimmycai.com/p/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/</guid>
+        <description>&lt;p&gt;参考视频是广东海洋大学的课程录像，参考书目为冈萨雷斯等著，阮秋琦等译的《数字图像处理》（第四版）。&lt;/p&gt;
+&lt;h1 id=&#34;图像的空域增强技术&#34;&gt;图像的空域增强技术
+&lt;/h1&gt;&lt;h2 id=&#34;概述&#34;&gt;概述
+&lt;/h2&gt;&lt;h3 id=&#34;空域的概念&#34;&gt;空域的概念
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;空域&lt;/strong&gt;：像素组成的空间。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空域增强技术&lt;/strong&gt;：直接作用于图像像素的增强技术。&lt;/li&gt;
+&lt;/ul&gt;
+$$
+像素的空间坐标(x,y) \rightarrow 像素的灰度值f(x,y)
+$$&lt;h3 id=&#34;空域增强的模型&#34;&gt;空域增强的模型
+&lt;/h3&gt;$$
+g(x,y)=E_H[f(x,y)]
+$$&lt;h3 id=&#34;分类&#34;&gt;分类
+&lt;/h3&gt;&lt;h4 id=&#34;基于像素的空域增强&#34;&gt;基于像素的空域增强
+&lt;/h4&gt;&lt;p&gt;$E_H$定义在每个&lt;strong&gt;像素&lt;/strong&gt;$(x,y)$上。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;像素点操作：$g(x,y)=P_{xy}[f(x,y)]$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;几何操作：$(x&amp;rsquo;,y&amp;rsquo;)=M(x,y)$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;基于模板的空域增强&#34;&gt;基于模板的空域增强
+&lt;/h4&gt;$$
+t=E_H[s,n(s)]
+$$&lt;h2 id=&#34;图像间运算&#34;&gt;图像间运算
+&lt;/h2&gt;&lt;h3 id=&#34;算数运算&#34;&gt;算数运算
+&lt;/h3&gt;&lt;p&gt;两幅图像对应位置像素$p、q$：$p+q、p-q、p\times q、p\div q$&lt;/p&gt;
+&lt;h3 id=&#34;应用&#34;&gt;应用
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;图像去噪&lt;/p&gt;
+$$
+  \begin{aligned}
+  g(x,y)&amp;=f(x,y)+e(x,y) \\
+  \overline{g}(x,y)&amp;=\frac{1}{M} \sum_{i=1}^{M}g_i(x,y)
+  \end{aligned}
+  $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;医学图像的数字减影&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;图像局部显示&lt;/p&gt;
+&lt;p&gt;二值模板图像与原图像做&lt;strong&gt;乘法&lt;/strong&gt;，进行图像的局部显示。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;直接灰度映射&#34;&gt;直接灰度映射
+&lt;/h2&gt;&lt;h3 id=&#34;原理&#34;&gt;原理
+&lt;/h3&gt;$$
+灰度值\xrightarrow{f}另一灰度值
+$$&lt;h3 id=&#34;典型灰度映射&#34;&gt;典型灰度映射
+&lt;/h3&gt;&lt;h4 id=&#34;图像求反&#34;&gt;图像求反
+&lt;/h4&gt;$$
+t=(L-1)-s
+$$&lt;h4 id=&#34;对比度增强&#34;&gt;对比度增强
+&lt;/h4&gt;&lt;p&gt;基于像素的图像增强，即增强原图的各部分反差。&lt;/p&gt;
+&lt;h4 id=&#34;分段线性增强&#34;&gt;分段线性增强
+&lt;/h4&gt;&lt;p&gt;拉伸感兴趣的图像细节的灰度级。&lt;/p&gt;
+&lt;p&gt;eg.对于$0\sim 255$的灰度取值范围，划分为$0\sim 100、101\sim 200、201\sim 255$三个取值区间，只改变其中某段进行灰度变换。&lt;/p&gt;
+$$
+\large
+t =
+\begin{cases} 
+\frac{t_1}{s_1}s,  &amp; 0\le s \le s_1\\
+\frac{t_2-t_1}{s_2-s_1}[s-s_1]+t_1, &amp;s_1 \lt s \le s_2 \\
+\frac{L-1-t_2}{L-1-s_2}[s-s_2]+t_2, &amp;s2 \lt s \le L-1
+\end{cases}
+$$&lt;p&gt;经过&lt;strong&gt;斜率小于1&lt;/strong&gt;的线性变换函数后：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;压缩了灰度的动态范围&lt;/li&gt;
+&lt;li&gt;对比度下降&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;经过&lt;strong&gt;斜率大于1&lt;/strong&gt;的线性变换函数后，反之。&lt;/p&gt;
+&lt;h4 id=&#34;对数变换&#34;&gt;对数变换
+&lt;/h4&gt;&lt;p&gt;原图动态范围太大，超出某些设备所允许的动态范围，需要压缩其动态范围，即$0 \sim L&amp;rsquo;(\gt L-1) \longrightarrow 0 \sim L-1$。&lt;/p&gt;
+$$
+t=C\log(1+|s|)
+$$&lt;p&gt;
+其中$C$为尺度比例常数。&lt;/p&gt;
+&lt;p&gt;可以使用对数变换来扩展图像中暗像素的值，同时压缩高灰度级的值。&lt;/p&gt;
+&lt;h4 id=&#34;幂律伽马变换&#34;&gt;幂律（伽马）变换
+&lt;/h4&gt;$$
+t=c\times s^\gamma
+$$&lt;p&gt;其中$c$和$\gamma$为正常数。&lt;/p&gt;
+&lt;p&gt;对于$\gamma (\gamma \lt 1)$的幂律曲线，将较窄范围的暗色输入值映射为较宽范围的亮色输入值（&lt;em&gt;与对数变换类似&lt;/em&gt;）；同时，将较宽范围的亮色输入值映射为较窄范围的输出值，$\gamma \gt$ 1的幂律变换与之效果完全相反。&lt;/p&gt;
+&lt;p&gt;可以采用幂律变换提升图像细节的质量。&lt;/p&gt;
+&lt;h4 id=&#34;灰度切割灰度级分层&#34;&gt;灰度切割（灰度级分层）
+&lt;/h4&gt;&lt;p&gt;增强特定范围的对比度，用来突出图像中&lt;strong&gt;特定灰度范围&lt;/strong&gt;的亮度。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+$$
+  t =
+  \begin{cases} 
+  t_2,  &amp; s_1\le s \le s_2\\
+  t_1,  &amp; \text{其他}
+  \end{cases}
+  $$&lt;/li&gt;
+&lt;li&gt;
+$$
+  t =
+  \begin{cases} 
+  t_2,  &amp; s_1\le s \le s_2\\
+  s,  &amp; \text{其他}
+  \end{cases}
+  $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;阈值化处理二值化处理灰度切割的特例&#34;&gt;阈值化处理（二值化处理，灰度切割的特例）
+&lt;/h4&gt;$$
+t =
+\begin{cases} 
+0,  &amp; s\lt s_1\\
+L-1,  &amp; s\ge s_1
+\end{cases}
+$$&lt;p&gt;最终产生一个&lt;strong&gt;黑白图像&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;位图切割&#34;&gt;位图切割
+&lt;/h4&gt;&lt;p&gt;$8$比特表示的图像看作$8$个单独的$1$比特平面（位图）组成，位面0表示最低位面，位面7表示最高位面。&lt;/p&gt;
+&lt;p&gt;每个位面均为&lt;strong&gt;二值图像&lt;/strong&gt;，位面图像中像素的灰度值等于相应有效位的取值。&lt;/p&gt;
+&lt;p&gt;可实现以下应用：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;操作特定位面增强图像&lt;/li&gt;
+&lt;li&gt;确定用于量化该图像的比特数的充分性&lt;/li&gt;
+&lt;li&gt;图像压缩&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;实现方法&#34;&gt;实现方法
+&lt;/h5&gt;&lt;p&gt;图像各像素的灰度值除以各有效位的权值$2^i$（$i$为有效位的序数，从$0$计数），商的整数部分为&lt;strong&gt;奇数&lt;/strong&gt;，则该灰度值在相应位面中映射为1，若为&lt;strong&gt;偶数&lt;/strong&gt;，则映射为$0$。（&lt;em&gt;可类比十进制转二进制的手算方法&lt;/em&gt;）&lt;/p&gt;
+$$
+\begin{aligned}
+floor(121/2^7)=0 &amp;\quad\Rightarrow\quad 位面\ 7\ 中取值为\ 0 \\
+floor(121/2^6)=1 &amp;\quad\Rightarrow\quad 位面\ 6\ 中取值为\ 1 \\
+floor(121/2^5)=3 &amp;\quad\Rightarrow\quad 位面\ 5\ 中取值为\ 1 \\
+floor(121/2^4)=7 &amp;\quad\Rightarrow\quad 位面\ 4\ 中取值为\ 1 \\
+floor(121/2^3)=15 &amp;\quad\Rightarrow\quad 位面\ 3\ 中取值为\ 1 \\
+floor(121/2^2)=30 &amp;\quad\Rightarrow\quad 位面\ 2\ 中取值为\ 0 \\
+floor(121/2^1)=60 &amp;\quad\Rightarrow\quad 位面\ 1\ 中取值为\ 0 \\
+floor(121/2^0)=121 &amp;\quad\Rightarrow\quad 位面\ 0\ 中取值为\ 1
+\end{aligned}
+$$&lt;h5 id=&#34;matlab实现代码&#34;&gt;MATLAB实现代码
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;fractal_iris.bmp&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;rowcnt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;columncnt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;title&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;源图像&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rowcnt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;columncnt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;mod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;floor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;double&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;^&lt;span class=&#34;nb&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)),&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;==&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;n&#34;&gt;bitmap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;n&#34;&gt;bitmap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bitmap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;title&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strcat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;位平面&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;num2str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;直方图修正直方图均衡化&#34;&gt;直方图修正——直方图均衡化
+&lt;/h2&gt;&lt;h3 id=&#34;直方图和累计直方图&#34;&gt;直方图和累计直方图
+&lt;/h3&gt;&lt;h4 id=&#34;直方图&#34;&gt;直方图
+&lt;/h4&gt;$$
+\begin{aligned}
+h(k)=n_k \quad k=0,1,\cdots,L-1
+\end{aligned}
+$$&lt;p&gt;其中，$n_k$是图像$f(x,y)$中具有灰度值$k$的像素的个数。&lt;/p&gt;
+&lt;p&gt;是图像的一种统计表达，反映了图像中像素的灰度值的分布情况。&lt;/p&gt;
+&lt;p&gt;若某图像的灰度直方图具有&lt;strong&gt;二峰性&lt;/strong&gt;，则表明这个图像较亮区域和较暗区域可以较好的分离。&lt;/p&gt;
+&lt;h4 id=&#34;归一化直方图&#34;&gt;归一化直方图
+&lt;/h4&gt;$$
+\begin{aligned}
+p(s_k)&amp;=\frac{n_k}{n} \quad s_k=\frac{k}{L-1},0\le s_k\le1
+\end{aligned}
+$$&lt;p&gt;其中，$n$为图像所有像素的数量。&lt;/p&gt;
+&lt;h4 id=&#34;累计直方图&#34;&gt;累计直方图
+&lt;/h4&gt;$$
+H(k)=\sum_{i=0}^{k}n_i
+$$&lt;p&gt;其中，$n_i$表示图像中灰度级等于$i$的像素点数量。&lt;/p&gt;
+&lt;h4 id=&#34;归一化累计直方图&#34;&gt;归一化累计直方图
+&lt;/h4&gt;$$
+\begin{aligned}
+P(s_k)=\sum_{i=0}^kp(s_i)
+\end{aligned}
+$$&lt;h3 id=&#34;直方图均衡化原理&#34;&gt;直方图均衡化原理
+&lt;/h3&gt;&lt;p&gt;把图像的直方图变换为&lt;strong&gt;均匀分布&lt;/strong&gt;的形式，以此增强动态范围偏小的图像的反差，从而实现&lt;strong&gt;对比度增强&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;实质是选用合适的变换函数来&lt;strong&gt;修正图像灰度级的归一化直方图&lt;/strong&gt;$p(s_k)$，为了能从图像中获得尽量多的信息量（图像熵尽可能大），要求$p(s_k)$为&lt;strong&gt;常数&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;增强函数$E_H(s)$需要满足：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$E_H(s)$为单值单增函数（&lt;em&gt;保持原有排列次序&lt;/em&gt;）&lt;/li&gt;
+&lt;li&gt;$0\le E_H(s) \le L-1$（&lt;em&gt;灰度级动态范围一致&lt;/em&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;反变换也应该满足上述条件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;累积分布函数（CDF）&lt;strong&gt;满足以上条件：
+$$
+t_k=E_H(s_k)=\sum_{i=0}^{k}\frac{n_i}{n}=\sum_{i=0}^{k}p(s_i)
+$$
+例如一幅图像$64\times 64(n=4096)$，每个像素点用3比特表示（8个灰度级），像素点的灰度值分布如下：
+$$
+\begin{array}{c|cccccccc}
+\text{灰度级}&amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7  \\
+\hline 
+\text{像素数量} &amp; 790 &amp; 1023 &amp; 850 &amp; 656 &amp; 329 &amp; 245 &amp; 122 &amp; 81
+\end{array}
+$$
+实现&lt;/strong&gt;直方图均衡化&lt;/strong&gt;步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$
+   \begin{array}{c|cccccccc}
+   灰度级k &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7  \\
+   \hline 
+   归一化灰度级s_k &amp; \frac{0}{7} &amp; \frac{1}{7} &amp; \frac{2}{7} &amp; \frac{3}{7} &amp; \frac{4}{7} &amp; \frac{5}{7} &amp; \frac{6}{7} &amp; \frac{7}{7}  \\
+   \hline 
+   像素数量n_k &amp; 790 &amp; 1023 &amp; 850 &amp; 656 &amp; 329 &amp; 245 &amp; 122 &amp; 81 \\
+   \hline
+   \textbf{归一化直方图}p(s_k) &amp; 0.19 &amp; 0.25 &amp; 0.21 &amp; 0.16 &amp; 0.08 &amp; 0.06 &amp; 0.03 &amp; 0.02 
+   \end{array}
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   \begin{array}{c|cccccccc}
+   灰度级k &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7  \\
+   \hline 
+   归一化灰度级s_k &amp; \frac{0}{7} &amp; \frac{1}{7} &amp; \frac{2}{7} &amp; \frac{3}{7} &amp; \frac{4}{7} &amp; \frac{5}{7} &amp; \frac{6}{7} &amp; \frac{7}{7}  \\
+   \hline 
+   像素数量n_k &amp; 790 &amp; 1023 &amp; 850 &amp; 656 &amp; 329 &amp; 245 &amp; 122 &amp; 81 \\
+   \hline
+   归一化直方图p(s_k) &amp; 0.19 &amp; 0.25 &amp; 0.21 &amp; 0.16 &amp; 0.08 &amp; 0.06 &amp; 0.03 &amp; 0.02  \\
+   \hline
+   \textbf{归一化累积直方图}t_k &amp; 0.19 &amp; 0.44 &amp; 0.65 &amp; 0.81 &amp; 0.89 &amp; 0.95 &amp; 0.98 &amp; 1.00 
+   \end{array}
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   \begin{array}{c|cccccccc}
+   灰度级k &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7  \\
+   \hline 
+   归一化灰度级s_k &amp; \frac{0}{7} &amp; \frac{1}{7} &amp; \frac{2}{7} &amp; \frac{3}{7} &amp; \frac{4}{7} &amp; \frac{5}{7} &amp; \frac{6}{7} &amp; \frac{7}{7}  \\
+   \hline 
+   像素数量n_k &amp; 790 &amp; 1023 &amp; 850 &amp; 656 &amp; 329 &amp; 245 &amp; 122 &amp; 81 \\
+   \hline
+   归一化直方图p(s_k) &amp; 0.19 &amp; 0.25 &amp; 0.21 &amp; 0.16 &amp; 0.08 &amp; 0.06 &amp; 0.03 &amp; 0.02  \\
+   \hline
+   归一化累积直方图t_k &amp; 0.19 &amp; 0.44 &amp; 0.65 &amp; 0.81 &amp; 0.89 &amp; 0.95 &amp; 0.98 &amp; 1.00 \\
+   \hline
+   \textbf{扩展}t_k&#39; &amp; 1 &amp; 3 &amp; 5 &amp; 6 &amp; 6 &amp; 7 &amp; 7 &amp; 7
+   \end{array}
+   $$&lt;p&gt;
+其中$t&amp;rsquo;_k$的选取：选择最靠近的一个灰度级的值，例如$0.19$离$\frac{1}{7}$最近，则修正的灰度级为$1$，以此类推。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;空间滤波机理&#34;&gt;空间滤波机理
+&lt;/h2&gt;&lt;p&gt;组成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个&lt;strong&gt;邻域&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;对领域内像素执行的&lt;strong&gt;预定义操作&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;滤波在邻域中心坐标产生一个新的像素，其值是滤波操作的结果。滤波器的中心访问图像中的每个像素后生成滤波后的图像。&lt;/p&gt;
+&lt;p&gt;可根据执行的操作分为&lt;strong&gt;线性空间滤波器&lt;/strong&gt;和&lt;strong&gt;非线性空间滤波器&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;线性滤波&#34;&gt;线性滤波
+&lt;/h2&gt;&lt;h3 id=&#34;技术分类和实现原理&#34;&gt;技术分类和实现原理
+&lt;/h3&gt;&lt;h4 id=&#34;技术分类&#34;&gt;技术分类
+&lt;/h4&gt;&lt;h5 id=&#34;平滑滤波&#34;&gt;平滑滤波
+&lt;/h5&gt;&lt;p&gt;平滑线性空间滤波器使用滤波器模板确定的领域像素的平均灰度值代替邻域中心像素的值。降低了图像灰度的“尖锐”变化。&lt;/p&gt;
+&lt;p&gt;应用：降低噪声、模糊处理&amp;hellip;&lt;/p&gt;
+&lt;p&gt;影响：边缘模糊的负面效应&lt;/p&gt;
+&lt;h5 id=&#34;锐化滤波&#34;&gt;锐化滤波
+&lt;/h5&gt;&lt;p&gt;削弱图像中灰度缓慢变化的区域，同时使图像中灰度值发生突变的区域得到增强（或不变）。（即消除图像中的低频分量，同时增强（或不影响）高频分量。）&lt;/p&gt;
+&lt;p&gt;效果：增强被模糊的细节或目标的边缘&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;与平滑滤波互逆。凸显细节，弱化背景。&lt;/em&gt;&lt;/p&gt;
+&lt;h4 id=&#34;实现原理模板卷积&#34;&gt;实现原理（模板卷积）
+&lt;/h4&gt;$$
+\begin{aligned}
+g(x,y)=\sum_{s=-a}^{a}\sum_{t=-b}^bw(s,t)f(x+s,y+t)
+\end{aligned}
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$w(s,t)$为滤波器系数，滤波器中心系数$w(0,0)$对准位置为$(x,y)$的像素；&lt;/li&gt;
+&lt;li&gt;$m=2a+1$，$n=2b+1$，且$a$、$b$为正整数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;使用奇数尺寸的滤波器可更简化索引且更为直观，因为其滤波器的中心落在整数值上。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将滤波器在图像中漫游，并将滤波器中心与图像中某个像素位置重合；&lt;/li&gt;
+&lt;li&gt;将滤波器中的各个系数与滤波器所覆盖的各对应像素的灰度值相乘；&lt;/li&gt;
+&lt;li&gt;将2中的所有成绩结果进行相加，并将加法运算的结果赋给图像中对应滤波器中心位置的像素（滤波器的输出响应）。&lt;/li&gt;
+&lt;/ol&gt;
+$$
+\begin{bmatrix}
+{ } &amp; {\vdots} &amp; {\vdots} &amp; {\vdots} &amp; { } \\
+{\cdots} &amp; {f(x-1,y-1)} &amp; {f(x-1,y)} &amp; {f(x-1,y+1)} &amp; {\cdots} \\
+{\cdots} &amp; {f(x,y-1)} &amp; {f(x,y)} &amp; {f(x,y+1)} &amp; {\cdots}\\
+{\cdots} &amp; {f(x+1,y-1)} &amp; {f(x+1,y)} &amp; {f(x+1,y+1)} &amp; {\cdots}\\
+{ } &amp; {\vdots} &amp; {\vdots} &amp; {\vdots} &amp; { }
+\end{bmatrix}
+$$$$
+\begin{bmatrix}
+{w(-1,-1)} &amp; {w(-1,0)} &amp; {w(-1,1)} \\
+{w(0,-1)} &amp; {w(0,0)} &amp; {w(0,1)} \\
+{w(1,-1)} &amp; {w(1,0)} &amp; {w(1,1)}\\
+\end{bmatrix}
+$$$$
+\begin{aligned}
+g(x,y) &amp;= w(-1,-1)f(x-1,y-1) &amp;&amp;+ w(-1,0)f(x-1,y) &amp;&amp;+ w(-1,1)f(x-1,y+1) \\
+		&amp;+ w(0,-1)f(x,y-1) &amp;&amp;+ w(0,0)f(x,y) &amp;&amp;+ w(0,1)f(x,y+1) \\
+		&amp;+ w(1,-1)f(x+1,y-1) &amp;&amp;+ w(1,0)f(x+1,y) &amp;&amp;+ w(1,1)f(x+1,y+1)
+\end{aligned}
+$$&lt;p&gt;&lt;em&gt;&lt;strong&gt;对于每一个滤波的结果，其参与运算的邻域灰度值均为原始图像对应邻域的灰度值，相当于在把结果存放在一个新的空白矩阵上，而非在原始图像上就地修改。&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;线性平滑滤波器&#34;&gt;线性平滑滤波器
+&lt;/h3&gt;&lt;h4 id=&#34;邻域平均&#34;&gt;邻域平均
+&lt;/h4&gt;$$
+g(x,y)=\frac{1}{mn}\sum_{(x,y)\in S}f(x,y)
+$$&lt;p&gt;其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$S$为滤波器模板覆盖的像素邻域&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$mn$为邻域$S$中像素点数&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;算法简单，但会使图像产生模糊，且邻域越大，模糊越厉害。&lt;/p&gt;
+&lt;h4 id=&#34;加权平均&#34;&gt;加权平均
+&lt;/h4&gt;&lt;p&gt;滤波器模板中各个位置的系数采用不同的数值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;离模板中心近的像素权值大&lt;/li&gt;
+&lt;li&gt;离模板中心远的像素权值小&lt;/li&gt;
+&lt;li&gt;权值之和等于1&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{aligned}
+g(x,y)=\sum_{s=-a}^{a}\sum_{t=-b}^bw(s,t)f(x+s,y+t)
+\end{aligned}
+$$$$
+H_1 = 
+\frac{1}{9}
+\begin{bmatrix}
+{1} &amp; {1} &amp; {1} \\
+{1} &amp; {1} &amp; {1} \\
+{1} &amp; {1} &amp; {1} \\
+\end{bmatrix}
+\quad
+H_2 = 
+\frac{1}{10}
+\begin{bmatrix}
+{1} &amp; {1} &amp; {1} \\
+{1} &amp; {2} &amp; {1} \\
+{1} &amp; {1} &amp; {1} \\
+\end{bmatrix}
+\quad
+H_3 = 
+\frac{1}{16}
+\begin{bmatrix}
+{1} &amp; {2} &amp; {1} \\
+{2} &amp; {4} &amp; {2} \\
+{1} &amp; {2} &amp; {1} \\
+\end{bmatrix}
+$$&lt;h2 id=&#34;非线性滤波&#34;&gt;非线性滤波
+&lt;/h2&gt;&lt;h3 id=&#34;非线性平滑滤波器&#34;&gt;非线性平滑滤波器
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;统计排序滤波器&lt;/strong&gt;的响应以滤波器所覆盖的图像区域中的所有像素的&lt;strong&gt;排序&lt;/strong&gt;为基础，然后使用&lt;strong&gt;统计排序的结果值&lt;/strong&gt;代替中心像素的值。其具备优秀的去噪能力，且比同尺寸的线性平滑滤波器的模糊程度明显要低。&lt;/p&gt;
+&lt;h4 id=&#34;中值滤波器&#34;&gt;中值滤波器
+&lt;/h4&gt;&lt;p&gt;使用像素邻域内灰度的&lt;strong&gt;中值&lt;/strong&gt;代替中心像素的值。其主要功能是拥有不同灰度的像素点看起来更接近于它的相邻点（去除孤立像素）。&lt;/p&gt;
+&lt;p&gt;中值滤波器对处理&lt;strong&gt;椒盐噪声&lt;/strong&gt;（&lt;em&gt;椒噪声：灰度值较低，偏暗；盐噪声：灰度值较高，偏亮。极端情况是黑色和白色噪声&lt;/em&gt;）非常有效，因为这种噪声以黑白点的形式叠加在图像上。&lt;/p&gt;
+&lt;h5 id=&#34;实现步骤&#34;&gt;实现步骤
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;将滤波器模板（无系数）在图像中漫游，并将模板中心与图像中某个像素位置重合；&lt;/li&gt;
+&lt;li&gt;读取模板下各对应像素的灰度值；&lt;/li&gt;
+&lt;li&gt;将灰度值按从小到大（或从大到小）的次序进行排序；&lt;/li&gt;
+&lt;li&gt;确定排序结果的中值，将此中值赋予对应模板中心位置的像素。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;$$
+\begin{bmatrix}
+{ } &amp;amp; {\vdots} &amp;amp; {\vdots} &amp;amp; {\vdots} &amp;amp; { } \
+{\cdots} &amp;amp; {10} &amp;amp; {20} &amp;amp; {20} &amp;amp; {\cdots} \
+{\cdots} &amp;amp; {20} &amp;amp; {15} &amp;amp; {20} &amp;amp; {\cdots}\
+{\cdots} &amp;amp; {20} &amp;amp; {25} &amp;amp; {100} &amp;amp; {\cdots}\
+{ } &amp;amp; {\vdots} &amp;amp; {\vdots} &amp;amp; {\vdots} &amp;amp; { }
+\end{bmatrix}&lt;/p&gt;
+&lt;p&gt;\Rightarrow&lt;/p&gt;
+&lt;p&gt;\begin{bmatrix}
+{10} &amp;amp; {15} &amp;amp; {20} &amp;amp; {20} &amp;amp; \textbf{20} &amp;amp; {20} &amp;amp; {20} &amp;amp; {25} &amp;amp; {100}
+\end{bmatrix}
+$$&lt;/p&gt;
+&lt;h5 id=&#34;模板选择&#34;&gt;模板选择
+&lt;/h5&gt;&lt;p&gt;去噪效果与以下两个因素有关：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模板形状&lt;/li&gt;
+&lt;li&gt;参与运算的像素数量&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{bmatrix}
+{\cdot} &amp; {\cdot} &amp; {\cdot} &amp; {\cdot} &amp; {\cdot} \\
+{\cdot} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\cdot} \\
+{\cdot} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\cdot} \\
+{\cdot} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\cdot} \\
+{\cdot} &amp; {\cdot} &amp; {\cdot} &amp; {\cdot} &amp; {\cdot} 
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+{\cdot} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\cdot} \\
+{\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet}  \\
+{\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} \\
+{\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} \\
+{\cdot} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\cdot} 
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+{\cdot} &amp; {\cdot} &amp; {\bullet} &amp; {\cdot} &amp; {\cdot} \\
+{\cdot} &amp; {\cdot} &amp; {\bullet} &amp; {\cdot} &amp; {\cdot} \\
+{\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet} &amp; {\bullet}\\
+{\cdot} &amp; {\cdot} &amp; {\bullet} &amp; {\cdot} &amp; {\cdot} \\
+{\cdot} &amp; {\cdot} &amp; {\bullet} &amp; {\cdot} &amp; {\cdot} 
+\end{bmatrix}
+$$&lt;ul&gt;
+&lt;li&gt;对于有缓变的较长轮廓线的图像，采用方形或圆形模板为宜；&lt;/li&gt;
+&lt;li&gt;对于包含有尖顶角物体的图像，采用十字形模板为宜，且模板大小则以不超过图像中最小有效物体的尺寸为宜；&lt;/li&gt;
+&lt;li&gt;对于包含点、线、尖细节较多的图像，则不适宜采用中值滤波。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;百分比滤波器&#34;&gt;百分比滤波器
+&lt;/h4&gt;$$
+g_{max}(x,y)=\mathop{max}\limits_{(s,t)\in N(x,y)}[f(s,t)]
+$$$$
+g_{min}(x,y)=\mathop{min}\limits_{(s,t)\in N(x,y)}[f(s,t)]
+$$&lt;p&gt;
+椒噪声有较低的灰度值，用最大值滤波器有较好的效果，而盐噪声反之。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;最大值滤波会细化黑色目标，最小值滤波会粗化黑色目标。&lt;/em&gt;&lt;/p&gt;
+&lt;h4 id=&#34;中点滤波器&#34;&gt;中点滤波器
+&lt;/h4&gt;$$
+g_{mid}(x,y)=\frac{1}{2}[g_{max}(x,y)+g_{min}(x,y)]
+$$&lt;p&gt;结合了排序统计和求平均，对于高斯和均匀分布随机噪声有较好效果。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;中点滤波器得到的结果图像会产生模糊。&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;非线性锐化滤波器&#34;&gt;非线性锐化滤波器
+&lt;/h3&gt;&lt;p&gt;锐化处理目的是突出图像中灰度的&lt;strong&gt;过渡&lt;/strong&gt;部分。&lt;/p&gt;
+&lt;p&gt;锐化处理可以用&lt;strong&gt;空间微分&lt;/strong&gt;来完成（微分算子的响应强度与像素的突变程度成正比）。即图像微分&lt;strong&gt;增强&lt;/strong&gt;边缘与其他突变（噪声、线），并&lt;strong&gt;削弱&lt;/strong&gt;灰度变化缓慢的区域。&lt;/p&gt;
+&lt;p&gt;常用滤波器：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;基于一阶微分的锐化滤波器&lt;/li&gt;
+&lt;li&gt;基于二阶微分的锐化滤波器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;数字图像微分&#34;&gt;数字图像微分
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;一阶微分&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在&lt;strong&gt;恒定灰度区域&lt;/strong&gt;的一阶微分值&lt;strong&gt;为零&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;在&lt;strong&gt;灰度台阶、灰度斜坡的起点处&lt;/strong&gt;一阶微分值&lt;strong&gt;非零&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;沿着灰度斜坡&lt;/strong&gt;的一阶微分值&lt;strong&gt;非零&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;二阶微分&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在&lt;strong&gt;恒定灰度区域&lt;/strong&gt;的二阶微分值&lt;strong&gt;为零&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;在&lt;strong&gt;灰度台阶、灰度斜坡的起点处&lt;/strong&gt;二阶微分值&lt;strong&gt;非零&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;沿着灰度斜坡&lt;/strong&gt;的二阶微分值&lt;strong&gt;为零&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于一维离散函数$f(x)$，采用差分计算其微分如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+$$
+  \frac{\partial f}{\partial x}=f(x+1)-f(x)
+  $$&lt;/li&gt;
+&lt;li&gt;
+$$
+  \begin{aligned}
+  \frac{\partial^2 f}{\partial x^2}&amp;=[f(x+1)-f(x)]-[f(x)-f(x-1)] \\
+  &amp;= f(x+1)+f(x-1)-2f(x)
+  \end{aligned}
+  $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于二维的数字图$f(x,y)$，可以沿着两个空间轴处理偏微分。&lt;/p&gt;
+$$
+\begin{bmatrix}
+6 &amp; 6 &amp; 6 &amp; 5 &amp; 4 &amp; 3 &amp; 2 &amp; 1 &amp; 1 &amp; 1 &amp; 6 &amp; 6 &amp; 6 \\
+恒定灰度 &amp; &amp; 斜坡起点 &amp;  &amp;  &amp; 斜坡 &amp;  &amp;  &amp;  &amp; 台 &amp; 阶 &amp;  &amp;  \\
+0 &amp; 0 &amp; -1 &amp; -1 &amp; -1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 5 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; -5 &amp; 0 &amp; 0
+\end{bmatrix}
+$$&lt;h4 id=&#34;基于一阶微分的锐化滤波器梯度算子&#34;&gt;基于一阶微分的锐化滤波器——梯度算子
+&lt;/h4&gt;&lt;p&gt;基于一阶微分的锐化滤波常用&lt;strong&gt;梯度幅值&lt;/strong&gt;来实现。&lt;/p&gt;
+&lt;h1 id=&#34;endbmatrixt&#34;&gt;对于图像$f$，在任意坐标$(x.y)$上的&lt;strong&gt;梯度&lt;/strong&gt;$\nabla f$定义为&lt;strong&gt;二维列向量&lt;/strong&gt;：
+$$
+\nabla f=
+\begin{bmatrix}
+Gx &amp;amp; Gy
+\end{bmatrix}^T
+&lt;/h1&gt;$$
+梯度的**幅值**$|\nabla f|$：
+$$$$
+实际应用中，一般把梯度的幅值称为梯度，并采用绝对值近似求梯度幅值：
+$$&lt;p&gt;
+|\nabla f|=|G_x|+|G_y|=|\frac{\partial f}{\partial x}| + |\frac{\partial f}{\partial y}|
+$$&lt;/p&gt;
+&lt;h5 id=&#34;梯度一阶微分的近似计算方法滤波模板&#34;&gt;梯度（一阶微分）的近似计算方法（滤波模板）:
+&lt;/h5&gt;&lt;h6 id=&#34;直接差分&#34;&gt;直接差分
+&lt;/h6&gt;$$
+   \begin{aligned}
+   G_x=f(x+1,y)-f(x,y) \\
+   G_y=f(x,y+1)-f(x,y)
+   \end{aligned}
+$$$$
+   垂直方向
+   \begin{bmatrix}
+   \underline{-1} &amp; 0 \\
+   1 &amp; 0 
+   \end{bmatrix}
+   \quad
+   水平方向
+   \begin{bmatrix}
+   \underline{-1}&amp; 1 \\
+   0 &amp; 0 
+   \end{bmatrix}
+$$&lt;h6 id=&#34;交叉差分&#34;&gt;交叉差分
+&lt;/h6&gt;$$
+   \begin{aligned}
+   G_x=f(x+1,y+1)-f(x,y) \\
+   G_y=f(x+1,y)-f(x,y+1)
+   \end{aligned}
+$$$$
+   垂直方向
+   \begin{bmatrix}
+   \underline{-1} &amp; 0 \\
+   0 &amp; 1 
+   \end{bmatrix}
+   \quad
+   水平方向
+   \begin{bmatrix}
+   \underline{0} &amp; -1 \\
+   1 &amp; 0 
+   \end{bmatrix}
+$$&lt;h6 id=&#34;sobel算子&#34;&gt;Sobel算子
+&lt;/h6&gt;$$
+   \begin{aligned}
+   G_x = &amp;f(x+1,y-1)+2f(x+1,y)+f(x+1,y+1)\\
+   &amp;-f(x-1,y-1)-2f(x-1,y)-f(x-1,y+1) \\
+   G_y = &amp;f(x-1,y+1)+2f(x,y+1)+f(x+1,y+1)\\
+   &amp;- f(x-1,y-1)-2f(x,y-1)-f(x+1,y-1)
+   \end{aligned}
+$$$$
+   垂直方向
+   \begin{bmatrix}
+   -1 &amp; -2 &amp; -1 \\
+   0 &amp; \underline{0} &amp; 0 \\
+   1 &amp; 2 &amp; 1 
+   \end{bmatrix}
+   \quad
+   水平方向
+   \begin{bmatrix}
+   -1 &amp; 0 &amp; 1 \\
+   -2 &amp; \underline{0} &amp; 2 \\
+   -1 &amp; 0 &amp; 1 
+   \end{bmatrix}
+$$&lt;p&gt;&lt;em&gt;下划线标出元素为滤波器模板的原点。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;可以看出，实现&lt;strong&gt;平滑&lt;/strong&gt;的滤波器系数之和为&lt;strong&gt;1&lt;/strong&gt;，实现&lt;strong&gt;锐化&lt;/strong&gt;的滤波器系数之和为&lt;strong&gt;0&lt;/strong&gt;。&lt;/em&gt;&lt;/p&gt;
+&lt;h5 id=&#34;应用-1&#34;&gt;应用
+&lt;/h5&gt;&lt;p&gt;工业检测、辅助人工检测缺陷，或更为通用的自动检测的预处理。&lt;/p&gt;
+&lt;h4 id=&#34;基于二阶微分的锐化滤波器拉普拉斯算子&#34;&gt;基于二阶微分的锐化滤波器——拉普拉斯算子
+&lt;/h4&gt;$$
+\nabla ^2f=\frac{\partial ^2f}{\partial x^2}+\frac{\partial ^2f}{\partial y^2}
+$$$$
+\begin{aligned}
+\frac{\partial ^2f}{\partial x^2}=f(x+1,y)+f(x-1,y)-2f(x,y)\\
+\frac{\partial ^2f}{\partial y^2}=f(x,y+1)+f(x,y-1)-2f(x,y)
+\end{aligned}
+$$$$
+\nabla ^2f=f(x-1,y)-2f(x,y)+f(x,y+1)+f(x,y-1)]-4f(x,y)
+$$$$
+(a)
+\begin{bmatrix}
+0 &amp; 1 &amp; 0 \\
+1 &amp; -4 &amp; 1 \\
+0 &amp; 1 &amp; 0
+\end{bmatrix}
+$$$$
+(b)
+\begin{bmatrix}
+1 &amp; 1 &amp; 1 \\
+1 &amp; -8 &amp; 1 \\
+1 &amp; 1 &amp; 1
+\end{bmatrix}
+\quad
+(c)
+\begin{bmatrix}
+0 &amp; -1 &amp; 0 \\
+-1 &amp; 4 &amp; -1 \\
+0 &amp; -1 &amp; 0
+\end{bmatrix}
+\quad
+(d)
+\begin{bmatrix}
+-1 &amp; -1 &amp; -1 \\
+-1 &amp; 8 &amp; -1 \\
+-1 &amp; -1 &amp; -1
+\end{bmatrix}
+$$&lt;p&gt;$(b)$为执行离散拉普拉斯变换的扩展模板，包括了对角方向的的领域像素;$(c)、(d)$为其他两种拉普拉斯变换的实现，仅符号相反，结果等效。&lt;/p&gt;
+$$
+g(x,y)=
+\begin{cases}
+f(x,y)-\nabla ^2f,若拉普拉斯模板中心系数为负 \\
+f(x,y)+\nabla ^2f,若拉普拉斯模板中心系数为正
+\end{cases}
+$$&lt;p&gt;
+将原始图像和拉普拉斯图像&lt;strong&gt;叠加&lt;/strong&gt;在一起，以增强细节。&lt;/p&gt;
+&lt;h4 id=&#34;混合空间增强法&#34;&gt;混合空间增强法
+&lt;/h4&gt;&lt;p&gt;若原始图像的灰度动态范围很窄并且伴随着很高的噪声，则采用单一的图像增强算法很难对其进行增强。&lt;/p&gt;
+&lt;h1 id=&#34;傅里叶变换&#34;&gt;傅里叶变换
+&lt;/h1&gt;&lt;h2 id=&#34;傅里叶变换及其反变换&#34;&gt;傅里叶变换及其反变换
+&lt;/h2&gt;&lt;p&gt;空域$\stackrel{正变换}{\longrightarrow}$其他空间$\stackrel{反变换/逆变换}{\longrightarrow}$空域。&lt;/p&gt;
+&lt;h3 id=&#34;一维连续傅里叶变换及反变换&#34;&gt;一维连续傅里叶变换及反变换
+&lt;/h3&gt;$$
+\begin{aligned}
+F(\mu)=\int_{-\infty}^{\infty}f(t)e^{-j2\pi \mu t}dt \\
+f(t)=\int_{-\infty}^{\infty}F(\mu)e^{j2\pi \mu t}d\mu
+\end{aligned}
+$$&lt;p&gt;其中，$j=\sqrt{-1}$&lt;/p&gt;
+&lt;h3 id=&#34;二维连续傅里叶变换及反变换&#34;&gt;二维连续傅里叶变换及反变换
+&lt;/h3&gt;$$
+\begin{aligned}
+F(\mu,v)=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}f(t,z)e^{-j2\pi(\mu t+vz)}dtdz \\
+f(t,z)=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}F(\mu,v)e^{j2\pi(\mu t+vz)}d\mu dv
+\end{aligned}
+$$&lt;h3 id=&#34;一维dft及idft&#34;&gt;一维DFT及IDFT
+&lt;/h3&gt;$$
+\begin{aligned}
+F_m=\frac{1}{M}\sum_{n=0}^{M-1}f_ne^{-j2\pi mn/M},\quad m=0,1,2,\cdots,M-1 \\
+f_n=\sum_{m=0}^{M-1}F_me^{j2\pi mn/M},\quad n=0,1,2,\cdots,M-1
+\end{aligned}
+$$$$
+\begin{aligned}
+F(\mu)=\frac{1}{M}\sum_{x=0}^{M-1}f(x)e^{-j2\pi ux/M},\quad u=0,1,2,\cdots,M-1\\
+f(x)=\sum_{u=0}^{M-1}F(u)e^{j2\pi ux/M},\quad x=0,1,2,\cdots,M-1
+\end{aligned}
+$$$$
+e^{j\theta}=\cos\theta+j\sin\theta
+$$$$
+\begin{aligned}
+F(u)&amp;=\frac{1}{M}\sum_{x=0}^{M-1}f(x)e^{-j2\pi ux/M} \\
+&amp;=\frac{1}{M}\sum_{x=0}^{M-1}f(x)(\cos\frac{2\pi ux}{M}-j\sin\frac{2\pi ux}{M})
+\end{aligned}
+$$&lt;h4 id=&#34;傅里叶变换fu的极坐标表示&#34;&gt;傅里叶变换$F(u)$的极坐标表示
+&lt;/h4&gt;$$
+F(u)=|F(u)|e^{-j\varphi(u)}
+$$&lt;p&gt;其中，&lt;/p&gt;
+$$
+\varphi(u)=\arctan[\frac{I(u)}{R(u)}]
+$$&lt;p&gt;
+$R(u)$和$I(u)$分别是$F(u)$的实部和虚部。&lt;/p&gt;
+$$
+|F(u)|=\sqrt{R(u)^2+I(u)^2}
+$$$$
+P(u)=|F(u)|^2=R(u)^2+I(u)^2
+$$&lt;h3 id=&#34;二维dft及idft&#34;&gt;二维DFT及IDFT
+&lt;/h3&gt;$$
+F(u,v)=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x,y)e^{-j2\pi(ux/M+vy/N)}
+$$$$
+u=0,1,2,\cdots,M-1 \\
+v=0,1,2,\cdots,N-1
+$$$$
+f(x,y)=\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}F(u,v)e^{-j2\pi(ux/M+vy/N)}
+$$$$
+x=0,1,2,\cdots,M-1 \\
+y=0,1,2,\cdots,N-1
+$$&lt;p&gt;&lt;em&gt;在有些文献中，常数$1/MN$通常出现在DFT而非IDFT的前面。这时，这个常数的平方根应包含在正变换和反变换的前面，以便形成一个更为对称的变换对。只要使用一致，这种形式的任何表述就都是正确的。&lt;/em&gt;&lt;/p&gt;
+&lt;h4 id=&#34;二维dft的极坐标表示&#34;&gt;二维DFT的极坐标表示
+&lt;/h4&gt;$$
+F(u,v)=|F(u,v)|e^{-j\varphi(u,v)}
+$$&lt;p&gt;其中，&lt;/p&gt;
+$$
+\varphi(u,v)=\arctan[\frac{I(u,v)}{R(u,v)}]
+$$&lt;p&gt;
+$R(u,v)$和$I(u,v)$分别是$F(u,v)$的实部和虚部。&lt;/p&gt;
+$$
+|F(u,v)|=\sqrt{R(u,v)^2+I(u,v)^2}
+$$$$
+P(u,v)=|F(u,v)|^2=R(u,v)^2+I(u,v)^2
+$$&lt;h3 id=&#34;关于频谱fuv&#34;&gt;关于频谱$|F(u,v)|$
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;频谱描述图像中某种频率的成分数量；&lt;/li&gt;
+&lt;li&gt;频谱中出现的明亮线反映了原始图像的灰度级变化方向。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;傅里叶变换的性质&#34;&gt;傅里叶变换的性质
+&lt;/h2&gt;&lt;h3 id=&#34;平移&#34;&gt;平移
+&lt;/h3&gt;&lt;h3 id=&#34;可分离性&#34;&gt;可分离性
+&lt;/h3&gt;$$
+\begin{aligned}
+F(u,v)&amp;=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x,y)e^{-j2\pi (ux/M+vy/N)} \\
+&amp;= \frac{1}{M}\sum_{x=0}^{M-1}e^{-j2\pi ux/M}\frac{1}{N}\sum_{y=0}^{N-1}f(x,y)e^{-j2\pi vy/N} \\
+&amp;= \frac{1}{M}\sum_{x=0}^{M-1}e^{-j2\pi ux/M}F(x,v)
+\end{aligned}
+$$$$
+f(x,y) \stackrel{一维行变换}{\longrightarrow} F(x,v) \stackrel{一维列变换}{\longrightarrow} F(u,v)
+$$&lt;p&gt;
+二维IDFT与上述过程类似。&lt;/p&gt;
+&lt;h3 id=&#34;平均值&#34;&gt;平均值
+&lt;/h3&gt;$$
+F(0,0)=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x,y)
+$$&lt;h2 id=&#34;快速傅里叶变换fft&#34;&gt;快速傅里叶变换（FFT）
+&lt;/h2&gt;&lt;h1 id=&#34;频率域图像增强&#34;&gt;频率域图像增强
+&lt;/h1&gt;&lt;h2 id=&#34;频率域滤波基础&#34;&gt;频率域滤波基础
+&lt;/h2&gt;&lt;p&gt;在&lt;strong&gt;频率域&lt;/strong&gt;研究图像增强：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可以利用频率成分和图像外表之间的对应关系；（一些在空间域表述困难的增强任务，在频率域中变得非常普通。）&lt;/li&gt;
+&lt;li&gt;滤波在频率域更为直观，它可以解释空间域滤波的某些性质；（利用这些性质进行处理，再转换回图像空间，可以得到所需的效果。）&lt;/li&gt;
+&lt;li&gt;空间域和频率域中的滤波器组成了傅里叶变换对。（可以在频率域指定滤波器，并对其执行反变换，最后在空间域使用该反变换的结果作为空域滤波器。）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;傅里叶变换的频率分量与图像空间特征&#34;&gt;傅里叶变换的频率分量与图像空间特征
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+$$
+  F(0,0)=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x,y)
+  $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;从变换的原点移开时，低频成分对应着图像中灰度慢变化的分量（图像的平滑部分）；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;进一步偏离原点时，较高的频率成分对应图像中变化越来越快的灰度（边缘或噪声等尖锐部分）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;频率域滤波的基本步骤&#34;&gt;频率域滤波的基本步骤
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;用$(-1)^{x+y}$乘输入图像$f(x,y)$，使其&lt;strong&gt;原点中心化&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;对步骤1的结果执行&lt;strong&gt;DFT&lt;/strong&gt;，得到关于中心对称的频谱$F(u,v)$；&lt;/li&gt;
+&lt;li&gt;生成一个&lt;strong&gt;实的、中心对称的频域滤波器&lt;/strong&gt;$H(u,v)$；&lt;/li&gt;
+&lt;li&gt;对滤波器$H(u,v)$、频谱$F(u,v)$执行&lt;strong&gt;阵列相乘&lt;/strong&gt;（对应元素逐个进行相乘),形成乘积$G(u,v)=H(u,v)F(u,v)$，其中$G(m,n)=H(m,n)F(m,n)$，且$0\le m \le M-1,0\le n \le N-1$；&lt;/li&gt;
+&lt;li&gt;对步骤4的结果$G(u,v)$执行&lt;strong&gt;反DFT&lt;/strong&gt;，并取其结果的&lt;strong&gt;实部&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;用$(-1)^{x+y}$乘步骤5的反DFT结果的实部，得到&lt;strong&gt;滤波结果&lt;/strong&gt;$g(x,y)$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;频域滤波器如何作用于图像&#34;&gt;频域滤波器如何作用于图像
+&lt;/h3&gt;&lt;h4 id=&#34;低通滤波器&#34;&gt;低通滤波器
+&lt;/h4&gt;&lt;p&gt;使频谱的&lt;strong&gt;低频成分通过&lt;/strong&gt;，同时使其&lt;strong&gt;高频成分衰减&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;被低通滤波的图像比原始图像减少了尖锐的细节部分，突出了平滑过渡部分；&lt;/li&gt;
+&lt;li&gt;对应于空间域滤波的平滑处理，如均值滤波器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;高通滤波器&#34;&gt;高通滤波器
+&lt;/h4&gt;&lt;p&gt;使频谱的&lt;strong&gt;高频成分通过&lt;/strong&gt;，同时使其&lt;strong&gt;低频成分衰减&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;被高通滤波的图像比原始图像少了灰度级的平滑过渡，突出了边缘等细节部分；&lt;/li&gt;
+&lt;li&gt;对应于空间域滤波的锐化处理，如梯度算子、拉普拉斯算子。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;频率域低通平滑滤波器&#34;&gt;频率域低通（平滑）滤波器
+&lt;/h2&gt;&lt;p&gt;低通滤波器的作用：用于截断频谱中所有处于指定距离$D_0$之外的高频成分。&lt;/p&gt;
+&lt;h3 id=&#34;理想低通滤波器ilpf&#34;&gt;理想低通滤波器（ILPF）
+&lt;/h3&gt;$$
+D(u,v)=\sqrt{(u-\frac{M}{2})^2+(v-\frac{N}{2})^2}
+$$$$
+H(u,v)=
+\begin{cases}
+1\quad D(u,v)\le D_0 \\
+0\quad D(u,v)\gt D_0 \\
+\end{cases}
+$$&lt;p&gt;
+&lt;em&gt;在半径为$D_0$的圆内，所有频率没有衰减地完全通过滤波器，而在此半径的圆之外的所有频率&lt;/em&gt;完全被衰减掉。&lt;/p&gt;
+$$
+P_T=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}P(u,v)
+$$$$
+P(u,v)=|F(u,v)|^2=R(u,v)^2+I(u,v)^2
+$$&lt;p&gt;
+原点位于频谱中心处，半径为$D_0$的圆包含$\alpha%$的总功率，&lt;/p&gt;
+$$
+\alpha=100[\sum_u\sum_vP(u,v)/P_T]
+$$&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;随着滤波器&lt;strong&gt;半径的增大&lt;/strong&gt;，&lt;strong&gt;滤除的功率&lt;/strong&gt;越来越&lt;strong&gt;少&lt;/strong&gt;，导致的&lt;strong&gt;模糊&lt;/strong&gt;也越来越&lt;strong&gt;弱&lt;/strong&gt;。&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;理想低通滤波器产生&lt;strong&gt;模糊&lt;/strong&gt;和&lt;strong&gt;振铃&lt;/strong&gt;现象，且模糊和振铃现象&lt;strong&gt;反比于截断频率&lt;/strong&gt;（即半径$D_0$）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;巴特沃斯低通滤波器blpf&#34;&gt;巴特沃斯低通滤波器（BLPF）
+&lt;/h3&gt;$$
+H(u,v)=\frac{1}{1+{[D(u,v)/D_0]}^{2n}}
+$$&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;低阶&lt;/strong&gt;滤波器没有明显振铃现象（滤波器在低频和高频之间平滑过渡）。&lt;em&gt;且1阶BLPF核即没有振铃效应又没有负值。&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;高斯低通滤波器glpf&#34;&gt;高斯低通滤波器（GLPF）
+&lt;/h3&gt;$$
+H(u,v)=e^{-D(u,v)^2/2\sigma ^2}
+$$&lt;p&gt;
+$\sigma$是关于频谱中心的扩展度的度量。&lt;/p&gt;
+$$
+H(u,v)=e^{-D(u,v)^2/2D_0 ^2}
+$$&lt;ul&gt;
+&lt;li&gt;平滑效果稍差于相同截止频率的二阶BLPF；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;没有出现振铃现象&lt;/strong&gt;，优于BLPF。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;应用实例&#34;&gt;应用实例
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;用于机器识别系统识别字符的预处理；&lt;/li&gt;
+&lt;li&gt;减少人脸图像的皮肤细纹核小斑点；&lt;/li&gt;
+&lt;li&gt;消除卫星、航空图像中的不重要特征。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;频率域高通锐化滤波器&#34;&gt;频率域高通（锐化）滤波器
+&lt;/h2&gt;&lt;p&gt;高通滤波器的作用：用于截断频谱中所有处于指定距离$D_0$之内的低频成分。&lt;/p&gt;
+&lt;h3 id=&#34;理想高通滤波器ihpf&#34;&gt;理想高通滤波器（IHPF）
+&lt;/h3&gt;$$
+H(u,v)=
+\begin{cases}
+0\quad D(u,v)\le D_0 \\
+1\quad D(u,v)\gt D_0
+\end{cases}
+$$&lt;ul&gt;
+&lt;li&gt;振铃现象明显。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;巴特沃斯高通滤波器bhpf&#34;&gt;巴特沃斯高通滤波器（BHPF）
+&lt;/h3&gt;$$
+H(u,v)=\frac{1}{1+{[D_0/D(u,v)]}^{2n}}
+$$&lt;ul&gt;
+&lt;li&gt;BHPF的结果比IHPF的结果尖锐得多，边缘失真也小得多。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;高斯高通滤波器ghpf&#34;&gt;高斯高通滤波器（GHPF）
+&lt;/h3&gt;$$
+H(u,v)=1-e^{-D(u,v)^2/2D_0^2}
+$$&lt;ul&gt;
+&lt;li&gt;GHPF的结果比BHPF和IHPF的结果更尖锐，即使是对微小物体和细线条的滤波也是较清晰的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;高通滤波器与低通滤波器的关系&#34;&gt;高通滤波器与低通滤波器的关系
+&lt;/h3&gt;$$
+H_{HP}(u,v)=1-H_{LP}(u,v)
+$$&lt;p&gt;其中：&lt;/p&gt;
+&lt;p&gt;$H_{LP}(u,v)$：低通滤波器函数；$H_{HP}(u,v)$：高通滤波器函数。&lt;/p&gt;
+&lt;p&gt;被低通滤波器衰减的频率成分能通过高通滤波器，反之亦然。&lt;/p&gt;
+&lt;h3 id=&#34;高频提升和高频加强&#34;&gt;高频提升和高频加强
+&lt;/h3&gt;&lt;p&gt;高通滤波效果等同于用原始图像的频谱减去低通滤波的结果图像频谱。&lt;/p&gt;
+&lt;p&gt;图像经过高通滤波后，由于高通滤波器除去了傅里叶变换的零频率，其背景的平均强度减小到接近黑色。&lt;/p&gt;
+&lt;p&gt;原始图像加到滤波后的结果图像，即&lt;strong&gt;高频提升滤波&lt;/strong&gt;或&lt;strong&gt;高频加强滤波&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;高频提升滤波&#34;&gt;高频提升滤波
+&lt;/h4&gt;&lt;p&gt;将原始图像按一定比例加到滤波后的结果中，以保留原始图像的背景。&lt;/p&gt;
+$$
+f_{HB}(x,y)=A\times f(x,y)-f_{LP}(x,y),\quad A\ge1
+$$$$
+\begin{aligned}
+f_{HB}(x,y)&amp;=(A-1)\times f(x,y)+f(x,y)-f_{LP}(x,y) \\
+&amp;=(A-1)\times f(x,y)+f_{HP}(x,y)
+\end{aligned}
+$$$$
+\begin{gather*}
+f_{HB}(x,y)=(A-1)\times f(x,y)+f_{HP}(x,y) \\
+\downarrow \\
+F_{HB}(u,v)=(A-1)\times F(u,v)+F_{HP}(u,v) \\
+\downarrow \\
+F_{HB}(u,v)=(A-1)\times F(u,v)+H_{HP}(u,v)\times F(u,v) \\
+\downarrow \\
+F_{HB}(u,v)=[(A-1)+H_{HP}(u,v)]\times F(u,v)
+\end{gather*}
+$$$$
+H_{HB}(u,v)=(A-1)+H_{HP}(u,v),\quad A\ge1,A=1时普通高通
+$$$$
+F_{HB}(u,v)=H_{HB}(u,v)\times F(u,v)
+$$&lt;h4 id=&#34;高频加强滤波&#34;&gt;高频加强滤波
+&lt;/h4&gt;&lt;p&gt;加强增强图像的高频成分。&lt;/p&gt;
+&lt;p&gt;在高通滤波器函数前乘一个常数，再增加一个偏移量以便使零频率不被滤波器滤除掉。&lt;/p&gt;
+$$
+G(u,v)=H_{HP}(u,v)\times F(u,v)
+$$$$
+H_E(u,v)=k\times H_{HP}(u,v)+c
+$$&lt;p&gt;
+$k\ge 0$且$k\gt c$，$k$的典型值在$1.5$到$2.0$之间，$c$的典型值在$0.25$到$0.5$之间。&lt;/p&gt;
+$$
+\begin{aligned}
+G_E(u,v)&amp;=H_E(u,v)\times F(u,v) \\
+&amp;= [k\times H_{HP}(u,v)+c]\times F(u,v) \\
+&amp;=k\times H_{HP}(u,v)\times F(u,v) + c\times F(u,v) \\
+&amp;=k\times G(u,v)+c\times F(u,v)
+\end{aligned}
+$$&lt;h1 id=&#34;图像复原&#34;&gt;图像复原
+&lt;/h1&gt;&lt;h2 id=&#34;图像退化复原过程的模型&#34;&gt;图像退化/复原过程的模型
+&lt;/h2&gt;&lt;h3 id=&#34;图像退化与图像复原&#34;&gt;图像退化与图像复原
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;图像退化&lt;/strong&gt;是指图像在形式、存储、处理和传输过程中，由于成像系统、存储设备、处理方法和传输介质的不完善，从而导致的&lt;strong&gt;图像质量下降&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;引起图像退化的原因有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;成像系统的散焦；&lt;/li&gt;
+&lt;li&gt;成像设备与物体的相对运动；&lt;/li&gt;
+&lt;li&gt;成像器材的固有缺陷；&lt;/li&gt;
+&lt;li&gt;外部干扰；&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;图像复原&lt;/strong&gt;（图像恢复）指的是对退化的图像进行处理，试图恢复降质的图像。&lt;/p&gt;
+&lt;p&gt;二者关系：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;图像复原可以看作是图像退化的&lt;strong&gt;逆过程&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;实际情况中，退化过程往往并不知晓，这种复原称为&lt;strong&gt;盲目复原&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;图像模糊的同时，噪声和干扰也会同时存在。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;图像退化复原模型&#34;&gt;图像退化/复原模型
+&lt;/h3&gt;$$
+\begin{aligned}
+f(x,y)\rightarrow 退化函数H \rightarrow &amp;\sum \stackrel{退化图像g(x,y)}{\longrightarrow} 复原滤波器 \rightarrow \hat{f}(x,y) \\
+&amp;\uparrow 噪声n(x,y) \\ 
+\end{aligned}
+$$$$
+g(x,y)=H[f(x,y)]+n(x,y)
+$$&lt;p&gt;&lt;strong&gt;图像复原&lt;/strong&gt;：在给定$g(x,y)$和$H$的基础上得到对$f(x,y)$的某个近似，通常采用线性的、空间不变的复原技术。&lt;/p&gt;
+&lt;p&gt;如果退化系统（函数）$H$是&lt;strong&gt;线性空间不变系统&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$
+   \begin{aligned}
+   &amp; H[k_1f_1(x,y)+k_2f_2(x,y)]=k_1H[f_1(x,y)]+k_2H[f_2(x,y)] \\
+   \end{aligned}
+   $$&lt;p&gt;
+齐次性：$H[kf(x,y)]=kH[f(x,y)]$&lt;/p&gt;
+&lt;p&gt;叠加性：$H[f_1(x,y)+f_2(x,y)]=H[f_1(x,y)]+H[f_2(x,y)]$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+   H[f(x-a,y-b)]=g(x-a,y-b)\quad H[f(x,y)]=g(x,y)
+   $$&lt;p&gt;
+即图像中任一像素点通过退化系统时的响应只取决于该点的输入值，而与该点的位置无关。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;则退化图像可以表示为：&lt;/p&gt;
+$$
+g(x,y)=h(x,y)*f(x,y)+n(x,y)
+$$$$
+G(u,v)=H(u,v)F(u,v)+N(u,v)
+$$&lt;h2 id=&#34;噪声模型&#34;&gt;噪声模型
+&lt;/h2&gt;&lt;p&gt;图像中的噪声是&lt;strong&gt;随机&lt;/strong&gt;的，其&lt;strong&gt;灰度值的统计特征&lt;/strong&gt;可以用&lt;strong&gt;概率密度函数&lt;/strong&gt;（PDF）或相应的&lt;strong&gt;累积分布函数&lt;/strong&gt;（CDF）进行表征。&lt;/p&gt;
+&lt;p&gt;对于退化图像中的噪声$n(x,y)$（&lt;em&gt;噪声的灰度值，非位置&lt;/em&gt;），有多种不同的统计模型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;均匀（Uniform）噪声&lt;/li&gt;
+&lt;li&gt;指数（Exponential）噪声&lt;/li&gt;
+&lt;li&gt;高斯（Gaussian）噪声&lt;/li&gt;
+&lt;li&gt;瑞利（Rayleigh）噪声&lt;/li&gt;
+&lt;li&gt;伽马（爱尔兰）噪声&lt;/li&gt;
+&lt;li&gt;脉冲（椒盐）噪声&lt;/li&gt;
+&lt;li&gt;周期噪声&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;均匀噪声&#34;&gt;均匀噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=
+\begin{cases}
+\frac{1}{b-a}\quad &amp;a\le z\le b \\
+0\quad &amp;其他
+\end{cases}
+$$$$
+z=a+(b-a)\times U(0,1)
+$$$$
+\begin{aligned}
+\mu &amp;= \frac{a+b}{2} \\
+\sigma^2 &amp;= \frac{(b-a)^2}{12}
+\end{aligned}
+$$&lt;p&gt;
+实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;rand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noisedIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;指数噪声&#34;&gt;指数噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=
+\begin{cases}
+ae^{-az}\quad &amp; z\ge 0\\
+0\quad &amp; z\lt0
+\end{cases}
+$$$$
+z=-\frac{1}{a}\times ln[1-U(0,1)]
+$$&lt;p&gt;$$
+\begin{aligned}
+\mu&amp;amp;=\frac{1}{a} \
+\sigma^2 &amp;amp;= \frac{1}{a^2}&lt;/p&gt;
+&lt;p&gt;\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;rand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noiseIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;高斯噪声&#34;&gt;高斯噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=\frac{1}{\sqrt{2\pi}\sigma}\exp[{-\frac{(z-\mu)^2}{2\sigma^2}}]
+$$$$
+z=\mu+\sigma\times N(0,1)
+$$&lt;p&gt;$N(0,1)$表示标准正态分布的随机数。&lt;/p&gt;
+&lt;p&gt;灰度值有$70%$落在$[\mu-\sigma,\mu+\sigma]$范围内。&lt;/p&gt;
+&lt;p&gt;实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;mu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sigma&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mu&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sigma&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;randn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noiseIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;瑞利噪声&#34;&gt;瑞利噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=
+\begin{cases}
+\frac{2}{b}(z-a)\exp[-\frac{(z-a)^2}{b}] &amp;z\ge a\\
+0 &amp;z\lt a
+\end{cases}
+$$$$
+z=a+\sqrt{-b\times ln[1-U(0,1)]}
+$$$$
+\begin{aligned}
+\mu &amp;= a + \sqrt{\frac{\pi b}{4}} \\
+\sigma^2&amp;=\frac{b(4-\pi)}{4}
+\end{aligned}
+$$&lt;p&gt;实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;rand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.^&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noiseIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;伽马噪声&#34;&gt;伽马噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=
+\begin{cases}
+\frac{a^bz^{b-1}}{(b-1)!}e^{-az} \quad &amp;z\gt0 \\
+0 &amp;z\lt0
+\end{cases}
+$$$$
+z=E_1+E_2+\cdots+E_b
+$$$$
+\begin{aligned}
+\mu &amp;= \frac{b}{a} \\
+\sigma^2 &amp;= \frac{b}{a^2}
+\end{aligned}
+$$&lt;p&gt;
+实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;rand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noiseIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;脉冲噪声&#34;&gt;脉冲噪声
+&lt;/h3&gt;$$
+\Large
+p(z)=
+\begin{cases}
+P_a \quad &amp;z=a \\
+P_b &amp;z=b \\
+0 &amp;其他
+\end{cases}
+$$&lt;p&gt;若$P_a$或$P_b$为零，则脉冲噪声称为单极脉冲；若$P_a$或$P_b$均不为零，则脉冲噪声成为双脉冲噪声或椒盐噪声。&lt;/p&gt;
+&lt;p&gt;通常，$a$、$b$等于所允许的最小值和最大值。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;rand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;noiseIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;noise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;blackIm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;空间域滤波复原&#34;&gt;空间域滤波复原
+&lt;/h2&gt;&lt;p&gt;当一幅图像中存在的唯一退化因素是噪声时，其退化模型如下：&lt;/p&gt;
+$$
+g(x,y)=f(x,y)+n(x,y)
+$$$$
+G(u,v)=F(u,v)+N(u,v)
+$$&lt;p&gt;
+可以选择空域滤波的方法来复原图像。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;均值滤波器、中点滤波器适合处理高斯或均匀分布等随机噪声；&lt;/li&gt;
+&lt;li&gt;中值滤波器适合处理椒盐噪声；&lt;/li&gt;
+&lt;li&gt;最大值滤波器适合处理“椒”噪声；&lt;/li&gt;
+&lt;li&gt;最小值滤波器适合处理“盐”噪声。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;自适应滤波器&#34;&gt;自适应滤波器
+&lt;/h3&gt;&lt;p&gt;自适应滤波行为基于由$m\times n$矩形窗口$S_{xy}$定义的区域内图像的统计特征。&lt;/p&gt;
+&lt;p&gt;该类滤波器的响应基于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$g(x,y)$：图像$g$任意像素点的灰度值&lt;/li&gt;
+&lt;li&gt;$\sigma_n^2$：被污染图像$g$的方差&lt;/li&gt;
+&lt;li&gt;$m_L$：区域$S_{xy}$上像素点的灰度局部均值&lt;/li&gt;
+&lt;li&gt;$\sigma_L^2$：区域$S_{xy}$上像素点的灰度局部方差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;预期性能：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;若$\sigma_n^2=0$（零噪声），滤波器返回$g(x,y)$；&lt;/li&gt;
+&lt;li&gt;若$\sigma_L^2$与$\sigma_n^2$高相关，滤波器返回$g(x,y)$的近似值；&lt;/li&gt;
+&lt;li&gt;若$\sigma_L^2=\sigma_n^2$（局部性质和整个图像的性质相同），滤波器返回区域$S_{xy}$上像素的局部均值$m_L$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;假设噪声是加性和位置无关的，$\sigma_n^2 \le \sigma_L^2$。&lt;/p&gt;
+$$
+\hat{f}(x,y)=g(x,y)-\frac{\sigma_n^2}{\sigma_L^2}[g(x,y)-m_L]
+$$&lt;p&gt;
+$\sigma_n^2$是唯一事先需要知道的量。&lt;/p&gt;
+&lt;h2 id=&#34;退化函数的估计&#34;&gt;退化函数的估计
+&lt;/h2&gt;$$
+G(u,v)=H(u,v)F(u,v)+N(u,v)
+$$&lt;h3 id=&#34;图像观察估计法&#34;&gt;图像观察估计法
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;寻找简单结构、受噪声影响小的子图像$g_s(x,y)$；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;构造一个估计图像$\hat{f}_s(x,y)$，它和观察的子图像$g_s(x,y)$有相同大小和特性；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+  H_s(u,v)=\frac{G_s(u,v)}{\hat{F}_s(u,v)}
+  $$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;试验估计法&#34;&gt;试验估计法
+&lt;/h3&gt;$$
+  H(u,v)=\frac{G(u,v)}{A}
+$$&lt;p&gt;其中，$A$为常量，表示脉冲强度。&lt;/p&gt;
+&lt;h3 id=&#34;模型估计法&#34;&gt;模型估计法
+&lt;/h3&gt;&lt;h4 id=&#34;散焦模糊disk-blur&#34;&gt;散焦模糊（Disk Blur）
+&lt;/h4&gt;$$
+\large
+h(x,y)=
+\begin{cases}
+\frac{1}{\pi R^2} \quad &amp;x^2+y^2\le R^2 \\
+0 &amp;others
+\end{cases}
+$$$$
+\Downarrow{DFT}
+$$$$
+H(u,v)=2\pi R \frac{J_1(R\sqrt{u^2+v^2})}{\sqrt{u^2+v^2}}
+$$&lt;p&gt;其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$R$是散焦半径；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$J_1(\cdot)$是一阶第一类贝塞尔（Bessel）函数；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$H(u,v)$是圆对称的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;运动模糊motion-deblur&#34;&gt;运动模糊（Motion Deblur）
+&lt;/h4&gt;$$
+H(u,v)=\frac{T}{\pi (ua+vb)}sin[\pi (ua+vb)]e^{-j\pi (ua+vb)}
+$$&lt;p&gt;其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$T$为采集时间长度（曝光时间）；&lt;/li&gt;
+&lt;li&gt;$a$、$b$分别为垂直、水平方向的运动距离。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;大气湍流模糊&#34;&gt;大气湍流模糊
+&lt;/h4&gt;$$
+H(u,v)=e^{-k(u^2+v^2)^{5/6}}
+$$&lt;p&gt;其中，常数$k$与湍流的性质有关，$k$越大，湍流越剧烈。&lt;/p&gt;
+&lt;h2 id=&#34;图像复原方法逆滤波&#34;&gt;图像复原方法——逆滤波
+&lt;/h2&gt;$$
+G(u,v)=H(u,v)F(u,v)+N(u,v)
+$$$$
+\hat{F}(u,v)=\frac{G(u,v)}{H(u,v)}
+$$&lt;p&gt;
+没有考虑噪声的处理。&lt;/p&gt;
+&lt;h2 id=&#34;图像复原方法维纳滤波&#34;&gt;图像复原方法——维纳滤波
+&lt;/h2&gt;$$
+\min{MSE}=\min{\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}[\hat{f}(x,y)-f(x,y)]^2}
+$$$$
+H_w(u,v)=\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+s\frac{|N(u,v)|^2}{|F(u,v)|^2}}
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$H(u,v)$为退化函数；&lt;/li&gt;
+&lt;li&gt;$|H(u,v)|^2$为$H(u,v)$的功率谱；&lt;/li&gt;
+&lt;li&gt;$s$为最小二乘约束条件的拉格朗日常数；&lt;/li&gt;
+&lt;li&gt;$|N(u,v)|^2$为噪声的功率谱；&lt;/li&gt;
+&lt;li&gt;$|F(u,v)|^2$为未退化图像的功率谱。&lt;/li&gt;
+&lt;li&gt;$\frac{|N(u,v)|^2}{|F(u,v)|^2}$为噪信功率比。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;若退化图像具有较低的噪信功率比，则维纳滤波器$H_w(u,v)$近似为逆滤波器$\frac{1}{H(u,v)}$。如果噪声为0，则维纳滤波器退化为逆滤波。&lt;/p&gt;
+$$
+H_w(u,v)=\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+K}
+$$&lt;h1 id=&#34;形态学图像处理&#34;&gt;形态学图像处理
+&lt;/h1&gt;&lt;h2 id=&#34;概述-1&#34;&gt;概述
+&lt;/h2&gt;&lt;p&gt;作用：&lt;strong&gt;简化图像数据&lt;/strong&gt;，去除图像中不重要的结构，仅保持图像的基本形状特性。&lt;/p&gt;
+&lt;p&gt;基本思想：使用具有一定形态的&lt;strong&gt;结构元素&lt;/strong&gt;去&lt;strong&gt;度量和提取&lt;/strong&gt;图像中的对应&lt;strong&gt;形状&lt;/strong&gt;，以达到对图像进行处理和分析的目的。&lt;/p&gt;
+&lt;p&gt;数学基础和所用语言：集合论&lt;/p&gt;
+&lt;p&gt;基本运算：&lt;strong&gt;膨胀&lt;/strong&gt;、&lt;strong&gt;腐蚀&lt;/strong&gt;、&lt;strong&gt;开启&lt;/strong&gt;、&lt;strong&gt;闭合&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;集合论基础&#34;&gt;集合论基础
+&lt;/h2&gt;&lt;h3 id=&#34;并交补差&#34;&gt;并、交、补、差
+&lt;/h3&gt;$$
+\begin{gather*}
+&amp;C=A\cup B \\
+&amp;D=A\cap B \\
+&amp;A^c=\{w|w\notin A\} \\
+&amp;A-B=\{w|w\in A, w\notin B\}=A\cap B^c
+\end{gather*}
+$$&lt;h3 id=&#34;反射与平移&#34;&gt;反射与平移
+&lt;/h3&gt;&lt;h4 id=&#34;反射&#34;&gt;反射
+&lt;/h4&gt;$$
+\hat{B}=\{w|w=-b,b\in B\}
+$$$$
+B:(x,y)\rightarrow \hat{B}:(-x,-y)
+$$&lt;h4 id=&#34;平移-1&#34;&gt;平移
+&lt;/h4&gt;$$
+(B)_z=\{c|c=b+z,b\in B\}
+$$$$
+B:(x,y)\rightarrow (B)_z:(x+z_1,y+z_2)
+$$&lt;h3 id=&#34;二值图像的逻辑运算&#34;&gt;二值图像的逻辑运算
+&lt;/h3&gt;$$
+\begin{gather*}
+NOT(A) \\
+(A) AND (B) \\
+(A)OR(B) \\
+(A)XOR(B)
+\end{gather*}
+$$&lt;h2 id=&#34;二值图像形态学处理&#34;&gt;二值图像形态学处理
+&lt;/h2&gt;&lt;p&gt;设$A$：像素集合，$B$：结构元素（成员是感兴趣目标的像素的集合），处理过程是用$B$对$A$进行操作。&lt;/p&gt;
+&lt;p&gt;通过让$B$在$A$上平移，以便$B$的&lt;strong&gt;原点&lt;/strong&gt;访问$A$的每一个像素，以此得到一个新的像素集合。&lt;/p&gt;
+&lt;p&gt;结构元素的&lt;strong&gt;原点&lt;/strong&gt;是形态学运算的&lt;strong&gt;参考点&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;原点可以包含在结构元素中，也可以不包含在结构元素中。&lt;/em&gt;&lt;/p&gt;
+$$
+\begin{bmatrix}
+&amp; \cdot &amp;  \\
+\cdot &amp; \bullet &amp; \cdot \\
+ &amp; \cdot &amp;  \\
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+\cdot &amp; \cdot &amp; \cdot \\
+\cdot &amp; \bullet &amp; \cdot \\
+\cdot &amp; \cdot &amp; \cdot \\
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+\cdot \\
+\cdot \\
+\bullet \\
+\cdot \\
+\cdot 
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+&amp; &amp; &amp; \cdot &amp; &amp; &amp; \\
+ &amp;  &amp; \cdot &amp; \cdot &amp; \cdot &amp;  &amp; \\
+ &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp;   \\
+\cdot &amp; \cdot &amp; \cdot &amp; \bullet &amp; \cdot &amp; \cdot &amp; \cdot \\
+ &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp;   \\
+ &amp;  &amp; \cdot &amp; \cdot &amp; \cdot &amp;  &amp; \\
+&amp; &amp; &amp; \cdot &amp; &amp; &amp; \\
+\end{bmatrix}
+$$&lt;h2 id=&#34;膨胀和腐蚀&#34;&gt;膨胀和腐蚀
+&lt;/h2&gt;&lt;h3 id=&#34;膨胀&#34;&gt;膨胀
+&lt;/h3&gt;&lt;p&gt;效果：扩大图像中的物体。&lt;/p&gt;
+$$
+A\oplus B=\{z|(\hat{B})_z\cap A \ne \emptyset\}
+$$$$
+A\oplus B = \{z|[(\hat{B})_z\cap A]\subseteq A \}
+$$&lt;p&gt;
+即$A$被$B$膨胀的结果是满足上式的所有位移$z$的点（前景像素点）的集合。&lt;/p&gt;
+&lt;p&gt;膨胀应用实例：桥接裂缝&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&amp;#34;&lt;span class=&#34;n&#34;&gt;broken_text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tif&lt;/span&gt;&amp;#34;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imdilate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;其中结构元素$B:\begin{bmatrix}
+0 &amp;amp; 1 &amp;amp; 0 \
+1 &amp;amp; 1 &amp;amp; 1 \
+0 &amp;amp; 1 &amp;amp; 0
+\end{bmatrix}$&lt;/p&gt;
+&lt;h3 id=&#34;腐蚀&#34;&gt;腐蚀
+&lt;/h3&gt;&lt;p&gt;效果：缩小图像中的物体。&lt;/p&gt;
+$$
+A \ominus B = \{z|(B)_z \subseteq A\}
+$$&lt;p&gt;
+即，将结构元素$B$相对于集合$A$进行平移，只要平移后的结构元素都包含在集合$A$中，则这些位移$z$的点的集合（前景像素点）为腐蚀结果。
+如果结构元素取$\begin{bmatrix}
+1 &amp;amp; 1 &amp;amp; 1 \
+1 &amp;amp; 1 &amp;amp; 1 \
+1 &amp;amp; 1 &amp;amp; 1
+\end{bmatrix}$，腐蚀将使物体的边界沿周边减少一个像素。&lt;/p&gt;
+&lt;p&gt;腐蚀可以去除&lt;strong&gt;小于结构元素&lt;/strong&gt;的物体。&lt;/p&gt;
+&lt;p&gt;腐蚀应用实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;wirebond.tif&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;square&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;%边长为11的方形结构元素&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imerode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;开启和闭合&#34;&gt;开启和闭合
+&lt;/h2&gt;&lt;h3 id=&#34;开启&#34;&gt;开启
+&lt;/h3&gt;$$
+A \circ B=(A\ominus B)\oplus B
+$$&lt;p&gt;
+即先用$B$对$A$腐蚀，然后用$B$对腐蚀结果进行膨胀。&lt;/p&gt;
+&lt;p&gt;性质：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$A\circ B$是$A$的子集&lt;/li&gt;
+&lt;li&gt;若$C \subseteq D$，则$C\circ B\subseteq D\circ B$&lt;/li&gt;
+&lt;li&gt;$(A\circ B)\circ B=A \circ B$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;闭合&#34;&gt;闭合
+&lt;/h3&gt;$$
+A\bullet B=(A\oplus B)\ominus B
+$$&lt;p&gt;
+即先用$B$对$A$膨胀，然后用$B$对腐蚀结果进行腐蚀。&lt;/p&gt;
+&lt;p&gt;性质：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$A\bullet B$是$A$的子集&lt;/li&gt;
+&lt;li&gt;若$C \subseteq D$，则$C\bullet B\subseteq D\bullet B$&lt;/li&gt;
+&lt;li&gt;$(A\bullet B)\bullet B=A \bullet B$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实例matlab&#34;&gt;实例（MATLAB）
+&lt;/h3&gt;&lt;h4 id=&#34;实例1&#34;&gt;实例1
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;shapes.tif&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;square&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;result_open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imopen&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;result_close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imclose&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;A&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;result_open_close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result_open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;B&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;实例2去除指纹图像上的杂散点&#34;&gt;实例2（去除指纹图像上的杂散点）
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;A=imread(&amp;#39;noisy-fingerprint.tif&amp;#39;);
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;B=strel(&amp;#39;square&amp;#39;,3);
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;result_open=imopen(A,B);
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;result_open_close=imclose(result_open,B);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;形态学的主要应用&#34;&gt;形态学的主要应用
+&lt;/h2&gt;&lt;h3 id=&#34;边界提取&#34;&gt;边界提取
+&lt;/h3&gt;$$
+b(A)=A-(A\ominus B)
+$$&lt;p&gt;
+其中，$B$是适当的结构元素。&lt;/p&gt;
+&lt;p&gt;边界提取实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;A=imread(&amp;#39;people.jpg&amp;#39;);
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;B=strel(&amp;#39;square&amp;#39;,3);
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;result=A-imerode(A,B);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;孔洞填充&#34;&gt;孔洞填充
+&lt;/h3&gt;&lt;p&gt;孔洞：被&lt;strong&gt;前景像素&lt;/strong&gt;连成的边框所包围的&lt;strong&gt;背景区域&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;令$A$表示一个集合：其元素是$8$连通的边界，且每个边界包围一个孔洞；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;令$X_0$表示一个与包含$A$的相同大小的阵列，其初始状态为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;包含每个孔洞中的一个指定位置处的前景像素点；&lt;/li&gt;
+&lt;li&gt;除上述的前景像素点外，其余元素均为背景像素点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+  X_k=(X_{k-1}\oplus B)\cap A^c\quad k=1,2,3,\cdots
+  $$&lt;ul&gt;
+&lt;li&gt;其中，$B$是对称结构元素，$B=\begin{bmatrix}0 &amp;amp; 1 &amp;amp; 0 \ 1 &amp;amp; 1 &amp;amp; 1 \ 0 &amp;amp; 1 &amp;amp; 0\end{bmatrix}$；&lt;/li&gt;
+&lt;li&gt;若$X_k=X_{k-1}$，则算法在迭代的第$k$步结束；&lt;/li&gt;
+&lt;li&gt;集合$X_k$包含所有被填充的孔洞，$X_k$和$A$的并集则包含被填充的孔洞及其边界。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每一步运算中，膨胀结果与$A^c$的交集操作实现了将膨胀结果限制在感兴趣区域内，即条件膨胀。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;B对图像X的膨胀是B对X的&lt;strong&gt;前景元素&lt;/strong&gt;的膨胀。&lt;/em&gt;&lt;/p&gt;
+&lt;h1 id=&#34;图像缩放&#34;&gt;图像缩放
+&lt;/h1&gt;&lt;h2 id=&#34;图像缩放的变换公式&#34;&gt;图像缩放的变换公式
+&lt;/h2&gt;$$
+\begin{aligned}
+x&amp;=c_xx_0 \\
+y&amp;=c_yy_0
+\end{aligned}
+$$$$
+\begin{bmatrix}
+x &amp; y &amp; 1
+\end{bmatrix}=
+\begin{bmatrix}
+x_0 &amp; y_0 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+c_x &amp; 0 &amp; 0\\
+0 &amp; c_y &amp; 0\\
+0 &amp; 0 &amp; 1
+\end{bmatrix}=
+\begin{bmatrix}
+c_xx_0 &amp; c_yy_0 &amp; 1
+\end{bmatrix}
+$$&lt;h2 id=&#34;图像的缩小&#34;&gt;图像的缩小
+&lt;/h2&gt;&lt;h3 id=&#34;图像缩小的实现方法&#34;&gt;图像缩小的实现方法
+&lt;/h3&gt;&lt;p&gt;一个简单方法是等间隔地选取样本（重采样）。&lt;/p&gt;
+$$
+\begin{bmatrix}
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 2 &amp; 0 &amp; 3 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 4 &amp; 0 &amp; 5 &amp; 0 &amp; 6  \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 7 &amp; 0 &amp; 8 &amp; 0 &amp; 9
+\end{bmatrix}_{6\times 6}
+\longrightarrow
+\begin{bmatrix}
+1 &amp; 2 &amp; 3\\
+4 &amp; 5 &amp; 6\\
+7 &amp; 8 &amp; 9
+\end{bmatrix}_{3\times 3}
+$$&lt;p&gt;
+&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;确定重采样的行和列（采样间隔）&lt;/p&gt;
+$$
+   k_x=\frac{1}{c_x}\quad k_y=\frac{1}{c_y}
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   G(x,y)=F(int(k_x\times x),int(k_y\times y))
+   $$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;图像的放大&#34;&gt;图像的放大
+&lt;/h2&gt;&lt;h3 id=&#34;图像放大的实现方法&#34;&gt;图像放大的实现方法
+&lt;/h3&gt;$$
+\begin{bmatrix}
+1 &amp; 2\\
+3 &amp; 4
+\end{bmatrix}_{2\times 2}
+\longrightarrow
+\begin{bmatrix}
+1 &amp; 1 &amp; 1 &amp; 2 &amp; 2 &amp; 2 \\
+1 &amp; 1 &amp; 1 &amp; 2 &amp; 2 &amp; 2 \\
+1 &amp; 1 &amp; 1 &amp; 2 &amp; 2 &amp; 2 \\
+3 &amp; 3 &amp; 3 &amp; 4 &amp; 4 &amp; 4 \\
+3 &amp; 3 &amp; 3 &amp; 4 &amp; 4 &amp; 4 \\
+3 &amp; 3 &amp; 3 &amp; 4 &amp; 4 &amp; 4 \\
+\end{bmatrix}_{6\times 6}
+$$&lt;p&gt;
+问题：容易出现马赛克效应。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;计算放大后图像的大小&lt;/p&gt;
+&lt;p&gt;$M\times N \rightarrow c_xM\times C_yN$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$
+   G(x,y)=F(\frac{x}{c_x},\frac{y}{c_y})
+   $$&lt;/li&gt;
+&lt;/ol&gt;
+$$
+\begin{bmatrix}
+11 &amp; 12 &amp; 13 \\
+21 &amp; 22 &amp; 23 \\
+31 &amp; 32 &amp; 33
+\end{bmatrix}_{3\times 3}
+\longrightarrow
+\begin{bmatrix}
+11 &amp; ? &amp; 12 &amp; ? &amp; 13 &amp; ? \\
+21 &amp; ? &amp; 22 &amp; ? &amp; 23 &amp; ?\\
+31 &amp; ? &amp; 32 &amp; ? &amp; 33 &amp; ?
+\end{bmatrix}_{3\times 6}
+$$$$
+\begin{aligned}
+G(0,0)=F(0,0) \quad G(0,1)=F(0,0.5)=?\\
+G(1,0)=F(1,0) \quad G(1,1)=F(1,0.5)=?\\
+G(2,0)=F(2,0) \quad G(2,1)=F(2,0.5)=?
+\end{aligned}
+$$&lt;h3 id=&#34;最近邻插值&#34;&gt;最近邻插值
+&lt;/h3&gt;&lt;p&gt;将放大后未知的像素点坐标换算到原始图像，与原始图像上邻近的$4$个像素点比较，最靠近邻近点的像素值即为该未知像素点的像素值。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;$(u,v)(G)\rightarrow(x+\Delta{x},y+\Delta{y})$；&lt;/li&gt;
+&lt;li&gt;计算$(x+\Delta{x},y+\Delta{y})$与$(x,y)、(x,y+1)、(x+1,y)、(x+1,y+1)$之间的距离，取距离最短的点的像素值作为$(u,v)$的像素值。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;双线性插值&#34;&gt;双线性插值
+&lt;/h3&gt;&lt;p&gt;将放大后未知的像素点坐标换算到原始图像，计算原始图像上$4$个邻近像素点$A、B、C、D$对$P$点的影响，$P$点灰度值由$4$个邻近点灰度值加权求和得到（权值可以用距离进行度量）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+$$
+  (x,y)、(x,y+1)、(x+1,y)、(x+1,y+1)
+  $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;由$A、B$两点插值计算出$e$点的灰度值的$F(x,y+\Delta{y})$；&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{aligned}
+F(x,y+\Delta{y})&amp;=\frac{\sqrt{(x-x)^2+((y+1)-(y+\Delta{y}))^2}}{\sqrt{(x-x)^2+((y+1)-y)^2}}F(x,y)\\
+&amp;\quad\ +\frac{\sqrt{(x-x)^2+((y+\Delta{y})-y)^2}}{\sqrt{(x-x)^2+((y+1)-y)^2}}F(x,y+1) \\
+&amp;= (1-\Delta{y})\times F(x,y)+\Delta{y}\times F(x,y+1)
+\end{aligned}
+$$$$
+\begin{bmatrix}
+B(x,y+1) &amp; \cdot &amp; \cdot \\
+e(x,y+\Delta{y}) &amp; \cdot &amp; \cdot\\
+A(x,y) &amp; \cdot &amp; \cdot
+\end{bmatrix}
+$$&lt;ul&gt;
+&lt;li&gt;由$C、D$两点插值计算出$f$点的灰度值$F(x+1,y+\Delta{y})$；&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{aligned}
+F(x+1,y+\Delta{y})&amp;=\frac{\sqrt{((x+1)-(x+1))^2+((y+1)-(y+\Delta{y}))^2}}{\sqrt{((x+1)-(x+1))^2+((y+1)-y)^2}}F(x+1,y)\\
+&amp;\quad\ +\frac{\sqrt{((x+1)-(x+1))^2+((y+\Delta{y})-y)^2}}{\sqrt{((x+1)-(x+1))^2+((y+1)-y)^2}}F(x+1,y+1) \\
+&amp;= (1-\Delta{y})\times F(x+1,y)+\Delta{y}\times F(x+1,y+1)
+\end{aligned}
+$$$$
+\begin{bmatrix}
+\cdot &amp; \cdot &amp; D(x+1,y+1) \\
+\cdot &amp; \cdot &amp; f(x+1,y+\Delta{y})\\
+\cdot &amp; \cdot &amp; C(x+1,y)
+\end{bmatrix}
+$$&lt;ul&gt;
+&lt;li&gt;由$e、f$两点插值计算出$P$点的灰度值$F(x+\Delta{x},y+\Delta{y})$。&lt;/li&gt;
+&lt;/ul&gt;
+$$
+\begin{aligned}
+F(x+\Delta{x},y+\Delta{y})&amp;=\frac{\sqrt{((x+1)-(x+\Delta{x}))^2+((y+\Delta{y})-(y+\Delta{y}))^2}}{\sqrt{((x+1)-x)^2+((y+\Delta{y})-(y+\Delta{y}))^2}}F(x,y+\Delta{y})\\
+&amp;\quad\ +\frac{\sqrt{((x+\Delta{x})-x)^2+((y+\Delta{y})-(y+\Delta{y}))^2}}{\sqrt{((x+1)-x)^2+((y+\Delta{y})-(y+\Delta{y}))^2}}F(x+1,y+\Delta{y}) \\
+&amp;= (1-\Delta{x})\times F(x,y+\Delta{y})+\Delta{x}\times F(x+1,y+\Delta{y})
+\end{aligned}
+$$$$
+\begin{bmatrix}
+\cdot &amp; \cdot &amp; \cdot \\
+e(x,y+\Delta{y}) &amp; P(x+\Delta{x},y+\Delta{y}) &amp; f(x+1,y+\Delta{y})\\
+\cdot &amp; \cdot &amp; \cdot
+\end{bmatrix}
+$$$$
+\begin{bmatrix}
+11 &amp; 12 &amp; 13 \\
+21 &amp; 22 &amp; 23 \\
+31 &amp; 32 &amp; 33
+\end{bmatrix}_{3\times 3}
+\longrightarrow
+\begin{bmatrix}
+? &amp; ? &amp; ? &amp; ? &amp; ? &amp; ? \\
+? &amp; ? &amp; ? &amp; ? &amp; ? &amp; ?\\
+? &amp; ? &amp; ? &amp; ? &amp; ? &amp; ?
+\end{bmatrix}_{3\times 6}
+$$$$
+\begin{aligned}
+X&amp;=
+\begin{bmatrix}
+0 &amp; 1 &amp; 2
+\end{bmatrix}
+\\
+Y&amp;=
+\begin{bmatrix}
+0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5
+\end{bmatrix}
+\end{aligned}
+$$$$
+\begin{aligned}
+X&amp;=
+\begin{bmatrix}
+0 &amp; 1 &amp; 2
+\end{bmatrix}
+\\
+Y&amp;=
+\begin{bmatrix}
+0 &amp; 0.5 &amp; 1 &amp; 1.5 &amp; 2 &amp; 2.5
+\end{bmatrix}
+\end{aligned}
+$$$$
+\begin{bmatrix}
+11 &amp; ? &amp; 12 &amp; ? &amp; 13 &amp; ? \\
+21 &amp; ? &amp; 22 &amp; ? &amp; 23 &amp; ?\\
+31 &amp; ? &amp; 32 &amp; ? &amp; 33 &amp; ?
+\end{bmatrix}_{3\times 6}
+$$$$
+\begin{bmatrix}
+F(0,0) &amp; F(0,1) \\
+F(1,0) &amp; F(1,1)
+\end{bmatrix}
+$$&lt;p&gt;
+$\cdots\cdots$&lt;/p&gt;
+&lt;h3 id=&#34;双三次插值&#34;&gt;双三次插值
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;算法原理&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;未知像素点$P(u,v)(G)\rightarrow$ 原始图像空间$(x,y)$；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;确定原始图像上的$16$个邻近像素点；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;采用下式计算$P$点的灰度值$F(x,y)$：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+$$
+F(x,y)=\sum_{i=0}^3\sum_{j=0}^{3}a_{ij}x^iy^j
+$$&lt;p&gt;其中，$16$个未知系数$a_{ij}$可由原始图像$(x,y)$处的$16$个邻近像素所确定的方程组进行求解。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$
+   \begin{bmatrix}
+   \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; \bullet&amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot &amp;  &amp; \cdot \\
+   \end{bmatrix}
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   \begin{bmatrix}
+   \cdot &amp;  &amp; \cdot &amp; A\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; B\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; \bullet&amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; C\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; D\cdot &amp; \cdot &amp;  &amp; \cdot 
+   \end{bmatrix}
+   $$$$
+   F(x,y)=\sum_{j=0}^{3}a_jy^j
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   \begin{bmatrix}
+   \cdot &amp;  &amp; \cdot &amp; A\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; B\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; P\bullet&amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; C\cdot &amp; \cdot &amp;  &amp; \cdot \\
+   &amp; &amp; &amp; &amp; &amp; &amp; \\
+   \cdot &amp;  &amp; \cdot &amp; D\cdot &amp; \cdot &amp;  &amp; \cdot 
+   \end{bmatrix}
+   $$$$
+   F(x,y)=\sum_{i=0}^{3}b_ix^i
+   $$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;图像边缘检测&#34;&gt;图像边缘检测
+&lt;/h1&gt;&lt;h2 id=&#34;概述-2&#34;&gt;概述
+&lt;/h2&gt;&lt;p&gt;物体边界、表面方向的改变、不同的颜色、光照明暗的变化&amp;hellip;&lt;/p&gt;
+&lt;p&gt;图像边缘是一组相连的像素集合，这些像素位于两个不同区域的边界上。边缘检测是一种典型的图像预处理过程。&lt;/p&gt;
+&lt;h3 id=&#34;图像的边缘模型&#34;&gt;图像的边缘模型
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;台阶边缘&lt;/p&gt;
+$$
+   \begin{bmatrix}
+   0 &amp; 0 &amp; 0 &amp; 3 &amp; 3 &amp; 3
+   \end{bmatrix}
+   $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;斜坡边缘&lt;/p&gt;
+$$
+   \begin{bmatrix}
+   0 &amp; 0 &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 3 &amp; 3
+   \end{bmatrix}
+   $$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;屋顶边缘&lt;/p&gt;
+$$
+   \begin{bmatrix}
+   0 &amp; 0 &amp; 1 &amp; 3 &amp; 1 &amp; 0 &amp; 0
+   \end{bmatrix}
+   $$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;无噪图像的导数与边缘的关系&#34;&gt;无噪图像的导数与边缘的关系
+&lt;/h3&gt;$$
+\begin{bmatrix}
+f &amp; &amp;0 &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 3 &amp; 3 \\
+f&#39; &amp; &amp;0 &amp; 0 &amp; 1 &amp; 1 &amp; 1 &amp; 0 &amp; 0 \\
+f&#39;&#39; &amp; &amp;0 &amp; 0 &amp; 1 &amp; 0 &amp; -1 &amp; 0 &amp; 0
+\end{bmatrix}
+$$&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;一阶导数的幅值可检测图像中某个点处是否存在一个边缘（峰值为边缘的位置）；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;二阶导数的符号可用于确定一个边缘像素位于该边缘偏暗的一侧还是偏亮的一侧；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于图像中的每条边缘，二阶导数生成两个值，同时二阶导数的零交叉点可用于定位粗边缘的中心。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;基本的边缘检测技术&#34;&gt;基本的边缘检测技术
+&lt;/h2&gt;&lt;h3 id=&#34;图像梯度及其性质&#34;&gt;图像梯度及其性质
+&lt;/h3&gt;$$
+\begin{gather*}
+\nabla f=
+\begin{bmatrix}
+g_x &amp; g_y
+\end{bmatrix}^T=
+\begin{bmatrix}
+\frac{\partial f}{\partial x} &amp; \frac{\partial f}{\partial y}
+\end{bmatrix}^T
+\\
+|\nabla f|=\sqrt{g_x^2+g_y^2}=\sqrt{(\frac{\partial f}{\partial x})^2 + (\frac{\partial f}{\partial y})^2}
+\\
+\alpha(x,y)=\arctan[\frac{g_y}{g_x}]
+\end{gather*}
+$$&lt;p&gt;任意点$(x,y)$处边缘的方向与该点处梯度的方向$\alpha(x,y)$正交。&lt;/p&gt;
+&lt;h3 id=&#34;梯度算子直接差分算子&#34;&gt;梯度算子——直接差分算子
+&lt;/h3&gt;$$
+\begin{aligned}
+g_x=f(x+1,y)-f(x,y) \\
+g_y=f(x,y+1)-f(x,y)
+\end{aligned}
+$$$$
+\begin{bmatrix}
+\underline{-1} &amp; 0\\
+1 &amp; 0
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+\underline{-1} &amp; 1\\
+0 &amp; 0
+\end{bmatrix}
+$$&lt;p&gt;
+直接差分算子仅能检测&lt;strong&gt;水平、垂直方向&lt;/strong&gt;的边缘。&lt;/p&gt;
+&lt;h3 id=&#34;梯度算子roberts算子&#34;&gt;梯度算子——Roberts算子
+&lt;/h3&gt;$$
+\begin{aligned}
+g_x=f(x+1,y+1)-f(x,y) \\
+g_y=f(x+1,y)-f(x,y+1)
+\end{aligned}
+$$$$
+\begin{bmatrix}
+\underline{-1} &amp; 0\\
+0 &amp; 1
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+\underline{0} &amp; -1\\
+1 &amp; 0
+\end{bmatrix}
+$$&lt;p&gt;
+Roberts算子可用于检测&lt;strong&gt;对角线方向&lt;/strong&gt;的边缘。&lt;/p&gt;
+&lt;h3 id=&#34;梯度算子prewitt算子&#34;&gt;梯度算子——Prewitt算子
+&lt;/h3&gt;$$
+\begin{bmatrix}
+-1 &amp; -1 &amp; -1 \\
+0 &amp; \underline{0} &amp; 0\\
+1 &amp; 1 &amp; 1
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+-1 &amp; 0 &amp; 1 \\
+-1 &amp; \underline{0} &amp; 1\\
+-1 &amp; 0 &amp; 1
+\end{bmatrix}
+$$&lt;h3 id=&#34;梯度算子sobel算子&#34;&gt;梯度算子——Sobel算子
+&lt;/h3&gt;$$
+\begin{bmatrix}
+-1 &amp; -2 &amp; -1 \\
+0 &amp; \underline{0} &amp; 0\\
+1 &amp; 2 &amp; 1
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+-1 &amp; 0 &amp; 1 \\
+-2 &amp; \underline{0} &amp; 2\\
+-1 &amp; 0 &amp; 1
+\end{bmatrix}
+$$&lt;h3 id=&#34;梯度算子用于检测对角边缘的prewittsobel算子&#34;&gt;梯度算子——用于检测对角边缘的Prewitt、Sobel算子
+&lt;/h3&gt;&lt;p&gt;对上述的Prewit模板和Sobel模板作出修改，以便它们沿对角线方向有最大的响应。&lt;/p&gt;
+$$
+45\degree 方向梯度
+\begin{bmatrix}
+0 &amp; 1 &amp; 1 \\
+-1 &amp; \underline{0} &amp; 1\\
+-1 &amp; -1 &amp; 0
+\end{bmatrix}
+\quad
+-45\degree 方向梯度
+\begin{bmatrix}
+-1 &amp; -1 &amp; 0 \\
+-1 &amp; \underline{0} &amp; 1\\
+0 &amp; 1 &amp; 1
+\end{bmatrix}
+$$$$
+45\degree 方向梯度
+\begin{bmatrix}
+0 &amp; 1 &amp; 2 \\
+-1 &amp; \underline{0} &amp; 1\\
+-2 &amp; -1 &amp; 0
+\end{bmatrix}
+\quad
+-45\degree 方向梯度
+\begin{bmatrix}
+-2 &amp; -1 &amp; 0 \\
+-1 &amp; \underline{0} &amp; 1\\
+0 &amp; 1 &amp; 2
+\end{bmatrix}
+$$&lt;p&gt;
+一些对边缘检测不必要的细节往往表现为噪声，处理方法为：对图像&lt;strong&gt;进行平滑处理后再进行边缘检测&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;参考程序（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im2double&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;building.tif&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fspecial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;average&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;template&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;gx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;abs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;template&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;gy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;abs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;template&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;imGrad&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imGrad&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im2double&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;building.tif&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fspecial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;average&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;template45&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;template135&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;grad45&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;abs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;template45&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;grad135&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;abs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;template135&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;im&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grad45&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;subplot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imshow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grad135&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;先进的边缘检测技术&#34;&gt;先进的边缘检测技术
+&lt;/h2&gt;&lt;h3 id=&#34;marr-hildreth马尔-希尔德雷斯边缘检测器&#34;&gt;Marr-Hildreth（马尔-希尔德雷斯）边缘检测器
+&lt;/h3&gt;&lt;h4 id=&#34;基于二阶微分导数的边缘检测技术拉普拉斯算子&#34;&gt;基于二阶微分（导数）的边缘检测技术——拉普拉斯算子
+&lt;/h4&gt;$$
+\nabla^2f=\frac{\partial^2f}{\partial x^2}+\frac{\partial^2f}{\partial y^2}
+$$$$
+\begin{aligned}
+\frac{\partial^2f}{\partial x^2}=f(x+1,y)+f(x-1,y)-2f(x,y) \\
+\frac{\partial^2f}{\partial y^2}=f(x,y+1)+f(x,y-1)-2f(x,y)
+\end{aligned}
+$$$$
+\begin{bmatrix}
+0 &amp; -1 &amp; 0\\
+-1 &amp; \underline{4} &amp; -1\\
+0 &amp; -1 &amp; 0
+\end{bmatrix}
+$$&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+$$
+    \begin{bmatrix}
+    f&#39;&#39; &amp; &amp; 0 &amp; 0 &amp; -1 &amp; 1 &amp; 0 &amp; 0
+    \end{bmatrix}
+    $$&lt;p&gt;
+&lt;em&gt;连接$-1$和$1$，与轴线相交的点即为零交叉点。&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以确定一个像素是在边缘暗的一边还是亮的一边。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对噪声具有敏感性；&lt;/li&gt;
+&lt;li&gt;幅值产生双边缘；&lt;/li&gt;
+&lt;li&gt;不能检测边缘的方向。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;marr-hildreth边缘检测器的提出及实现&#34;&gt;Marr-Hildreth边缘检测器的提出及实现
+&lt;/h4&gt;$$
+g(x,y)=[\nabla^2G(x,y)]*f(x,y)
+$$$$
+g(x,y)=\nabla^2[G(x,y)*f(x,y)]
+$$&lt;p&gt;
+即，先使用一个高斯平滑滤波器平滑图像，然后对该结果执行拉普拉斯变换，故Marr-Hildreth边缘检测算法&lt;strong&gt;实现步骤&lt;/strong&gt;如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用高斯滤波器对输入图像进行平滑滤波；&lt;/li&gt;
+&lt;li&gt;计算由第一步骤得到的图像的拉普拉斯变换；&lt;/li&gt;
+&lt;li&gt;寻找第二步骤所的图像的零交叉（由此得到的边缘为一个像素宽）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;满足上述要求的算子是$\nabla^2G$（高斯拉普拉斯算子，简称LoG算子），其中：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$
+   \frac{\partial^2}{\partial x^2}+\frac{\partial^2}{\partial y^2}
+   $$&lt;/li&gt;
+&lt;li&gt;
+$$
+   G(x,y)=e^{-\frac{x^2+y^2}{2\sigma^2}}
+   $$&lt;/li&gt;
+&lt;/ol&gt;
+$$
+\begin{aligned}
+\nabla^2G(x,y)&amp;=\frac{\partial^2G(x,y)}{\partial x^2}+\frac{\partial^2G(x,y)}{\partial y^2}\\
+&amp;=\frac{\partial}{\partial x}[\frac{-x}{\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}]+\frac{\partial}{\partial y}[\frac{-y}{\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}] \\
+&amp;=[\frac{x^2}{\sigma^4}-\frac{1}{\sigma^2}]e^{-\frac{x^2+y^2}{2\sigma^2}}+[\frac{y^2}{\sigma^4}-\frac{1}{\sigma^2}]e^{-\frac{x^2+y^2}{2\sigma^2}}\\
+&amp;=\frac{x^2+y^2-2\sigma^2}{\sigma^4}e^{-\frac{x^2+y^2}{2\sigma^2}}
+\end{aligned}
+$$$$
+\begin{bmatrix}
+0 &amp; 0 &amp; -1 &amp; 0 &amp; 0 \\
+0 &amp; -1 &amp; -2 &amp; -1 &amp; 0 \\
+-1 &amp; -2 &amp; 16 &amp; -2 &amp; -1 \\
+0 &amp; -1 &amp; -2 &amp; -1 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 &amp; 0
+\end{bmatrix}
+$$&lt;p&gt;
+通过该模板得到的图像来寻找零交叉点以进行图像的边缘检测。&lt;/p&gt;
+&lt;p&gt;实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;edge_LoG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;edge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inputImage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;log&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sigma&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;寻找零交叉的方法&#34;&gt;寻找零交叉的方法
+&lt;/h4&gt;&lt;p&gt;判定图像$g(x,y)$的任意像素$p$是否为零交叉点的一种方法如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在图像$g(x,y)$中找到一个以$p$为中心的$3\times 3$邻域；&lt;/li&gt;
+&lt;li&gt;$p$像素为零交叉点意味着至少有&lt;strong&gt;两个相对&lt;/strong&gt;的邻域像素的符号不同，有4种要测试的情况：左/右、上/下和两个对角；&lt;/li&gt;
+&lt;li&gt;如果相对的两个邻域像素的符号不同，而且它们的像素值与$p$的像素值的绝对值差值超过指定的&lt;strong&gt;阈值&lt;/strong&gt;。那么，$p$即为一个零交叉像素。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于阈值为$0$的零交叉检测，会产生严重的意大利通心粉效应：所有的边缘都形成闭环，使用正阈值可避免闭环边缘。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;优点：
+&lt;ul&gt;
+&lt;li&gt;零交叉点图像中的边缘比梯度边缘细；&lt;/li&gt;
+&lt;li&gt;抑制噪声能力和反干扰性能好。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;缺点：
+&lt;ul&gt;
+&lt;li&gt;边缘由零交叉点构成，而零交叉点计算比较复杂。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;canny坎尼边缘检测器&#34;&gt;Canny（坎尼）边缘检测器
+&lt;/h3&gt;&lt;p&gt;坎尼边缘检测器是基于一阶微分的边缘检测方法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;实现步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用一个大小为$n\times n$的高斯滤波器平滑输入图像（&lt;strong&gt;$n$的取值应为大于或等于$6$倍高斯滤波器的标准差的最小奇整数&lt;/strong&gt;）；&lt;/li&gt;
+&lt;li&gt;计算滤波后图像的梯度幅值和方向角度；&lt;/li&gt;
+&lt;li&gt;对梯度幅值执行&lt;strong&gt;非极大值抑制&lt;/strong&gt;（剔除伪边缘点，保留候选边缘点）；&lt;/li&gt;
+&lt;li&gt;对非极大值抑制的结果使用&lt;strong&gt;双阈值&lt;/strong&gt;检测边缘（从候选边缘点中选择真实边缘点）；&lt;/li&gt;
+&lt;li&gt;采用&lt;strong&gt;连接分析&lt;/strong&gt;对双阈值边缘检测结果进行连接（得到连续完整的边缘）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;非极大值抑制non-maxima-suppression-nms&#34;&gt;非极大值抑制（Non-Maxima Suppression, NMS）
+&lt;/h4&gt;&lt;p&gt;仅保留梯度幅值图像$M(x,y)$的极大值（严格上，保留梯度方向的极大值点），以实现边缘细化。&lt;/p&gt;
+$$
+\begin{bmatrix}
+&amp; &amp; &amp; &amp; &amp; &amp; \cdot B&amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; \cdot C&amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; \cdot A&amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+Th-&amp;-&amp;-&amp;-&amp;-&amp;-&amp;-&amp;-&amp;-&amp;-&amp;- \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; &amp; &amp;\cdot &amp; &amp; &amp; &amp; \cdot&amp; &amp; \\
+&amp;\cdot &amp; &amp;\cdot &amp; &amp; &amp; &amp; &amp; &amp;\cdot &amp; \\
+\cdot&amp; &amp;\cdot &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \cdot\\
+\end{bmatrix}
+$$&lt;p&gt;
+&lt;strong&gt;实现步骤&lt;/strong&gt;：（假设仅保留梯度幅值极大值的结果为$N(x,y)$）&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将$N(x,y)$初始化为原始的梯度幅值图像$M(x,y)$；&lt;/li&gt;
+&lt;li&gt;对于每个点$N(x,y)$，在梯度方向和反梯度方向各找$n$个像素点，若$N(x,y)$不是这些点中的最大点，则将$N(x,y)$置零，否则保持$N(x,y)$不变。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;对nms结果使用双阈值检测边缘&#34;&gt;对NMS结果使用双阈值检测边缘
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;检测过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;指定两个阈值$T_H、T_L$：$T_H\gt T_L$（建议高阈值与低阈值比率为$2:1$或$3:1$）；&lt;/li&gt;
+&lt;li&gt;使用高阈值$T_H$检测边缘，得到高阈值边缘图$E_H(x,y)$（边缘点少但可靠）；&lt;/li&gt;
+&lt;li&gt;使用低阈值$T_L$检测边缘，得到低阈值边缘图$E_L(x,y)$（边缘点多但错误检测率高）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;对双阈值边缘检测结果进行边缘连接&#34;&gt;对双阈值边缘检测结果进行边缘连接
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;连接过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将高阈值边缘图$E_H(x,y)$中相连的边缘点输出为一副边缘图像$E(x,y)$；&lt;/li&gt;
+&lt;li&gt;对于$E(x,y)$中每条边，从端点出发在低阈值边缘图$E_L(x,y)$中寻找其延长的部分，直至与$E(x,y)$中另外一条边的端点相连（8连通性），否则认为$E_L(x,y)$中没有它延长的部分；&lt;/li&gt;
+&lt;li&gt;将$E(x,y)$作为结果输出。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Canny边缘检测实例（MATLAB）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-matlab&#34; data-lang=&#34;matlab&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;edge_LoG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;edge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inputImage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;canny&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;T1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sigma&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

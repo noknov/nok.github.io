@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="李宏毅2021/2022春机器学习课程——自注意力机制（Self-attention）\n">
+<title>自注意力机制</title>
+
+<link rel='canonical' href='https://demo.stack.jimmycai.com/p/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="自注意力机制">
+<meta property='og:description' content="李宏毅2021/2022春机器学习课程——自注意力机制（Self-attention）\n">
+<meta property='og:url' content='https://demo.stack.jimmycai.com/p/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/'>
+<meta property='og:site_name' content='zn.yan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-04-23T17:45:00&#43;00:00'/><meta property='article:modified_time' content='2022-04-23T17:45:00&#43;00:00'/>
+<meta name="twitter:title" content="自注意力机制">
+<meta name="twitter:description" content="李宏毅2021/2022春机器学习课程——自注意力机制（Self-attention）\n">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2195195251581500850.jpg" width="300"
+                            height="301" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">zn.yan</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='mailto:yanzhn@outlook.com'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path> <path d="M3 7l9 6l9 -6"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/znyan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.instagram.com/yanzhongnuo/'
+                        target="_blank"
+                        title="Instagram"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"></path> <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path> <path d="M16.5 7.5l0 .01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='#ZgotmplZ'
+                        target="_blank"
+                        title="WeChat"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z"></path> <path d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233"></path> <path d="M10 8h.01"></path> <path d="M7 8h.01"></path> <path d="M15 14h.01"></path> <path d="M18 14h.01"></path> </svg> 
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#将一排向量作为输入">将一排向量作为输入</a>
+      <ol>
+        <li><a href="#方法">方法</a></li>
+        <li><a href="#输入">输入</a></li>
+        <li><a href="#输出">输出</a>
+          <ol>
+            <li><a href="#n个向量对应n个标签">N个向量对应N个标签</a></li>
+            <li><a href="#n个向量对应一个标签">N个向量对应一个标签</a></li>
+            <li><a href="#n个向量对应多个标签seq2seq">N个向量对应多个标签（seq2seq）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#fully-connected-network">Fully-connected Network</a></li>
+    <li><a href="#self-attention-1">Self-attention</a>
+      <ol>
+        <li><a href="#如何生成b1">如何生成$b^1$？</a>
+          <ol>
+            <li><a href="#a1与其他向量的相关性alpha的计算方法">$a^1$与其他向量的相关性$\alpha$的计算方法</a></li>
+            <li><a href="#b1的计算">$b^1$的计算</a></li>
+          </ol>
+        </li>
+        <li><a href="#输出向量组b1b2b3b4的完整计算过程">输出向量组${b^1,b^2,b^3,b^4}$的完整计算过程</a>
+          <ol>
+            <li><a href="#qkv的计算">$Q$、$K$、$V$的计算</a></li>
+            <li><a href="#attention分数的计算">Attention分数的计算</a></li>
+            <li><a href="#总结">总结</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#multi-head-self-attention">Multi-head Self-attention</a></li>
+    <li><a href="#位置编码">位置编码</a></li>
+    <li><a href="#self-attention用于语音">Self-attention用于语音</a></li>
+    <li><a href="#self-attention用于图像">Self-attention用于图像</a></li>
+    <li><a href="#self-attention-vs-cnn">Self-attention v.s. CNN</a></li>
+    <li><a href="#self-attention-vs-rnn">Self-attention v.s. RNN</a></li>
+    <li><a href="#self-attention用于图">Self-attention用于图</a></li>
+    <li><a href="#more">More</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
+                机器学习
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/">自注意力机制</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 23, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=38"  target="_blank" rel="noopener"
+    >李宏毅2021/2022春机器学习课程——自注意力机制（Self-attention）</a></p>
+<h1 id="self-attention">Self-attention
+</h1><p>考虑两种不同的输入：</p>
+<ul>
+<li>输入是一个向量</li>
+<li><strong>输入是一排向量</strong>（输入的向量个数可能会改变）</li>
+</ul>
+<h2 id="将一排向量作为输入">将一排向量作为输入
+</h2><h3 id="方法">方法
+</h3><ul>
+<li>One-hot Encoding</li>
+<li>Word Embedding</li>
+</ul>
+<h3 id="输入">输入
+</h3><ul>
+<li>一段语音窗口</li>
+<li>一张图</li>
+<li>分子结构</li>
+<li>&hellip;</li>
+</ul>
+<h3 id="输出">输出
+</h3><h4 id="n个向量对应n个标签">N个向量对应N个标签
+</h4><ul>
+<li>句子中每个词的词性：I saw a saw -&gt; N V DET N</li>
+<li>社交网络中每个人的购买意向：甲 -&gt; buy;乙 -&gt; not</li>
+</ul>
+<h4 id="n个向量对应一个标签">N个向量对应一个标签
+</h4><ul>
+<li>情感分析：this is good -&gt; positive</li>
+<li>分子属性分析：一个分子图 -&gt; 亲水性</li>
+</ul>
+<h4 id="n个向量对应多个标签seq2seq">N个向量对应多个标签（seq2seq）
+</h4><ul>
+<li>机器翻译</li>
+</ul>
+<h2 id="fully-connected-network">Fully-connected Network
+</h2><p>使用全连接网络，设置窗口大小，每次输入邻近的多个词。但限制于窗口大小，无法考虑整个句子的影响，且窗口覆盖整个句子比较困难。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/fc.png" style="zoom:50%;" />
+<h2 id="self-attention-1">Self-attention
+</h2><img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention.png" style="zoom:50%;" />
+<p>例：</p>
+<ul>
+<li>输入：一排向量${a^1,a^2,a^3,a^4}$</li>
+<li>输出：一排向量${b^1,b^2,b^3,b^4}$</li>
+</ul>
+<p><em>$b^1$、$b^2$、$b^3$、$b^4$分别都是考虑了$a^1$、$a^2$、$a^3$、$a^4$而产生的。</em></p>
+<h3 id="如何生成b1">如何生成$b^1$？
+</h3><h4 id="a1与其他向量的相关性alpha的计算方法">$a^1$与其他向量的相关性$\alpha$的计算方法
+</h4><h5 id="dot-product"><strong>Dot-product</strong>
+</h5><p>输入两个向量，分别与矩阵$W^q$和$W^k$相乘，再将得到的向量$q$和$k$做点乘。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/dot-product.png" style="zoom:50%;" />
+$$
+\begin{aligned}
+q&=a^1\times W^q \\
+k&=a^2\times W^k \\
+\alpha &= q\cdot k
+\end{aligned}
+$$
+<h5 id="additive">Additive
+</h5><p>输入两个向量，分别与矩阵$W^q$和$W^k$相乘，将得到的向量$q$和$k$串起来并通过激活函数，最后通过一个变换得到$alpha$。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/additive.png" style="zoom:50%;" />
+<h4 id="b1的计算">$b^1$的计算
+</h4><p>本节中的例子中，对于$b^1$，计算步骤如下：</p>
+<ul>
+<li>step1.计算$q^1$</li>
+</ul>
+$$
+q^1=W^qa^1
+$$<ul>
+<li>step2.计算$k^1$、$k^2$、$k^3$、$k^4$</li>
+</ul>
+$$
+k^i=W^ka^i
+$$<ul>
+<li>step3.计算$\alpha_{1,1}$、$\alpha_{1,2}$、$\alpha_{1,3}$、$\alpha_{1,4}$</li>
+</ul>
+$$
+\alpha_{1,i}=q^1\cdot k^i \\
+$$<ul>
+<li>step4.通过Soft-max（也可使用ReLU等）计算$\alpha_{1,1}&rsquo;$、$\alpha_{1,2}&rsquo;$、$\alpha_{1,3}&rsquo;$、$\alpha_{1,4}'$</li>
+</ul>
+$$
+\alpha_{1,i}'=\frac{\exp(\alpha_{1,i})}{\sum_j\exp(\alpha_{1,j})}
+$$<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention-1.png" style="zoom:50%;" />
+<ul>
+<li>
+$$
+  v^i=W^va^i
+  $$</li>
+<li>
+$$
+  b^1=\sum_j\alpha_{1,j}'v^j
+  $$</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention-2.png" style="zoom:50%;" />
+<h3 id="输出向量组b1b2b3b4的完整计算过程">输出向量组${b^1,b^2,b^3,b^4}$的完整计算过程
+</h3><p>整理以上过程，$Q$、$K$、$V$和Attention分数的计算过程如下：</p>
+<h4 id="qkv的计算">$Q$、$K$、$V$的计算
+</h4><p>由：</p>
+$$
+\begin{aligned}
+q^i &=W^qa^i \\
+k^i &=W^ka^i \\
+v^i &=W^va^i 
+\end{aligned}
+$$$$
+\begin{aligned}
+\begin{bmatrix}
+q^1 & q^2 & q^3 & q^4
+\end{bmatrix}
+&=W^q
+\begin{bmatrix}
+a^1 & a^2 & a^3 & a^4
+\end{bmatrix}
+\\
+\begin{bmatrix}
+k^1 & k^2 & k^3 & k^4
+\end{bmatrix}
+&=W^k
+\begin{bmatrix}
+a^1 & a^2 & a^3 & a^4
+\end{bmatrix}
+\\
+\begin{bmatrix}
+v^1 & v^2 & v^3 & v^4
+\end{bmatrix}
+&=W^v
+\begin{bmatrix}
+a^1 & a^2 & a^3 & a^4
+\end{bmatrix}
+\end{aligned}
+$$<p>即：</p>
+$$
+\begin{aligned}
+Q&=W^qI \\
+K&=W^kI \\
+V&=W^vI
+\end{aligned}
+$$<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention-3.png" style="zoom:50%;" />
+<h4 id="attention分数的计算">Attention分数的计算
+</h4><p>由：</p>
+$$
+\alpha_{1,i}=k^i\cdot q^1
+$$<p>有：</p>
+$$
+\begin{bmatrix}
+\alpha_{1,1} \\
+\alpha_{1,2} \\
+\alpha_{1,3} \\
+\alpha_{1,4} \\
+\end{bmatrix}=
+\begin{bmatrix}
+k^1 \\
+k^2 \\
+k^3 \\
+k^4 
+\end{bmatrix}
+\cdot
+q^1
+$$<p>进一步有：</p>
+$$
+\begin{bmatrix}
+\alpha_{1,1} & \alpha_{2,1} & \alpha_{3,1} &\alpha_{4,1} \\
+\alpha_{1,2} & \alpha_{2,2} & \alpha_{3,2} &\alpha_{4,2} \\
+\alpha_{1,3} & \alpha_{2,3} & \alpha_{3,3} &\alpha_{4,3} \\
+\alpha_{1,4} & \alpha_{2,4} & \alpha_{3,4} &\alpha_{4,4} \\
+\end{bmatrix}=
+\begin{bmatrix}
+k^1 \\
+k^2 \\
+k^3 \\
+k^4 
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+q^1 & q^2 & q^3 &q^4
+\end{bmatrix}
+$$<p>即：</p>
+$$
+A=K^TQ
+$$<p>对$A$进行Soft-max得到$A&rsquo;$：</p>
+$$
+A'=
+\begin{bmatrix}
+\alpha_{1,1}' & \alpha_{2,1}' & \alpha_{3,1}' &\alpha_{4,1}' \\
+\alpha_{1,2}' & \alpha_{2,2}' & \alpha_{3,2}' &\alpha_{4,2}' \\
+\alpha_{1,3}' & \alpha_{2,3}' & \alpha_{3,3}' &\alpha_{4,3}' \\
+\alpha_{1,4}' & \alpha_{2,4}' & \alpha_{3,4}' &\alpha_{4,4}' \\
+\end{bmatrix}
+$$<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention-4.png" style="zoom:50%;" />
+$$
+\begin{bmatrix}
+b^1 & b^2 & b^3 & b^4
+\end{bmatrix}=
+\begin{bmatrix}
+v^1 & v^2 & v^3 & v^4
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+\alpha_{1,1}' & \alpha_{2,1}' & \alpha_{3,1}' &\alpha_{4,1}' \\
+\alpha_{1,2}' & \alpha_{2,2}' & \alpha_{3,2}' &\alpha_{4,2}' \\
+\alpha_{1,3}' & \alpha_{2,3}' & \alpha_{3,3}' &\alpha_{4,3}' \\
+\alpha_{1,4}' & \alpha_{2,4}' & \alpha_{3,4}' &\alpha_{4,4}' \\
+\end{bmatrix}
+$$$$
+O=VA'
+$$<h4 id="总结">总结
+</h4>$$
+\begin{aligned}
+&Q=W^qI \\
+&K=W^kI \\
+&V=W^vI \\
+&A=K^TQ \\
+&A \rightarrow A' \\
+&O=VA'
+\end{aligned}
+$$<p>$W^q$、$W^k$、$W^v$是需要学习的参数。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention-5.png" style="zoom:50%;" />
+<h2 id="multi-head-self-attention">Multi-head Self-attention
+</h2><p>多个$q$，对应不同种类的相关性。</p>
+$$
+\begin{aligned}
+&q^{i,1}=W^{q,1}q^i \\
+&q^{i,2}=W^{q,2}q^i
+\end{aligned}
+$$<p>
+类似的，$a^j$对应的$q^j$、$k^j$、$v^j$具体有$q^{j,1}$、$k^{j,1}$、$v^{j,1}$：</p>
+$$
+b^i=W^O
+\begin{bmatrix}
+b^{i,1} \\
+b^{i,2}
+\end{bmatrix}
+$$<p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/multi-head%20self-attention.png" style="zoom:50%;" /></p>
+<h2 id="位置编码">位置编码
+</h2><p>Self-attention中，对输入的几个向量所进行的操作是相同的，与位置无关，可能丢失了位置信息。</p>
+$$
+e^i+a^i\rightarrow q^i,k^i,v^i
+$$<p>
+向量$e^i$可以通过一个规则设定（人工）或从训练数据中学习出来。</p>
+<p>有各种不同的方法产生位置编码：</p>
+<ul>
+<li>Sinusoidal</li>
+<li>Position embedding</li>
+<li>FLOATER</li>
+<li>RNN</li>
+<li>&hellip;</li>
+</ul>
+<h2 id="self-attention用于语音">Self-attention用于语音
+</h2><p>把声音讯号表示为一排向量，一般一个向量只有10ms的长度，会导致向量个数过多，$A&rsquo;$计算的复杂度是$O(L^2)$，一般使用<strong>Truncated Self-attention</strong>，不看一整句话，只看一小部分。</p>
+<h2 id="self-attention用于图像">Self-attention用于图像
+</h2><p>一张图片可以看成是一排向量。</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention%20for%20img.png" style="zoom:50%;" />
+<ul>
+<li>Self-Attention GAN</li>
+<li>Detection Transformer(DETR)</li>
+</ul>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention%20for%20img2.png" style="zoom:50%;" />
+<h2 id="self-attention-vs-cnn">Self-attention v.s. CNN
+</h2><p>Self-attention可以看作复杂化的CNN，Self-attention考虑全局。CNN是Self-attention的特例，Self-attention可以通过设定合适的参数，达到和CNN同样的效果。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/1911.03584"  target="_blank" rel="noopener"
+    >1911.03584] On the Relationship between Self-Attention and Convolutional Layers (arxiv.org)</a></li>
+</ul>
+<h2 id="self-attention-vs-rnn">Self-attention v.s. RNN
+</h2><p>RNN（Recurrent Neural Network）：</p>
+<img src="https://hexo-img-meurice.oss-cn-beijing.aliyuncs.com/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B2021%E6%98%A5/4/self-attention%20vs%20RNN.png" style="zoom:50%;" />
+<p>RNN的缺点很明显，很难去考虑到输入位置较远的向量，并且无法并行计算。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2006.16236"  target="_blank" rel="noopener"
+    >2006.16236] Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention (arxiv.org)</a></li>
+</ul>
+<h2 id="self-attention用于图">Self-attention用于图
+</h2><p>图中每个结点可以表示为一个向量，边可以用来考虑结点之间的关联性，计算Attention分数时，只需计算相连的结点。</p>
+<p>Self-attention用在图上面，是某一种类型的GNN（Graph Neural Network）。</p>
+<h2 id="more">More
+</h2><p>Self-Attention的计算量较大，优化效率是一个研究方向。</p>
+<ul>
+<li>[<a class="link" href="https://arxiv.org/abs/2011.04006"  target="_blank" rel="noopener"
+    >2011.04006] Long Range Arena: A Benchmark for Efficient Transformers (arxiv.org)</a></li>
+<li>[<a class="link" href="https://arxiv.org/abs/2009.06732"  target="_blank" rel="noopener"
+    >2009.06732] Efficient Transformers: A Survey (arxiv.org)</a></li>
+</ul>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图神经网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E9%95%BF%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%BD%91%E7%BB%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">长短期记忆网络</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BB%B7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">图像质量评价</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/yolo-v1-v7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">YOLO v1 - v7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">异常检测</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 zn.yan
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
